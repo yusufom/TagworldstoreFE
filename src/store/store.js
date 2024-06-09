@@ -16,15 +16,19 @@ import cartReducer from "./slices/cart-slice";
 import compareReducer from "./slices/compare-slice";
 import wishlistReducer from "./slices/wishlist-slice";
 import userReducer from "./slices/user-slice";
+import authReducer from "./slices/auth-slice";
+import { apiSlice } from './api';
 
 const persistConfig = {
-    key: "flone",
+    key: "@#",
     version: 1.1,
     storage,
     blacklist: ["product"]
 }
 
 export const rootReducer = combineReducers({
+    [apiSlice.reducerPath]: apiSlice.reducer,
+    auth: authReducer,
     user: userReducer,
     product: productReducer,
     currency: currencyReducer,
@@ -49,7 +53,7 @@ export const store = configureStore({
                     REGISTER,
                 ],
             },
-        }),
+        }).concat(apiSlice.middleware),
 });
 
 export const persistor = persistStore(store);
