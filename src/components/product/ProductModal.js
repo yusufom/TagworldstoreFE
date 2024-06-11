@@ -40,7 +40,7 @@ function ProductModal({ product, currency, discountedPrice, finalProductPrice, f
     fadeEffect: {
       crossFade: true
     },
-    thumbs: { swiper: thumbsSwiper },
+    thumbs: { swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null },
     modules: [EffectFade, Thumbs],
   };
 
@@ -54,6 +54,8 @@ function ProductModal({ product, currency, discountedPrice, finalProductPrice, f
     slideToClickedSlide: true,
     navigation: true
   };
+
+  console.log(thumbsSwiper, "thumbswiper")
 
   const onCloseModal = () => {
     setThumbsSwiper(null)
@@ -69,13 +71,13 @@ function ProductModal({ product, currency, discountedPrice, finalProductPrice, f
         <div className="col-md-5 col-sm-12 col-xs-12">
           <div className="product-large-image-wrapper">
             <Swiper options={gallerySwiperParams}>
-              {product.image &&
-                product.image.map((img, i) => {
+              {product?.image &&
+                product?.image?.map((img, i) => {
                   return (
                     <SwiperSlide key={i}>
                       <div className="single-image">
                         <img
-                          src={process.env.PUBLIC_URL + img}
+                          src={img?.image}
                           className="img-fluid"
                           alt="Product"
                         />
@@ -87,13 +89,13 @@ function ProductModal({ product, currency, discountedPrice, finalProductPrice, f
           </div>
           <div className="product-small-image-wrapper mt-15">
             <Swiper options={thumbnailSwiperParams}>
-              {product.image &&
-                product.image.map((img, i) => {
+              {product?.image &&
+                product?.image?.map((img, i) => {
                   return (
                     <SwiperSlide key={i}>
                       <div className="single-image">
                         <img
-                          src={process.env.PUBLIC_URL + img}
+                          src={process.env.PUBLIC_URL + img?.image}
                           className="img-fluid"
                           alt=""
                         />
@@ -131,15 +133,15 @@ function ProductModal({ product, currency, discountedPrice, finalProductPrice, f
               ""
             )}
             <div className="pro-details-list">
-              <p>{product.shortDescription}</p>
+              <p>{product.short_description}</p>
             </div>
 
-            {product.variation ? (
+            {product?.variation ? (
               <div className="pro-details-size-color">
                 <div className="pro-details-color-wrap">
                   <span>Color</span>
                   <div className="pro-details-color-content">
-                    {product.variation.map((single, key) => {
+                    {product?.variation?.map((single, key) => {
                       return (
                         <label
                           className={`pro-details-color-content--single ${single.color}`}

@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 import { getProducts } from "../../helpers/product";
 import ProductGridSingle from "../../components/product/ProductGridSingle";
+import { useGetAllProductsQuery } from "../../store/apiSlice/productSlice";
 
 const ProductGrid = ({
   spaceBottomClass,
@@ -10,13 +11,28 @@ const ProductGrid = ({
   type,
   limit
 }) => {
-  const { products } = useSelector((state) => state.product);
+  // const { products } = useSelector((state) => state.product);
+  const { data: products, isLoading } = useGetAllProductsQuery();
+  console.log(products);
   const currency = useSelector((state) => state.currency);
   const { cartItems } = useSelector((state) => state.cart);
   const { wishlistItems } = useSelector((state) => state.wishlist);
   const { compareItems } = useSelector((state) => state.compare);
   const prods = getProducts(products, category, type, limit)
-  
+
+  console.log(products, 'prods')
+
+  if (isLoading) {
+    return (
+      <div className="flone-preloader-wrapper">
+        <div className="flone-preloader">
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <Fragment>
       {prods?.map(product => {

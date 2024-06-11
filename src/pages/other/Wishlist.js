@@ -71,14 +71,14 @@ const Wishlist = () => {
                                     to={
                                       process.env.PUBLIC_URL +
                                       "/product/" +
-                                      wishlistItem.id
+                                      wishlistItem.slug
                                     }
                                   >
                                     <img
                                       className="img-fluid"
                                       src={
                                         process.env.PUBLIC_URL +
-                                        wishlistItem.image[0]
+                                        wishlistItem.image[0].image
                                       }
                                       alt=""
                                     />
@@ -90,7 +90,7 @@ const Wishlist = () => {
                                     to={
                                       process.env.PUBLIC_URL +
                                       "/product/" +
-                                      wishlistItem.id
+                                      wishlistItem.slug
                                     }
                                   >
                                     {wishlistItem.name}
@@ -130,7 +130,7 @@ const Wishlist = () => {
                                   ) : wishlistItem.variation &&
                                     wishlistItem.variation.length >= 1 ? (
                                     <Link
-                                      to={`${process.env.PUBLIC_URL}/product/${wishlistItem.id}`}
+                                      to={`${process.env.PUBLIC_URL}/product/${wishlistItem.slug}`}
                                     >
                                       Select option
                                     </Link>
@@ -191,7 +191,7 @@ const Wishlist = () => {
                     <div className="cart-shiping-update-wrapper">
                       <div className="cart-shiping-update">
                         <Link
-                          to={process.env.PUBLIC_URL + "/shop-grid-standard"}
+                          to={process.env.PUBLIC_URL + "/shop"}
                         >
                           Continue Shopping
                         </Link>

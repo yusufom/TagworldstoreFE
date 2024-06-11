@@ -13,6 +13,7 @@ const Cart = lazy(() => import("./pages/other/Cart"));
 const Wishlist = lazy(() => import("./pages/other/Wishlist"));
 const Compare = lazy(() => import("./pages/other/Compare"));
 const Checkout = lazy(() => import("./pages/other/Checkout"));
+const Shop = lazy(() => import("./pages/shop/ShopGridStandard"));
 
 
 
@@ -38,32 +39,36 @@ function App() {
             />
 
             {/* Homepages */}
+            <Route
+              path={process.env.PUBLIC_URL + "/shop"}
+              element={<Shop />}
+            />
 
             <Route
-                path={process.env.PUBLIC_URL + "/my-account"}
-                element={<MyAccount/>}
-              />
-              <Route
-                path={process.env.PUBLIC_URL + "/login-register"}
-                element={<LoginRegister/>}
-              />
+              path={process.env.PUBLIC_URL + "/my-account"}
+              element={<MyAccount />}
+            />
+            <Route
+              path={process.env.PUBLIC_URL + "/login-register"}
+              element={<LoginRegister />}
+            />
 
-              <Route
-                path={process.env.PUBLIC_URL + "/cart"}
-                element={<Cart/>}
-              />
-              <Route
-                path={process.env.PUBLIC_URL + "/wishlist"}
-                element={<Wishlist/>}
-              />
-              <Route
-                path={process.env.PUBLIC_URL + "/compare"}
-                element={<Compare/>}
-              />
-              <Route
-                path={process.env.PUBLIC_URL + "/checkout"}
-                element={<Checkout/>}
-              /> 
+            <Route
+              path={process.env.PUBLIC_URL + "/cart"}
+              element={<Cart />}
+            />
+            <Route
+              path={process.env.PUBLIC_URL + "/wishlist"}
+              element={<Wishlist />}
+            />
+            <Route
+              path={process.env.PUBLIC_URL + "/compare"}
+              element={<Compare />}
+            />
+            <Route
+              path={process.env.PUBLIC_URL + "/checkout"}
+              element={<Checkout />}
+            />
 
 
             <Route path="*" element={<NotFound />} />
