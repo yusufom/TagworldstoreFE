@@ -14,6 +14,7 @@ import { apiSlice } from '../../store/api';
 
 
 
+
 const ShopGridStandard = () => {
     const [layout, setLayout] = useState('grid three-column');
     const [sortType, setSortType] = useState('');
@@ -25,13 +26,7 @@ const ShopGridStandard = () => {
     const [currentData, setCurrentData] = useState([]);
     const [sortedProducts, setSortedProducts] = useState([]);
     // const { products } = useSelector((state) => state.product);
-    const { data: products, isLoading } = useGetAllProductsQuery();
-    console.log(products);
-
-    // const dispatch = useDispatch()
-
-    // dispatch(apiSlice.util.resetApiState());
-
+    const { data: products, isLoading } = useGetAllProductsQuery({ refetchOnMountOrArgChange: true });
 
     const pageLimit = 15;
     let { pathname } = useLocation();
@@ -55,7 +50,7 @@ const ShopGridStandard = () => {
         const filterSortedProducts = getSortedProducts(sortedProducts, filterSortType, filterSortValue);
         sortedProducts = filterSortedProducts;
         setSortedProducts(sortedProducts);
-        setCurrentData(sortedProducts.slice(offset, offset + pageLimit));
+        setCurrentData(sortedProducts?.slice(offset, offset + pageLimit));
     }, [offset, products, sortType, sortValue, filterSortType, filterSortValue]);
 
     if (isLoading) {
@@ -94,7 +89,7 @@ const ShopGridStandard = () => {
                             </div>
                             <div className="col-lg-9 order-1 order-lg-2">
                                 {/* shop topbar default */}
-                                <ShopTopbar getLayout={getLayout} getFilterSortParams={getFilterSortParams} productCount={products.length} sortedProductCount={currentData.length} />
+                                <ShopTopbar getLayout={getLayout} getFilterSortParams={getFilterSortParams} productCount={products?.length} sortedProductCount={currentData?.length} />
 
                                 {/* shop page content default */}
                                 <ShopProducts layout={layout} products={currentData} />
@@ -102,7 +97,7 @@ const ShopGridStandard = () => {
                                 {/* shop product pagination */}
                                 <div className="pro-pagination-style text-center mt-30">
                                     <Paginator
-                                        totalRecords={sortedProducts.length}
+                                        totalRecords={sortedProducts?.length}
                                         pageLimit={pageLimit}
                                         pageNeighbours={2}
                                         setOffset={setOffset}

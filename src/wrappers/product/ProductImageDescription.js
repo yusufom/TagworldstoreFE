@@ -6,14 +6,16 @@ import ProductImageGallery from "../../components/product/ProductImageGallery";
 import ProductDescriptionInfo from "../../components/product/ProductDescriptionInfo";
 import ProductImageGallerySideThumb from "../../components/product/ProductImageGallerySideThumb";
 import ProductImageFixed from "../../components/product/ProductImageFixed";
+import { useGetAllCartItemsQuery } from "../../store/apiSlice/cartApiSlice";
 
 const ProductImageDescription = ({ spaceTopClass, spaceBottomClass, galleryType, product }) => {
   const currency = useSelector((state) => state.currency);
-  const { cartItems } = useSelector((state) => state.cart);
+  // const { cartItems } = useSelector((state) => state.cart);
   const { wishlistItems } = useSelector((state) => state.wishlist);
   const { compareItems } = useSelector((state) => state.compare);
   const wishlistItem = wishlistItems.find(item => item.id === product.id);
   const compareItem = compareItems.find(item => item.id === product.id);
+  const { data: cartItems, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
 
   const discountedPrice = getDiscountPrice(product.price, product.discount);
   const finalProductPrice = +(product.price * currency.currencyRate).toFixed(2);
@@ -51,6 +53,7 @@ const ProductImageDescription = ({ spaceTopClass, spaceBottomClass, galleryType,
               cartItems={cartItems}
               wishlistItem={wishlistItem}
               compareItem={compareItem}
+              refetch={refetch}
             />
           </div>
         </div>

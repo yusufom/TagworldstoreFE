@@ -11,10 +11,17 @@ export const productApiSlice = apiSlice.injectEndpoints({
                 url: base + '/',
                 method: 'GET',
             })
+        }),
+        getSingleProduct: builder.query({
+            query: (slug) => ({
+                url: base + `/${slug}`,
+                method: 'GET',
+            })
         })
     })
 })
 
 export const {
-    useGetAllProductsQuery
+    useGetAllProductsQuery,
+    useGetSingleProductQuery,
 } = productApiSlice;

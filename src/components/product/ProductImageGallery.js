@@ -23,7 +23,7 @@ const ProductImageGallery = ({ product }) => {
     fadeEffect: {
       crossFade: true
     },
-    thumbs: { swiper: thumbsSwiper },
+    thumbs: { swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null },
     modules: [EffectFade, Thumbs],
   };
 
@@ -60,9 +60,9 @@ const ProductImageGallery = ({ product }) => {
                 <button className="lightgallery-button" onClick={() => setIndex(key)}>
                   <i className="pe-7s-expand1"></i>
                 </button>
-                <div className="single-image">
+                <div className="single-image" style={{width: "800px"}}>
                   <img
-                    src={process.env.PUBLIC_URL + single}
+                    src={process.env.PUBLIC_URL + single.image}
                     className="img-fluid"
                     alt=""
                   />
@@ -87,7 +87,7 @@ const ProductImageGallery = ({ product }) => {
               <SwiperSlide key={key}>
                 <div className="single-image">
                   <img
-                    src={process.env.PUBLIC_URL + single}
+                    src={single.image}
                     className="img-fluid"
                     alt=""
                   />

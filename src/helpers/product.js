@@ -47,9 +47,9 @@ export const getProductCartQuantity = (cartItems, product, color, size) => {
           single.id === product.id &&
           single.selectedProductColor === color &&
           single.selectedProductSize === size
-      ).quantity;
+      )?.quantity;
     } else {
-      return cartItems.find(single => product.id === single.id).quantity;
+      return cartItems.find(single => product.id === single.id)?.quantity;
     }
   } else {
     return 0;
@@ -57,11 +57,10 @@ export const getProductCartQuantity = (cartItems, product, color, size) => {
 };
 
 export const cartItemStock = (item, color, size) => {
-  if (item.stock) {
-    return item.stock;
+  if (item?.stock) {
+    return item?.stock;
   } else {
-    return item.variation
-      .filter(single => single.color === color)[0]
+    return item?.variation?.filter(single => single.color === color)[0]
       .size.filter(single => single.name === size)[0].stock;
   }
 };

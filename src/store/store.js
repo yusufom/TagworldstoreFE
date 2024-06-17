@@ -18,6 +18,7 @@ import wishlistReducer from "./slices/wishlist-slice";
 import userReducer from "./slices/user-slice";
 import authReducer from "./slices/auth-slice";
 import { apiSlice } from './api';
+import { cartApiSlice } from './apiSlice/cartApiSlice';
 
 const persistConfig = {
     key: "@#",
@@ -28,6 +29,7 @@ const persistConfig = {
 
 export const rootReducer = combineReducers({
     [apiSlice.reducerPath]: apiSlice.reducer,
+    [cartApiSlice.reducerPath]: cartApiSlice.reducer,
     auth: authReducer,
     user: userReducer,
     product: productReducer,
@@ -53,7 +55,7 @@ export const store = configureStore({
                     REGISTER,
                 ],
             },
-        }).concat(apiSlice.middleware),
+        }).concat(apiSlice.middleware, cartApiSlice.middleware),
 });
 
 export const persistor = persistStore(store);

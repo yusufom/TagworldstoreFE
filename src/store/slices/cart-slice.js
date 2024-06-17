@@ -1,29 +1,36 @@
 import { v4 as uuidv4 } from 'uuid';
 import cogoToast from 'cogo-toast';
+import { cartApiSlice } from '../apiSlice/cartApiSlice';
+import { errorToast } from '../../helpers/toast';
 const { createSlice } = require('@reduxjs/toolkit');
 
 const cartSlice = createSlice({
     name: "cart",
     initialState: {
+        isLoading: false,
         cartItems: []
     },
     reducers: {
         addToCart(state, action) {
-            const product = action.payload;
-            if(!product.variation){
-                const cartItem = state.cartItems.find(item => item.id === product.id);
-                if(!cartItem){
+            const product = action.payload.product;
+            const cartItemData = action.payload
+            if (!product.variation) {
+                const cartItem = state.cartItems.find(item => item.id === cartItemData.id);
+                if (!cartItem) {
                     state.cartItems.push({
-                        ...product,
-                        quantity: product.quantity ? product.quantity : 1,
-                        cartItemId: uuidv4()
+                        product: product,
+                        quantity: cartItemData.quantity ? cartItemData.quantity : 1,
+                        selected_product_color: cartItemData.selected_product_color,
+                        selected_product_size: cartItemData.selected_product_size
                     });
                 } else {
                     state.cartItems = state.cartItems.map(item => {
-                        if(item.cartItemId === cartItem.cartItemId){
+                        if (item.id === cartItem.id) {
                             return {
-                                ...item,
-                                quantity: product.quantity ? item.quantity + product.quantity : item.quantity + 1
+                                product: item.product,
+                                quantity: cartItemData.quantity ? item.quantity + cartItemData.quantity : item.quantity + 1,
+                                selected_product_color: cartItemData.selected_product_color,
+                                selected_product_size: cartItemData.selected_product_size
                             }
                         }
                         return item;
@@ -33,36 +40,38 @@ const cartSlice = createSlice({
             } else {
                 const cartItem = state.cartItems.find(
                     item =>
-                        item.id === product.id &&
-                        product.selectedProductColor &&
-                        product.selectedProductColor === item.selectedProductColor &&
-                        product.selectedProductSize &&
-                        product.selectedProductSize === item.selectedProductSize &&
-                        (product.cartItemId ? product.cartItemId === item.cartItemId : true)
+                        item.id === cartItemData.id &&
+                        cartItemData.selected_product_color &&
+                        cartItemData.selected_product_color === item.selected_product_color &&
+                        cartItemData.selected_product_size &&
+                        cartItemData.selected_product_size === item.selected_product_size &&
+                        (cartItemData.id ? cartItemData.id === item.id : true)
                 );
-                if(!cartItem){
+                if (!cartItem) {
                     state.cartItems.push({
-                        ...product,
-                        quantity: product.quantity ? product.quantity : 1,
-                        cartItemId: uuidv4()
+                        product: product,
+                        quantity: cartItemData.quantity ? cartItemData.quantity : 1,
+                        selected_product_color: cartItemData.selected_product_color,
+                        selected_product_size: cartItemData.selected_product_size
                     });
-                } else if (cartItem !== undefined && (cartItem.selectedProductColor !== product.selectedProductColor || cartItem.selectedProductSize !== product.selectedProductSize)) {
+                } else if (cartItem !== undefined && (cartItem.selected_product_color !== cartItemData.selected_product_color || cartItem.selected_product_size !== cartItemData.selected_product_size)) {
                     state.cartItems = [
                         ...state.cartItems,
                         {
-                            ...product,
-                            quantity: product.quantity ? product.quantity : 1,
-                            cartItemId: uuidv4()
+                            product: product,
+                            quantity: cartItemData.quantity ? cartItemData.quantity : 1,
+                            selected_product_color: cartItemData.selected_product_color,
+                            selected_product_size: cartItemData.selected_product_size
                         }
                     ]
                 } else {
                     state.cartItems = state.cartItems.map(item => {
-                        if(item.cartItemId === cartItem.cartItemId){
+                        if (item.id === cartItem.id) {
                             return {
-                                ...item,
-                                quantity: product.quantity ? item.quantity + product.quantity : item.quantity + 1,
-                                selectedProductColor: product.selectedProductColor,
-                                selectedProductSize: product.selectedProductSize
+                                product: item.product,
+                                quantity: cartItemData.quantity ? item.quantity + cartItemData.quantity : item.quantity + 1,
+                                selected_product_color: cartItemData.selected_product_color,
+                                selected_product_size: cartItemData.selected_product_size
                             }
                         }
                         return item;
@@ -70,29 +79,111 @@ const cartSlice = createSlice({
                 }
             }
 
-            cogoToast.success("Added To Cart", {position: "bottom-left"});
+            cogoToast.success("Added To Cart", { position: "bottom-left" });
         },
         deleteFromCart(state, action) {
             state.cartItems = state.cartItems.filter(item => item.cartItemId !== action.payload);
-            cogoToast.error("Removed From Cart", {position: "bottom-left"});
+            cogoToast.error("Removed From Cart", { position: "bottom-left" });
         },
-        decreaseQuantity(state, action){
+        decreaseQuantity(state, action) {
             const product = action.payload;
             if (product.quantity === 1) {
                 state.cartItems = state.cartItems.filter(item => item.cartItemId !== product.cartItemId);
-                cogoToast.error("Removed From Cart", {position: "bottom-left"});
+                cogoToast.error("Removed From Cart", { position: "bottom-left" });
             } else {
                 state.cartItems = state.cartItems.map(item =>
                     item.cartItemId === product.cartItemId
                         ? { ...item, quantity: item.quantity - 1 }
                         : item
                 );
-                cogoToast.warn("Item Decremented From Cart", {position: "bottom-left"});
+                cogoToast.warn("Item Decremented From Cart", { position: "bottom-left" });
             }
         },
-        deleteAllFromCart(state){
+        deleteAllFromCart(state) {
             state.cartItems = []
         }
+    },
+    extraReducers: (builder) => {
+        builder
+            .addMatcher(cartApiSlice.endpoints.addToCart.matchPending, (state, action) => {
+                state.isLoading = true;
+            })
+            .addMatcher(cartApiSlice.endpoints.addToCart.matchFulfilled, (state, action) => {
+                console.log("solo leveling", action.payload)
+                const product = action.payload.product;
+                const cartItemData = action.payload
+                if (!product.variation) {
+                    const cartItem = state.cartItems.find(item => item.id === cartItemData.id);
+                    if (!cartItem) {
+                        state.cartItems.push({
+                            product: product,
+                            quantity: cartItemData.quantity ? cartItemData.quantity : 1,
+                            selected_product_color: cartItemData.selected_product_color,
+                            selected_product_size: cartItemData.selected_product_size
+                        });
+                    } else {
+                        state.cartItems = state.cartItems.map(item => {
+                            if (item.id === cartItem.id) {
+                                return {
+                                    product: item.product,
+                                    quantity: cartItemData.quantity ? item.quantity + cartItemData.quantity : item.quantity + 1,
+                                    selected_product_color: cartItemData.selected_product_color,
+                                    selected_product_size: cartItemData.selected_product_size
+                                }
+                            }
+                            return item;
+                        })
+                    }
+
+                } else {
+                    const cartItem = state.cartItems.find(
+                        item =>
+                            item.id === cartItemData.id &&
+                            cartItemData.selected_product_color &&
+                            cartItemData.selected_product_color === item.selected_product_color &&
+                            cartItemData.selected_product_size &&
+                            cartItemData.selected_product_size === item.selected_product_size &&
+                            (cartItemData.id ? cartItemData.id === item.id : true)
+                    );
+                    if (!cartItem) {
+                        state.cartItems.push({
+                            product: product,
+                            quantity: cartItemData.quantity ? cartItemData.quantity : 1,
+                            selected_product_color: cartItemData.selected_product_color,
+                            selected_product_size: cartItemData.selected_product_size
+                        });
+                    } else if (cartItem !== undefined && (cartItem.selected_product_color !== cartItemData.selected_product_color || cartItem.selected_product_size !== cartItemData.selected_product_size)) {
+                        state.cartItems = [
+                            ...state.cartItems,
+                            {
+                                product: product,
+                                quantity: cartItemData.quantity ? cartItemData.quantity : 1,
+                                selected_product_color: cartItemData.selected_product_color,
+                                selected_product_size: cartItemData.selected_product_size
+                            }
+                        ]
+                    } else {
+                        state.cartItems = state.cartItems.map(item => {
+                            if (item.id === cartItem.id) {
+                                return {
+                                    product: item.product,
+                                    quantity: cartItemData.quantity ? item.quantity + cartItemData.quantity : item.quantity + 1,
+                                    selected_product_color: cartItemData.selected_product_color,
+                                    selected_product_size: cartItemData.selected_product_size
+                                }
+                            }
+                            return item;
+                        });
+                    }
+                }
+
+                // cogoToast.success("", { position: "bottom-left" });
+            })
+            .addMatcher(cartApiSlice.endpoints.addToCart.matchRejected, (state, action) => {
+                state.isLoading = false;
+                errorToast(action.payload?.data?.error || "Something went wrong")
+
+            })
     },
 });
 

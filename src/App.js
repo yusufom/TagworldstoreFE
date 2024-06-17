@@ -8,6 +8,8 @@ const HomeFashion = lazy(() => import("./pages/home/HomeFashion"));
 const MyAccount = lazy(() => import("./pages/other/MyAccount"));
 const LoginRegister = lazy(() => import("./pages/other/LoginRegister"));
 const NotFound = lazy(() => import("./pages/other/NotFound"));
+const Product = lazy(() => import("./pages/shop-product/Product"));
+
 
 const Cart = lazy(() => import("./pages/other/Cart"));
 const Wishlist = lazy(() => import("./pages/other/Wishlist"));
@@ -42,6 +44,11 @@ function App() {
             <Route
               path={process.env.PUBLIC_URL + "/shop"}
               element={<Shop />}
+            />
+
+            <Route
+              path={process.env.PUBLIC_URL + "/product/:id"}
+              element={<Product />}
             />
 
             <Route

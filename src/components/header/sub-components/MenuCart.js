@@ -3,12 +3,22 @@ import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getDiscountPrice } from "../../../helpers/product";
 import { deleteFromCart } from "../../../store/slices/cart-slice"
+import { useDeleteFromCartMutation, useGetAllCartItemsQuery } from "../../../store/apiSlice/cartApiSlice";
+import { errorToast, successToast } from "../../../helpers/toast";
 
 const MenuCart = () => {
   const dispatch = useDispatch();
   const currency = useSelector((state) => state.currency);
-  const { cartItems } = useSelector((state) => state.cart);
+  // const { cartItems } = useSelector((state) => state.cart);
+  const { data: cartItems, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+
+  const [deleteFromCart, { isLoading: deleteFromCartLoading, error: deleteFromCartError }] = useDeleteFromCartMutation();
+
+
   let cartTotalPrice = 0;
+
+
+  console.log("cartItems", cartItems)
 
   return (
     <div className="shopping-cart-content">
@@ -17,11 +27,11 @@ const MenuCart = () => {
           <ul>
             {cartItems.map((item) => {
               const discountedPrice = getDiscountPrice(
-                item.price,
-                item.discount
+                item.product.price,
+                item.product.discount
               );
               const finalProductPrice = (
-                item.price * currency.currencyRate
+                item.product.price * currency.currencyRate
               ).toFixed(2);
               const finalDiscountedPrice = (
                 discountedPrice * currency.currencyRate
@@ -32,12 +42,12 @@ const MenuCart = () => {
                 : (cartTotalPrice += finalProductPrice * item.quantity);
 
               return (
-                <li className="single-shopping-cart" key={item.cartItemId}>
+                <li className="single-shopping-cart" key={item.id}>
                   <div className="shopping-cart-img">
                     <Link to={process.env.PUBLIC_URL + "/product/" + item.id}>
                       <img
                         alt=""
-                        src={process.env.PUBLIC_URL + item.image[0]}
+                        src={item.product.image[0].image}
                         className="img-fluid"
                       />
                     </Link>
@@ -45,10 +55,10 @@ const MenuCart = () => {
                   <div className="shopping-cart-title">
                     <h4>
                       <Link
-                        to={process.env.PUBLIC_URL + "/product/" + item.id}
+                        to={process.env.PUBLIC_URL + "/product/" + item.product.id}
                       >
                         {" "}
-                        {item.name}{" "}
+                        {item.product.name}{" "}
                       </Link>
                     </h4>
                     <h6>Qty: {item.quantity}</h6>
@@ -58,17 +68,24 @@ const MenuCart = () => {
                         : currency.currencySymbol + finalProductPrice}
                     </span>
                     {item.selectedProductColor &&
-                    item.selectedProductSize ? (
+                      item.selectedProductSize ? (
                       <div className="cart-item-variation">
-                        <span>Color: {item.selectedProductColor}</span>
-                        <span>Size: {item.selectedProductSize}</span>
+                        <span>Color: {item.selected_product_color}</span>
+                        <span>Size: {item.selected_product_size}</span>
                       </div>
                     ) : (
                       ""
                     )}
                   </div>
                   <div className="shopping-cart-delete">
-                    <button onClick={() => dispatch(deleteFromCart(item.cartItemId))}>
+                    <button onClick={() => deleteFromCart(item.id).unwrap()
+                      .then(() => {
+                        successToast("Item deleted successfully")
+                        refetch()
+                      })
+                      .catch(() => {
+                        errorToast("Something went wrong")
+                      })}>
                       <i className="fa fa-times-circle" />
                     </button>
                   </div>

@@ -30,11 +30,13 @@ const ProductGridSingle = ({
       <div className={clsx("product-wrap", spaceBottomClass)}>
         <div className="product-img">
           <Link to={process.env.PUBLIC_URL + "/product/" + product.slug}>
-            <img
-              className="default-img"
-              src={process.env.PUBLIC_URL + product.image[0].image}
-              alt=""
-            />
+            <div style={{width: "600px"}}>
+              <img
+                className="default-img"
+                src={process.env.PUBLIC_URL + product.image[0].image}
+                alt=""
+              />
+            </div>
             {product.image.length > 1 ? (
               <img
                 className="hover-img"

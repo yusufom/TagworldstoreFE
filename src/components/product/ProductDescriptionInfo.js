@@ -7,6 +7,8 @@ import Rating from "./sub-components/ProductRating";
 import { addToCart } from "../../store/slices/cart-slice";
 import { addToWishlist } from "../../store/slices/wishlist-slice";
 import { addToCompare } from "../../store/slices/compare-slice";
+import { useAddToCartMutation } from "../../store/apiSlice/cartApiSlice";
+import { successToast } from "../../helpers/toast";
 
 const ProductDescriptionInfo = ({
   product,
@@ -17,6 +19,7 @@ const ProductDescriptionInfo = ({
   cartItems,
   wishlistItem,
   compareItem,
+  refetch
 }) => {
   const dispatch = useDispatch();
   const [selectedProductColor, setSelectedProductColor] = useState(
@@ -36,6 +39,13 @@ const ProductDescriptionInfo = ({
     selectedProductColor,
     selectedProductSize
   );
+
+  const [addToCartM, { isLoading, error }] = useAddToCartMutation();
+
+
+
+  console.log("error", error)
+
 
   return (
     <div className="product-details-content ml-70">
@@ -62,7 +72,7 @@ const ProductDescriptionInfo = ({
         ""
       )}
       <div className="pro-details-list">
-        <p>{product.shortDescription}</p>
+        <p>{product.short_description}</p>
       </div>
 
       {product.variation ? (
@@ -103,29 +113,29 @@ const ProductDescriptionInfo = ({
                 product.variation.map(single => {
                   return single.color === selectedProductColor
                     ? single.size.map((singleSize, key) => {
-                        return (
-                          <label
-                            className={`pro-details-size-content--single`}
-                            key={key}
-                          >
-                            <input
-                              type="radio"
-                              value={singleSize.name}
-                              checked={
-                                singleSize.name === selectedProductSize
-                                  ? "checked"
-                                  : ""
-                              }
-                              onChange={() => {
-                                setSelectedProductSize(singleSize.name);
-                                setProductStock(singleSize.stock);
-                                setQuantityCount(1);
-                              }}
-                            />
-                            <span className="size-name">{singleSize.name}</span>
-                          </label>
-                        );
-                      })
+                      return (
+                        <label
+                          className={`pro-details-size-content--single`}
+                          key={key}
+                        >
+                          <input
+                            type="radio"
+                            value={singleSize.name}
+                            checked={
+                              singleSize.name === selectedProductSize
+                                ? "checked"
+                                : ""
+                            }
+                            onChange={() => {
+                              setSelectedProductSize(singleSize.name);
+                              setProductStock(singleSize.stock);
+                              setQuantityCount(1);
+                            }}
+                          />
+                          <span className="size-name">{singleSize.name}</span>
+                        </label>
+                      );
+                    })
                     : "";
                 })}
             </div>
@@ -176,16 +186,24 @@ const ProductDescriptionInfo = ({
               +
             </button>
           </div>
+
           <div className="pro-details-cart btn-hover">
             {productStock && productStock > 0 ? (
               <button
-                onClick={() =>
-                  dispatch(addToCart({
-                    ...product,
+                onClick={() => {
+                  addToCartM({
+                    product: { ...product },
                     quantity: quantityCount,
-                    selectedProductColor: selectedProductColor ? selectedProductColor : product.selectedProductColor ? product.selectedProductColor : null,
-                    selectedProductSize: selectedProductSize ? selectedProductSize : product.selectedProductSize ? product.selectedProductSize : null
-                  }))
+                    selected_product_color: selectedProductColor ? selectedProductColor : product.selected_product_color ? product.selected_product_color : null,
+                    selected_product_size: selectedProductSize ? selectedProductSize : product.selected_product_size ? product.selected_product_size : null
+                  }).unwrap().then(() => { successToast("Added To Cart"); refetch() }).catch(() => { });
+                  // dispatch(addToCart({
+                  //   ...product,
+                  //   quantity: quantityCount,
+                  //   selected_product_color: selectedProductColor ? selectedProductColor : product.selectedProductColor ? product.selectedProductColor : null,
+                  //   selected_product_size: selectedProductSize ? selectedProductSize : product.selectedProductSize ? product.selectedProductSize : null
+                  // }))
+                }
                 }
                 disabled={productCartQty >= productStock}
               >

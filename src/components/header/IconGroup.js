@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import clsx from "clsx";
 import MenuCart from "./sub-components/MenuCart";
+import { useGetAllCartItemsQuery } from "../../store/apiSlice/cartApiSlice";
 
 const IconGroup = ({ iconWhiteClass }) => {
   const handleClick = e => {
@@ -17,7 +18,10 @@ const IconGroup = ({ iconWhiteClass }) => {
   };
   const { compareItems } = useSelector((state) => state.compare);
   const { wishlistItems } = useSelector((state) => state.wishlist);
-  const { cartItems } = useSelector((state) => state.cart);
+  // const { cartItems } = useSelector((state) => state.cart);
+  const { data: cartItems, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+
+
 
   return (
     <div className={clsx("header-right-wrap", iconWhiteClass)} >

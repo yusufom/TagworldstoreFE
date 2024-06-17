@@ -7,6 +7,9 @@ import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import { addToCart, decreaseQuantity, deleteFromCart, deleteAllFromCart } from "../../store/slices/cart-slice";
 import { cartItemStock } from "../../helpers/product";
+import { useAddToCartMutation, useDeleteFromCartMutation, useGetAllCartItemsQuery, useDecreaseQuantityMutation } from "../../store/apiSlice/cartApiSlice";
+import { apiSlice } from "../../store/api";
+import { errorToast, successToast, warningToast } from "../../helpers/toast";
 
 const Cart = () => {
   let cartTotalPrice = 0;
@@ -14,9 +17,22 @@ const Cart = () => {
   const [quantityCount] = useState(1);
   const dispatch = useDispatch();
   let { pathname } = useLocation();
-  
+
   const currency = useSelector((state) => state.currency);
-  const { cartItems } = useSelector((state) => state.cart);
+  // const { cartItems } = useSelector((state) => state.cart);
+
+
+  const [addToCartM, { isLoading, error }] = useAddToCartMutation();
+  const [deleteFromCart, { isLoading: deleteFromCartLoading, error: deleteFromCartError }] = useDeleteFromCartMutation();
+  const [decreaseQuantity, { isLoading: decreaseQuantityLoading, error: decreaseQuantityError }] = useDecreaseQuantityMutation();
+
+  const { data: cartItems, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+  console.log(cartItems)
+
+
+  // dispatch(apiSlice.util.resetApiState());
+
+
 
   return (
     <Fragment>
@@ -27,11 +43,11 @@ const Cart = () => {
 
       <LayoutOne headerTop="visible">
         {/* breadcrumb */}
-        <Breadcrumb 
+        <Breadcrumb
           pages={[
-            {label: "Home", path: process.env.PUBLIC_URL + "/" },
-            {label: "Cart", path: process.env.PUBLIC_URL + pathname }
-          ]} 
+            { label: "Home", path: process.env.PUBLIC_URL + "/" },
+            { label: "Cart", path: process.env.PUBLIC_URL + pathname }
+          ]}
         />
         <div className="cart-main-area pt-90 pb-100">
           <div className="container">
@@ -55,11 +71,11 @@ const Cart = () => {
                         <tbody>
                           {cartItems.map((cartItem, key) => {
                             const discountedPrice = getDiscountPrice(
-                              cartItem.price,
-                              cartItem.discount
+                              cartItem.product.price,
+                              cartItem.product.discount
                             );
                             const finalProductPrice = (
-                              cartItem.price * currency.currencyRate
+                              cartItem.product.price * currency.currencyRate
                             ).toFixed(2);
                             const finalDiscountedPrice = (
                               discountedPrice * currency.currencyRate
@@ -67,9 +83,9 @@ const Cart = () => {
 
                             discountedPrice != null
                               ? (cartTotalPrice +=
-                                  finalDiscountedPrice * cartItem.quantity)
+                                finalDiscountedPrice * cartItem.quantity)
                               : (cartTotalPrice +=
-                                  finalProductPrice * cartItem.quantity);
+                                finalProductPrice * cartItem.quantity);
                             return (
                               <tr key={key}>
                                 <td className="product-thumbnail">
@@ -77,14 +93,14 @@ const Cart = () => {
                                     to={
                                       process.env.PUBLIC_URL +
                                       "/product/" +
-                                      cartItem.id
+                                      cartItem.slug
                                     }
                                   >
                                     <img
                                       className="img-fluid"
                                       src={
                                         process.env.PUBLIC_URL +
-                                        cartItem.image[0]
+                                        cartItem.product.image[0].image
                                       }
                                       alt=""
                                     />
@@ -101,14 +117,14 @@ const Cart = () => {
                                   >
                                     {cartItem.name}
                                   </Link>
-                                  {cartItem.selectedProductColor &&
-                                  cartItem.selectedProductSize ? (
+                                  {cartItem.selected_product_color &&
+                                    cartItem.selected_product_size ? (
                                     <div className="cart-item-variation">
                                       <span>
-                                        Color: {cartItem.selectedProductColor}
+                                        Color: {cartItem.selected_product_color}
                                       </span>
                                       <span>
-                                        Size: {cartItem.selectedProductSize}
+                                        Size: {cartItem.selected_product_size}
                                       </span>
                                     </div>
                                   ) : (
@@ -141,7 +157,8 @@ const Cart = () => {
                                     <button
                                       className="dec qtybutton"
                                       onClick={() =>
-                                        dispatch(decreaseQuantity(cartItem))
+                                        // dispatch(decreaseQuantity(cartItem))
+                                        decreaseQuantity(cartItem.id).unwrap().then(() => { warningToast("Item Decremented From Cart"); refetch() }).catch(() => { })
                                       }
                                     >
                                       -
@@ -154,21 +171,23 @@ const Cart = () => {
                                     />
                                     <button
                                       className="inc qtybutton"
-                                      onClick={() =>
-                                        dispatch(addToCart({
+                                      onClick={() => {
+                                        addToCartM({
                                           ...cartItem,
                                           quantity: quantityCount
-                                        }))
+                                        }).unwrap().then(() => { successToast("Added To Cart"); refetch() }).catch(() => { });
+
+                                      }
                                       }
                                       disabled={
                                         cartItem !== undefined &&
                                         cartItem.quantity &&
                                         cartItem.quantity >=
-                                          cartItemStock(
-                                            cartItem,
-                                            cartItem.selectedProductColor,
-                                            cartItem.selectedProductSize
-                                          )
+                                        cartItemStock(
+                                          cartItem.product,
+                                          cartItem.selected_product_color,
+                                          cartItem.selected_product_size
+                                        )
                                       }
                                     >
                                       +
@@ -178,19 +197,27 @@ const Cart = () => {
                                 <td className="product-subtotal">
                                   {discountedPrice !== null
                                     ? currency.currencySymbol +
-                                      (
-                                        finalDiscountedPrice * cartItem.quantity
-                                      ).toFixed(2)
+                                    (
+                                      finalDiscountedPrice * cartItem.quantity
+                                    ).toFixed(2)
                                     : currency.currencySymbol +
-                                      (
-                                        finalProductPrice * cartItem.quantity
-                                      ).toFixed(2)}
+                                    (
+                                      finalProductPrice * cartItem.quantity
+                                    ).toFixed(2)}
                                 </td>
 
                                 <td className="product-remove">
                                   <button
                                     onClick={() =>
-                                      dispatch(deleteFromCart(cartItem.cartItemId))
+                                      // dispatch(deleteFromCart(cartItem.cartItemId))
+                                      deleteFromCart(cartItem.id).unwrap()
+                                        .then(() => {
+                                          successToast("Item deleted successfully")
+                                          refetch()
+                                        })
+                                        .catch(() => {
+                                          errorToast("Something went wrong")
+                                        })
                                     }
                                   >
                                     <i className="fa fa-times"></i>

@@ -5,13 +5,16 @@ import { getDiscountPrice } from "../../helpers/product";
 import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
+import { useGetAllCartItemsQuery } from "../../store/apiSlice/cartApiSlice";
 
 const Checkout = () => {
   let cartTotalPrice = 0;
 
   let { pathname } = useLocation();
   const currency = useSelector((state) => state.currency);
-  const { cartItems } = useSelector((state) => state.cart);
+  // const { cartItems } = useSelector((state) => state.cart);
+  const { data: cartItems, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+
 
   return (
     <Fragment>
@@ -141,11 +144,11 @@ const Checkout = () => {
                           <ul>
                             {cartItems.map((cartItem, key) => {
                               const discountedPrice = getDiscountPrice(
-                                cartItem.price,
-                                cartItem.discount
+                                cartItem.product.price,
+                                cartItem.product.discount
                               );
                               const finalProductPrice = (
-                                cartItem.price * currency.currencyRate
+                                cartItem.product.price * currency.currencyRate
                               ).toFixed(2);
                               const finalDiscountedPrice = (
                                 discountedPrice * currency.currencyRate
@@ -159,7 +162,7 @@ const Checkout = () => {
                               return (
                                 <li key={key}>
                                   <span className="order-middle-left">
-                                    {cartItem.name} X {cartItem.quantity}
+                                    {cartItem.product.name} X {cartItem.quantity}
                                   </span>{" "}
                                   <span className="order-price">
                                     {discountedPrice !== null
