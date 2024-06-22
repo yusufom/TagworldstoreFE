@@ -1,5 +1,5 @@
 
-import {apiSlice} from "../api";
+import { apiSlice } from "../api";
 
 const base = "orders/cart"
 
@@ -36,10 +36,17 @@ export const cartApiSlice = apiSlice.injectEndpoints({
                 url: base + `/${slug}`,
                 method: 'GET',
             })
+        }),
+        createOrder: builder.mutation({
+            query: (data) => ({
+                url: base + `/create_checkout_session/`,
+                method: 'POST',
+                body: {line_items: data},
+            })
         })
     })
 })
 
 export const {
-    useAddToCartMutation, useGetAllCartItemsQuery, useDeleteFromCartMutation, useDecreaseQuantityMutation
+    useAddToCartMutation, useGetAllCartItemsQuery, useDeleteFromCartMutation, useDecreaseQuantityMutation, useCreateOrderMutation
 } = cartApiSlice;

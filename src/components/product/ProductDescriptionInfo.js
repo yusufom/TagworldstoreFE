@@ -5,10 +5,11 @@ import { useDispatch } from "react-redux";
 import { getProductCartQuantity } from "../../helpers/product";
 import Rating from "./sub-components/ProductRating";
 import { addToCart } from "../../store/slices/cart-slice";
-import { addToWishlist } from "../../store/slices/wishlist-slice";
+// import { addToWishlist } from "../../store/slices/wishlist-slice";
 import { addToCompare } from "../../store/slices/compare-slice";
 import { useAddToCartMutation } from "../../store/apiSlice/cartApiSlice";
 import { successToast } from "../../helpers/toast";
+import { useAddToWishListMutation } from "../../store/apiSlice/productSlice";
 
 const ProductDescriptionInfo = ({
   product,
@@ -18,7 +19,8 @@ const ProductDescriptionInfo = ({
   finalProductPrice,
   cartItems,
   wishlistItem,
-  compareItem,
+  // compareItem,
+  wishListItemsRefetch,
   refetch
 }) => {
   const dispatch = useDispatch();
@@ -41,6 +43,8 @@ const ProductDescriptionInfo = ({
   );
 
   const [addToCartM, { isLoading, error }] = useAddToCartMutation();
+  const [addToWishlist] = useAddToWishListMutation();
+
 
 
 
@@ -223,12 +227,18 @@ const ProductDescriptionInfo = ({
                   ? "Added to wishlist"
                   : "Add to wishlist"
               }
-              onClick={() => dispatch(addToWishlist(product))}
+              onClick={() =>
+                // dispatch(addToWishlist(product))
+                addToWishlist(product.id).then(() => {
+                  successToast("Wishlist item deleted successfully")
+                  wishListItemsRefetch()
+                }).catch(() => { })
+              }
             >
               <i className="pe-7s-like" />
             </button>
           </div>
-          <div className="pro-details-compare">
+          {/* <div className="pro-details-compare">
             <button
               className={compareItem !== undefined ? "active" : ""}
               disabled={compareItem !== undefined}
@@ -241,7 +251,7 @@ const ProductDescriptionInfo = ({
             >
               <i className="pe-7s-shuffle" />
             </button>
-          </div>
+          </div> */}
         </div>
       )}
       {product.category ? (

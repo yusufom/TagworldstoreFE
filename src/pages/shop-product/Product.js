@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, Navigate } from "react-router-dom";
 import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
@@ -13,14 +13,14 @@ import { apiSlice } from "../../store/api";
 const Product = () => {
   let { pathname } = useLocation();
   let { id } = useParams();
-  const { products } = useSelector((state) => state.product);
+  // const { products } = useSelector((state) => state.product);
 
   // const dispatch = useDispatch()
 
   // dispatch(apiSlice.util.resetApiState());
   // const product = products.find(product => product.id === id);
-  const { data: product, isLoading } = useGetSingleProductQuery(id);
-  console.log(product);
+  const { data: product, isLoading, error, isError } = useGetSingleProductQuery(id);
+  console.log("products", product);
 
   if (isLoading) {
     return (
@@ -32,6 +32,11 @@ const Product = () => {
       </div>
     )
   }
+
+  if (isError) {
+    return <Navigate to={`/`} />;
+  }
+
 
 
   return (
@@ -61,6 +66,7 @@ const Product = () => {
         <ProductDescriptionTab
           spaceBottomClass="pb-90"
           productFullDesc={product?.full_description}
+          product_id={product?.id}
         />
 
         {/* related product slider */}

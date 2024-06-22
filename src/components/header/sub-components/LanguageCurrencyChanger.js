@@ -55,7 +55,7 @@ const LanguageCurrencyChanger = ({ currency }) => {
         </span>
         <div className="lang-car-dropdown">
           <ul>
-            <li>
+            {/* <li>
               <button value="USD" onClick={e => setCurrencyTrigger(e)}>
                 USD
               </button>
@@ -64,7 +64,7 @@ const LanguageCurrencyChanger = ({ currency }) => {
               <button value="EUR" onClick={e => setCurrencyTrigger(e)}>
                 EUR
               </button>
-            </li>
+            </li> */}
             <li>
               <button value="GBP" onClick={e => setCurrencyTrigger(e)}>
                 GBP

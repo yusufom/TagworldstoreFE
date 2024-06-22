@@ -26,14 +26,14 @@ const NavMenu = ({ menuWhiteClass, sidebarMenu }) => {
               
             </Link>
           </li>
-          <li>
+          {/* <li>
             <Link to={process.env.PUBLIC_URL + "/shop-grid-standard"}>
               {t("collection")}
             </Link>
-          </li>
+          </li> */}
           <li>
             <Link to={process.env.PUBLIC_URL + "/"}>
-              {t("pages")}
+              {t("Account")}
               {sidebarMenu ? (
                 <span>
                   <i className="fa fa-angle-right"></i>
@@ -43,7 +43,7 @@ const NavMenu = ({ menuWhiteClass, sidebarMenu }) => {
               )}
             </Link>
             <ul className="submenu">
-              <li>
+              {/* <li>
                 <Link to={process.env.PUBLIC_URL + "/cart"}>
                   {t("cart")}
                 </Link>
@@ -62,7 +62,7 @@ const NavMenu = ({ menuWhiteClass, sidebarMenu }) => {
                 <Link to={process.env.PUBLIC_URL + "/compare"}>
                   {t("compare")}
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link to={process.env.PUBLIC_URL + "/my-account"}>
                   {t("my_account")}
@@ -73,7 +73,7 @@ const NavMenu = ({ menuWhiteClass, sidebarMenu }) => {
                   {t("login_register")}
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link to={process.env.PUBLIC_URL + "/about"}>
                   {t("about_us")}
                 </Link>
@@ -87,10 +87,10 @@ const NavMenu = ({ menuWhiteClass, sidebarMenu }) => {
                 <Link to={process.env.PUBLIC_URL + "/not-found"}>
                   {t("404_page")}
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </li>
-          <li>
+          {/* <li>
             <Link to={process.env.PUBLIC_URL + "/blog-standard"}>
               {t("blog")}
               {sidebarMenu ? (
@@ -123,7 +123,7 @@ const NavMenu = ({ menuWhiteClass, sidebarMenu }) => {
                 </Link>
               </li>
             </ul>
-          </li>
+          </li> */}
           <li>
             <Link to={process.env.PUBLIC_URL + "/contact"}>
               {t("contact_us")}

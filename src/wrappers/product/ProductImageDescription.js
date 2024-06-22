@@ -7,14 +7,19 @@ import ProductDescriptionInfo from "../../components/product/ProductDescriptionI
 import ProductImageGallerySideThumb from "../../components/product/ProductImageGallerySideThumb";
 import ProductImageFixed from "../../components/product/ProductImageFixed";
 import { useGetAllCartItemsQuery } from "../../store/apiSlice/cartApiSlice";
+import { useGetAllWishListQuery } from "../../store/apiSlice/productSlice";
 
 const ProductImageDescription = ({ spaceTopClass, spaceBottomClass, galleryType, product }) => {
   const currency = useSelector((state) => state.currency);
   // const { cartItems } = useSelector((state) => state.cart);
-  const { wishlistItems } = useSelector((state) => state.wishlist);
-  const { compareItems } = useSelector((state) => state.compare);
-  const wishlistItem = wishlistItems.find(item => item.id === product.id);
-  const compareItem = compareItems.find(item => item.id === product.id);
+  // const { wishlistItems } = useSelector((state) => state.wishlist);
+  const { data: wishlistItems, refetch: wishListItemsRefetch } = useGetAllWishListQuery()
+  console.log("wishlist", wishlistItems)
+  console.log("wishlist produc", product.id)
+  
+  // const { compareItems } = useSelector((state) => state.compare);
+  const wishlistItem = wishlistItems?.find(item => item.id === product.id);
+  // const compareItem = compareItems.find(item => item.id === product.id);
   const { data: cartItems, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
 
   const discountedPrice = getDiscountPrice(product.price, product.discount);
@@ -52,7 +57,8 @@ const ProductImageDescription = ({ spaceTopClass, spaceBottomClass, galleryType,
               finalProductPrice={finalProductPrice}
               cartItems={cartItems}
               wishlistItem={wishlistItem}
-              compareItem={compareItem}
+              wishListItemsRefetch={wishListItemsRefetch}
+              // compareItem={compareItem}
               refetch={refetch}
             />
           </div>

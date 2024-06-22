@@ -13,7 +13,7 @@ const Product = lazy(() => import("./pages/shop-product/Product"));
 
 const Cart = lazy(() => import("./pages/other/Cart"));
 const Wishlist = lazy(() => import("./pages/other/Wishlist"));
-const Compare = lazy(() => import("./pages/other/Compare"));
+// const Compare = lazy(() => import("./pages/other/Compare"));
 const Checkout = lazy(() => import("./pages/other/Checkout"));
 const Shop = lazy(() => import("./pages/shop/ShopGridStandard"));
 
@@ -68,10 +68,10 @@ function App() {
               path={process.env.PUBLIC_URL + "/wishlist"}
               element={<Wishlist />}
             />
-            <Route
+            {/* <Route
               path={process.env.PUBLIC_URL + "/compare"}
               element={<Compare />}
-            />
+            /> */}
             <Route
               path={process.env.PUBLIC_URL + "/checkout"}
               element={<Checkout />}

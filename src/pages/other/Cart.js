@@ -27,8 +27,7 @@ const Cart = () => {
   const [decreaseQuantity, { isLoading: decreaseQuantityLoading, error: decreaseQuantityError }] = useDecreaseQuantityMutation();
 
   const { data: cartItems, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
-  console.log(cartItems)
-
+  
 
   // dispatch(apiSlice.util.resetApiState());
 

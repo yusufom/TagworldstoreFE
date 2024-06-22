@@ -5,13 +5,15 @@ import Nav from "react-bootstrap/Nav";
 import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
 import { useLoginMutation, useRegisterMutation } from "../../store/apiSlice/authApiSlice";
 import { errorToast, successToast } from "../../helpers/toast";
+import { authenticate } from "../../store/slices/auth-slice";
 
 const LoginRegister = () => {
   let { pathname } = useLocation();
+  const dispatch = useDispatch();
 
   const { isAuthenticated } = useSelector(
     (state) => state.auth
@@ -30,7 +32,7 @@ const LoginRegister = () => {
         login(values)
           .unwrap()
           .then((res) => {
-            console.log(res);
+            dispatch(authenticate(res))
             successToast("Login successful")
           })
           .catch(error => {
@@ -66,9 +68,9 @@ const LoginRegister = () => {
     }
   )
 
-  // if (isAuthenticated) {
-  //   return <Navigate to={`/`} />;
-  // }
+  if (isAuthenticated) {
+    return <Navigate to={`/`} />;
+  }
 
 
   return (
@@ -90,13 +92,15 @@ const LoginRegister = () => {
             <div className="row">
               <div className="col-lg-7 col-md-12 ms-auto me-auto">
                 <div className="login-register-wrapper">
-                  <Tab.Container defaultActiveKey="login">
+                  <Tab.Container defaultActiveKey="login" >
                     <Nav variant="pills" className="login-register-tab-list">
-                      <Nav.Item>
-                        <Nav.Link eventKey="login">
-                          <h4>Login</h4>
-                        </Nav.Link>
-                      </Nav.Item>
+                        <Nav.Item>
+                          <Nav.Link eventKey="login">
+                            <h4>Login</h4>
+                          </Nav.Link>
+                        </Nav.Item>
+                        
+
                       <Nav.Item>
                         <Nav.Link eventKey="register">
                           <h4>Register</h4>
@@ -104,40 +108,40 @@ const LoginRegister = () => {
                       </Nav.Item>
                     </Nav>
                     <Tab.Content>
-                      <Tab.Pane eventKey="login">
-                        <div className="login-form-container">
-                          <div className="login-register-form">
-                            <form method="POST">
-                              <input
-                                type="text"
-                                placeholder="Username"
-                                onChange={formik.handleChange}
-                                value={formik.values.username}
-                                name={'username'}
-                              />
-                              <input
-                                type="password"
-                                placeholder="Password"
-                                onChange={formik.handleChange}
-                                value={formik.values.password}
-                                name={'password'}
-                              />
-                              <div className="button-box">
-                                <div className="login-toggle-btn">
-                                  <input type="checkbox" />
-                                  <label className="ml-10">Remember me</label>
-                                  <Link to={process.env.PUBLIC_URL + "/"}>
-                                    Forgot Password?
-                                  </Link>
+                        <Tab.Pane eventKey="login">
+                          <div className="login-form-container">
+                            <div className="login-register-form">
+                              <form method="POST">
+                                <input
+                                  type="text"
+                                  placeholder="Username"
+                                  onChange={formik.handleChange}
+                                  value={formik.values.username}
+                                  name={'username'}
+                                />
+                                <input
+                                  type="password"
+                                  placeholder="Password"
+                                  onChange={formik.handleChange}
+                                  value={formik.values.password}
+                                  name={'password'}
+                                />
+                                <div className="button-box">
+                                  <div className="login-toggle-btn">
+                                    <input type="checkbox" />
+                                    <label className="ml-10">Remember me</label>
+                                    <Link to={process.env.PUBLIC_URL + "/"}>
+                                      Forgot Password?
+                                    </Link>
+                                  </div>
+                                  <button onClick={formik.handleSubmit}>
+                                    <span>Login</span>
+                                  </button>
                                 </div>
-                                <button onClick={formik.handleSubmit}>
-                                  <span>Login</span>
-                                </button>
-                              </div>
-                            </form>
+                              </form>
+                            </div>
                           </div>
-                        </div>
-                      </Tab.Pane>
+                        </Tab.Pane>
                       <Tab.Pane eventKey="register">
                         <div className="login-form-container">
                           <div className="login-register-form">

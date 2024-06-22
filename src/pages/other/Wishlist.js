@@ -7,15 +7,23 @@ import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import { addToCart } from "../../store/slices/cart-slice";
 import { deleteFromWishlist, deleteAllFromWishlist } from "../../store/slices/wishlist-slice"
+import { useGetAllWishListQuery, useDeleteFromWishListMutation } from "../../store/apiSlice/productSlice";
+import { useGetAllCartItemsQuery } from "../../store/apiSlice/cartApiSlice";
+import { successToast } from "../../helpers/toast";
 
 const Wishlist = () => {
   const dispatch = useDispatch();
   let { pathname } = useLocation();
-  
+
   const currency = useSelector((state) => state.currency);
-  const { wishlistItems } = useSelector((state) => state.wishlist);
-  const { cartItems } = useSelector((state) => state.cart);
-  
+  // const { wishlistItems } = useSelector((state) => state.wishlist);
+  // const { cartItems } = useSelector((state) => state.cart);
+
+  const { data: wishlistItems, refetch } = useGetAllWishListQuery()
+  const { data: cartItems } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+  const [deleteFromWishList] = useDeleteFromWishListMutation();
+
+
 
   return (
     <Fragment>
@@ -25,11 +33,11 @@ const Wishlist = () => {
       />
       <LayoutOne headerTop="visible">
         {/* breadcrumb */}
-        <Breadcrumb 
+        <Breadcrumb
           pages={[
-            {label: "Home", path: process.env.PUBLIC_URL + "/" },
-            {label: "Wishlist", path: process.env.PUBLIC_URL + pathname }
-          ]} 
+            { label: "Home", path: process.env.PUBLIC_URL + "/" },
+            { label: "Wishlist", path: process.env.PUBLIC_URL + pathname }
+          ]}
         />
         <div className="cart-main-area pt-90 pb-100">
           <div className="container">
@@ -142,7 +150,7 @@ const Wishlist = () => {
                                       }
                                       className={
                                         cartItem !== undefined &&
-                                        cartItem.quantity > 0
+                                          cartItem.quantity > 0
                                           ? "active"
                                           : ""
                                       }
@@ -157,7 +165,7 @@ const Wishlist = () => {
                                       }
                                     >
                                       {cartItem !== undefined &&
-                                      cartItem.quantity > 0
+                                        cartItem.quantity > 0
                                         ? "Added"
                                         : "Add to cart"}
                                     </button>
@@ -171,7 +179,11 @@ const Wishlist = () => {
                                 <td className="product-remove">
                                   <button
                                     onClick={() =>
-                                      dispatch(deleteFromWishlist(wishlistItem.id))
+                                      // dispatch(deleteFromWishlist(wishlistItem.id))
+                                      deleteFromWishList(wishlistItem.id).then(() => {
+                                        refetch()
+                                        successToast("Wishlist item deleted successfully")
+                                      }).catch(() => { })
                                     }
                                   >
                                     <i className="fa fa-times"></i>

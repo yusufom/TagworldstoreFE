@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { authApiSlice } from '../apiSlice/authApiSlice';
+// import { authApiSlice } from '../apiSlice/authApiSlice';
 
 
 const authInitialState = {
@@ -31,24 +31,24 @@ const authSlice = createSlice({
         }
 
     },
-    extraReducers: (builder) => {
-        builder
-            .addMatcher(authApiSlice.endpoints.login.matchPending, (state, action) => {
-                state.isLoading = true;
-            })
-            .addMatcher(authApiSlice.endpoints.login.matchFulfilled, (state, action) => {
-                state.isAuthenticated = true;
-                state.isLoading = false;
-                state.access = action.payload.access;
-                state.refresh = action.payload.refresh;
-            })
-            .addMatcher(authApiSlice.endpoints.login.matchRejected, (state, action) => {
-                state.isAuthenticated = false;
-                state.isLoading = false;
-                state.access = null;
-                state.refresh = null;
-            })
-    },
+    // extraReducers: (builder) => {
+    //     builder
+    //         .addMatcher(authApiSlice.endpoints.login.matchPending, (state, action) => {
+    //             state.isLoading = true;
+    //         })
+    //         .addMatcher(authApiSlice.endpoints.login.matchFulfilled, (state, action) => {
+    //             state.isAuthenticated = true;
+    //             state.isLoading = false;
+    //             state.access = action.payload.access;
+    //             state.refresh = action.payload.refresh;
+    //         })
+    //         .addMatcher(authApiSlice.endpoints.login.matchRejected, (state, action) => {
+    //             state.isAuthenticated = false;
+    //             state.isLoading = false;
+    //             state.access = null;
+    //             state.refresh = null;
+    //         })
+    // },
 })
 
 

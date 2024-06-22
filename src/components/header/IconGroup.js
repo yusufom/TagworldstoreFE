@@ -1,11 +1,14 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import clsx from "clsx";
 import MenuCart from "./sub-components/MenuCart";
 import { useGetAllCartItemsQuery } from "../../store/apiSlice/cartApiSlice";
+import { useGetAllWishListQuery } from "../../store/apiSlice/productSlice";
+import { unauthenticate } from "../../store/slices/auth-slice";
 
 const IconGroup = ({ iconWhiteClass }) => {
+  const dispatch = useDispatch();
   const handleClick = e => {
     e.currentTarget.nextSibling.classList.toggle("active");
   };
@@ -16,11 +19,18 @@ const IconGroup = ({ iconWhiteClass }) => {
     );
     offcanvasMobileMenu.classList.add("active");
   };
-  const { compareItems } = useSelector((state) => state.compare);
-  const { wishlistItems } = useSelector((state) => state.wishlist);
-  // const { cartItems } = useSelector((state) => state.cart);
-  const { data: cartItems, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+  // const { compareItems } = useSelector((state) => state.compare);
+  // const { wishlistItems } = useSelector((state) => state.wishlist);
+  const { data: wishlistItems } = useGetAllWishListQuery()
 
+  // const { cartItems } = useSelector((state) => state.cart);
+  const { data: cartItems } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+  const { isAuthenticated } = useSelector(
+    (state) => state.auth
+  )
+
+
+  
 
 
   return (
@@ -47,29 +57,45 @@ const IconGroup = ({ iconWhiteClass }) => {
         </button>
         <div className="account-dropdown">
           <ul>
-            <li>
-              <Link to={process.env.PUBLIC_URL + "/login-register"}>Login</Link>
-            </li>
-            <li>
-              <Link to={process.env.PUBLIC_URL + "/login-register"}>
-                Register
-              </Link>
-            </li>
-            <li>
-              <Link to={process.env.PUBLIC_URL + "/my-account"}>
-                my account
-              </Link>
-            </li>
+            {!isAuthenticated ?
+              <>
+                <li>
+                  <Link to={process.env.PUBLIC_URL + "/login-register"}>Login</Link>
+                </li>
+                <li>
+                  <Link to={process.env.PUBLIC_URL + "/login-register"}>
+                    Register
+                  </Link>
+                </li>
+              </>
+              : null
+            }
+            {isAuthenticated ?
+              <>
+                <li>
+                  <Link to={process.env.PUBLIC_URL + "/my-account"}>
+                    my account
+                  </Link>
+                </li>
+                <li>
+                  <p onClick={() => dispatch(unauthenticate())} className="text-red-500 cursor-pointer">
+                    log out
+                  </p>
+                </li>
+              </>
+              : null
+            }
+
           </ul>
         </div>
       </div>
       <div className="same-style header-compare">
-        <Link to={process.env.PUBLIC_URL + "/compare"}>
+        {/* <Link to={process.env.PUBLIC_URL + "/compare"}>
           <i className="pe-7s-shuffle" />
           <span className="count-style">
             {compareItems && compareItems.length ? compareItems.length : 0}
           </span>
-        </Link>
+        </Link> */}
       </div>
       <div className="same-style header-wishlist">
         <Link to={process.env.PUBLIC_URL + "/wishlist"}>

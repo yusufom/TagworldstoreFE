@@ -5,7 +5,7 @@ import { getDiscountPrice } from "../../helpers/product";
 import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
-import { useGetAllCartItemsQuery } from "../../store/apiSlice/cartApiSlice";
+import { useGetAllCartItemsQuery, useCreateOrderMutation } from "../../store/apiSlice/cartApiSlice";
 
 const Checkout = () => {
   let cartTotalPrice = 0;
@@ -14,6 +14,32 @@ const Checkout = () => {
   const currency = useSelector((state) => state.currency);
   // const { cartItems } = useSelector((state) => state.cart);
   const { data: cartItems, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+
+  const [createOrder, { isLoading }] = useCreateOrderMutation()
+
+  const lineitems = cartItems.map((cartItem, key) => {
+   
+    return {
+      price: cartItem.product.stripe_price,
+      quantity: cartItem.quantity,
+      // line_total: discountedPrice!= null? finalDiscountedPrice : finalProductPrice
+    }
+  })
+
+  const handleCreateOrder = () => {
+
+
+    createOrder(lineitems).unwrap().then((res) => {
+      console.log('res', res)
+      // refetch()
+      window.location.href = res.url
+    }).catch((err) => {
+      console.log('err', err)
+    });
+
+    console.log('lineitems', lineitems)
+  };
+
 
 
   return (
@@ -24,11 +50,11 @@ const Checkout = () => {
       />
       <LayoutOne headerTop="visible">
         {/* breadcrumb */}
-        <Breadcrumb 
+        <Breadcrumb
           pages={[
-            {label: "Home", path: process.env.PUBLIC_URL + "/" },
-            {label: "Checkout", path: process.env.PUBLIC_URL + pathname }
-          ]} 
+            { label: "Home", path: process.env.PUBLIC_URL + "/" },
+            { label: "Checkout", path: process.env.PUBLIC_URL + pathname }
+          ]}
         />
         <div className="checkout-area pt-95 pb-100">
           <div className="container">
@@ -156,9 +182,9 @@ const Checkout = () => {
 
                               discountedPrice != null
                                 ? (cartTotalPrice +=
-                                    finalDiscountedPrice * cartItem.quantity)
+                                  finalDiscountedPrice * cartItem.quantity)
                                 : (cartTotalPrice +=
-                                    finalProductPrice * cartItem.quantity);
+                                  finalProductPrice * cartItem.quantity);
                               return (
                                 <li key={key}>
                                   <span className="order-middle-left">
@@ -167,14 +193,14 @@ const Checkout = () => {
                                   <span className="order-price">
                                     {discountedPrice !== null
                                       ? currency.currencySymbol +
-                                        (
-                                          finalDiscountedPrice *
-                                          cartItem.quantity
-                                        ).toFixed(2)
+                                      (
+                                        finalDiscountedPrice *
+                                        cartItem.quantity
+                                      ).toFixed(2)
                                       : currency.currencySymbol +
-                                        (
-                                          finalProductPrice * cartItem.quantity
-                                        ).toFixed(2)}
+                                      (
+                                        finalProductPrice * cartItem.quantity
+                                      ).toFixed(2)}
                                   </span>
                                 </li>
                               );
@@ -200,8 +226,9 @@ const Checkout = () => {
                       <div className="payment-method"></div>
                     </div>
                     <div className="place-order mt-25">
-                      <button className="btn-hover">Place Order</button>
+                      <button type="submit" className="btn-hover" onClick={handleCreateOrder}>Place Order</button>
                     </div>
+
                   </div>
                 </div>
               </div>

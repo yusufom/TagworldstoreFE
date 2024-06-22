@@ -1,13 +1,14 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import { apiSlice } from './api';
 import {
     persistStore,
     persistReducer,
-    FLUSH,
-    REHYDRATE,
-    PAUSE,
-    PERSIST,
-    PURGE,
-    REGISTER,
+    // FLUSH,
+    // REHYDRATE,
+    // PAUSE,
+    // PERSIST,
+    // PURGE,
+    // REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import productReducer from './slices/product-slice';
@@ -17,7 +18,7 @@ import compareReducer from "./slices/compare-slice";
 import wishlistReducer from "./slices/wishlist-slice";
 import userReducer from "./slices/user-slice";
 import authReducer from "./slices/auth-slice";
-import { apiSlice } from './api';
+
 import { cartApiSlice } from './apiSlice/cartApiSlice';
 
 const persistConfig = {
@@ -45,17 +46,19 @@ export const store = configureStore({
     reducer: persistedReducer,
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
-            serializableCheck: {
-                ignoredActions: [
-                    FLUSH,
-                    REHYDRATE,
-                    PAUSE,
-                    PERSIST,
-                    PURGE,
-                    REGISTER,
-                ],
-            },
+            serializableCheck: false
+            // serializableCheck: {
+            //     ignoredActions: [
+            //         FLUSH,
+            //         REHYDRATE,
+            //         PAUSE,
+            //         PERSIST,
+            //         PURGE,
+            //         REGISTER,
+            //     ],
+            // },
         }).concat(apiSlice.middleware, cartApiSlice.middleware),
+    devTools: true,
 });
 
 export const persistor = persistStore(store);

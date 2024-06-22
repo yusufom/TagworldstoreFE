@@ -2,19 +2,25 @@ import PropTypes from "prop-types";
 import clsx from "clsx";
 import Tab from "react-bootstrap/Tab";
 import Nav from "react-bootstrap/Nav";
+import { useGetReviewQuery } from "../../store/apiSlice/productSlice";
 
-const ProductDescriptionTab = ({ spaceBottomClass, productFullDesc }) => {
+const ProductDescriptionTab = ({ spaceBottomClass, productFullDesc, product_id }) => {
+
+  const { data, refetch } = useGetReviewQuery(product_id)
+
+  console.log(data)
+
   return (
     <div className={clsx("description-review-area", spaceBottomClass)}>
       <div className="container">
         <div className="description-review-wrapper">
           <Tab.Container defaultActiveKey="productDescription">
             <Nav variant="pills" className="description-review-topbar">
-              <Nav.Item>
+              {/* <Nav.Item>
                 <Nav.Link eventKey="additionalInfo">
                   Additional Information
                 </Nav.Link>
-              </Nav.Item>
+              </Nav.Item> */}
               <Nav.Item>
                 <Nav.Link eventKey="productDescription">Description</Nav.Link>
               </Nav.Item>
@@ -23,7 +29,7 @@ const ProductDescriptionTab = ({ spaceBottomClass, productFullDesc }) => {
               </Nav.Item>
             </Nav>
             <Tab.Content className="description-review-bottom">
-              <Tab.Pane eventKey="additionalInfo">
+              {/* <Tab.Pane eventKey="additionalInfo">
                 <div className="product-anotherinfo-wrapper">
                   <ul>
                     <li>
@@ -41,7 +47,7 @@ const ProductDescriptionTab = ({ spaceBottomClass, productFullDesc }) => {
                     </li>
                   </ul>
                 </div>
-              </Tab.Pane>
+              </Tab.Pane> */}
               <Tab.Pane eventKey="productDescription">
                 {productFullDesc}
               </Tab.Pane>
@@ -50,15 +56,7 @@ const ProductDescriptionTab = ({ spaceBottomClass, productFullDesc }) => {
                   <div className="col-lg-7">
                     <div className="review-wrapper">
                       <div className="single-review">
-                        <div className="review-img">
-                          <img
-                            src={
-                              process.env.PUBLIC_URL +
-                              "/assets/img/testimonial/1.jpg"
-                            }
-                            alt=""
-                          />
-                        </div>
+                        
                         <div className="review-content">
                           <div className="review-top-wrap">
                             <div className="review-left">
@@ -87,16 +85,8 @@ const ProductDescriptionTab = ({ spaceBottomClass, productFullDesc }) => {
                           </div>
                         </div>
                       </div>
-                      <div className="single-review child-review">
-                        <div className="review-img">
-                          <img
-                            src={
-                              process.env.PUBLIC_URL +
-                              "/assets/img/testimonial/2.jpg"
-                            }
-                            alt=""
-                          />
-                        </div>
+                      <div className="single-review">
+                        
                         <div className="review-content">
                           <div className="review-top-wrap">
                             <div className="review-left">
@@ -143,16 +133,7 @@ const ProductDescriptionTab = ({ spaceBottomClass, productFullDesc }) => {
                             </div>
                           </div>
                           <div className="row">
-                            <div className="col-md-6">
-                              <div className="rating-form-style mb-10">
-                                <input placeholder="Name" type="text" />
-                              </div>
-                            </div>
-                            <div className="col-md-6">
-                              <div className="rating-form-style mb-10">
-                                <input placeholder="Email" type="email" />
-                              </div>
-                            </div>
+                            
                             <div className="col-md-12">
                               <div className="rating-form-style form-submit">
                                 <textarea

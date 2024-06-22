@@ -1,5 +1,7 @@
 import { Mutex } from 'async-mutex'
 import { fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { warningToast } from '../helpers/toast'
+import { authenticate, unauthenticate } from './slices/auth-slice'
 
 
 
@@ -11,7 +13,7 @@ const baseQuery = fetchBaseQuery({
     prepareHeaders: (headers, { getState }) => {
         const accessToken = (getState()).auth.access
         if (accessToken) {
-            headers.set('authorization', `Bearer ${accessToken}`)
+            headers.set('authorization', `JWT ${accessToken}`)
         }
         return headers
     },
@@ -29,7 +31,7 @@ export const baseQueryWithReauth = async (args, api, extraOptions) => {
             try {
                 const refreshResult = await baseQuery(
                     {
-                        url: '/jwt/refresh/',
+                        url: 'auth/jwt/refresh/',
                         method: 'POST',
                         body: { 'refresh': refreshToken || '' }
                     },
@@ -37,10 +39,11 @@ export const baseQueryWithReauth = async (args, api, extraOptions) => {
                     extraOptions
                 )
                 if (refreshResult.data) {
-                    // api.dispatch(authenticate(refreshResult.data))
+                    api.dispatch(authenticate(refreshResult.data))
                     result = await baseQuery(args, api, extraOptions)
                 } else {
-                    // api.dispatch(unauthenticate())
+                    // warningToast("Please login to perform this action")
+                    api.dispatch(unauthenticate())
                 }
             } finally {
                 release()
