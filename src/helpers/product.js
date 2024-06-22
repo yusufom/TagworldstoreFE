@@ -14,7 +14,7 @@ export const  getProducts = (products, category, type, limit) => {
     return finalProducts?.sort((a, b) => {
         return b.saleCount - a.saleCount;
       })
-      .slice(0, limit ? limit : finalProducts.length);
+      ?.slice(0, limit ? limit : finalProducts.length);
   }
   if (type && type === "saleItems") {
     const saleItems = finalProducts?.filter(
@@ -22,7 +22,7 @@ export const  getProducts = (products, category, type, limit) => {
     );
     return saleItems?.slice(0, limit ? limit : saleItems.length);
   }
-  return finalProducts.slice(0, limit ? limit : finalProducts.length);
+  return finalProducts?.slice(0, limit ? limit : finalProducts.length);
 };
 
 // get product discount price
@@ -32,7 +32,7 @@ export const getDiscountPrice = (price, discount) => {
 
 // get product cart quantity
 export const getProductCartQuantity = (cartItems, product, color, size) => {
-  let productInCart = cartItems.find(
+  let productInCart = cartItems?.find(
     single =>
       single.id === product.id &&
       (single.selectedProductColor
@@ -40,16 +40,16 @@ export const getProductCartQuantity = (cartItems, product, color, size) => {
         : true) &&
       (single.selectedProductSize ? single.selectedProductSize === size : true)
   );
-  if (cartItems.length >= 1 && productInCart) {
+  if (cartItems?.length >= 1 && productInCart) {
     if (product.variation) {
-      return cartItems.find(
+      return cartItems?.find(
         single =>
           single.id === product.id &&
           single.selectedProductColor === color &&
           single.selectedProductSize === size
       )?.quantity;
     } else {
-      return cartItems.find(single => product.id === single.id)?.quantity;
+      return cartItems?.find(single => product.id === single.id)?.quantity;
     }
   } else {
     return 0;

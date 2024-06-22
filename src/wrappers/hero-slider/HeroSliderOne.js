@@ -1,7 +1,8 @@
 import { EffectFade } from 'swiper';
 import Swiper, { SwiperSlide } from "../../components/swiper";
-import heroSliderData from "../../data/hero-sliders/hero-slider-one.json";
+// import heroSliderData from "../../data/hero-sliders/hero-slider-one.json";
 import HeroSliderOneSingle from "../../components/hero-slider/HeroSliderOneSingle.js";
+import { useGetSlidesQuery } from '../../store/apiSlice/productSlice.js';
 
 const params = {
   effect: "fade",
@@ -16,6 +17,9 @@ const params = {
 
 
 const HeroSliderOne = () => {
+
+  const { data: heroSliderData, refetch } = useGetSlidesQuery()
+
   return (
     <div className="slider-area">
       <div className="slider-active nav-style-1">

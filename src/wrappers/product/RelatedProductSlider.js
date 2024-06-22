@@ -5,6 +5,8 @@ import Swiper, { SwiperSlide } from "../../components/swiper";
 import SectionTitle from "../../components/section-title/SectionTitle";
 import ProductGridSingle from "../../components/product/ProductGridSingle";
 import { getProducts } from "../../helpers/product";
+import { useGetAllProductsQuery, useGetAllWishListQuery } from "../../store/apiSlice/productSlice";
+import { useGetAllCartItemsQuery } from "../../store/apiSlice/cartApiSlice";
 
 const settings = {
   loop: false,
@@ -29,13 +31,19 @@ const settings = {
 
 
 const RelatedProductSlider = ({ spaceBottomClass, category }) => {
-  const { products } = useSelector((state) => state.product);
+  const { data: products, isLoading } = useGetAllProductsQuery({ refetchOnMountOrArgChange: true });
+  const { data: wishlistItems, refetch } = useGetAllWishListQuery()
+  const { data: cartItems } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+
+  // const { products } = useSelector((state) => state.product);
   const currency = useSelector((state) => state.currency);
-  const { cartItems } = useSelector((state) => state.cart);
-  const { wishlistItems } = useSelector((state) => state.wishlist);
-  const { compareItems } = useSelector((state) => state.compare);
+  // const { cartItems } = useSelector((state) => state.cart);
+  // const { wishlistItems } = useSelector((state) => state.wishlist);
+  // const { compareItems } = useSelector((state) => state.compare);
   const prods = getProducts(products, category, null, 6);
-  
+
+  console.log("prod", prods)
+
   return (
     <div className={clsx("related-product-area", spaceBottomClass)}>
       <div className="container">
@@ -46,27 +54,27 @@ const RelatedProductSlider = ({ spaceBottomClass, category }) => {
         />
         {prods?.length ? (
           <Swiper options={settings}>
-              {prods.map(product => (
-                <SwiperSlide key={product.id}>
-                  <ProductGridSingle
-                    product={product}
-                    currency={currency}
-                    cartItem={
-                      cartItems.find((cartItem) => cartItem.id === product.id)
-                    }
-                    wishlistItem={
-                      wishlistItems.find(
-                        (wishlistItem) => wishlistItem.id === product.id
-                      )
-                    }
-                    compareItem={
-                      compareItems.find(
-                        (compareItem) => compareItem.id === product.id
-                      )
-                    }
-                  />
-                </SwiperSlide>
-              ))}
+            {prods.map(product => (
+              <SwiperSlide key={product.id}>
+                <ProductGridSingle
+                  product={product}
+                  currency={currency}
+                  cartItem={
+                    cartItems.find((cartItem) => cartItem.id === product.id)
+                  }
+                  wishlistItem={
+                    wishlistItems.find(
+                      (wishlistItem) => wishlistItem.id === product.id
+                    )
+                  }
+                  // compareItem={
+                  //   compareItems.find(
+                  //     (compareItem) => compareItem.id === product.id
+                  //   )
+                  // }
+                />
+              </SwiperSlide>
+            ))}
           </Swiper>
         ) : null}
       </div>

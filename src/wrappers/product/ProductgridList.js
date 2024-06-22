@@ -2,15 +2,20 @@ import PropTypes from "prop-types";
 import React, { Fragment } from "react";
 import { useSelector } from "react-redux";
 import ProductGridListSingle from "../../components/product/ProductGridListSingle";
+import { useGetAllWishListQuery } from "../../store/apiSlice/productSlice";
+import { useGetAllCartItemsQuery } from "../../store/apiSlice/cartApiSlice";
 
 const ProductGridList = ({
   products,
   spaceBottomClass
 }) => {
   const currency = useSelector((state) => state.currency);
-  const { cartItems } = useSelector((state) => state.cart);
-  const { wishlistItems } = useSelector((state) => state.wishlist);
-  const { compareItems } = useSelector((state) => state.compare);
+  // const { cartItems } = useSelector((state) => state.cart);
+  // const { wishlistItems } = useSelector((state) => state.wishlist);
+  // const { compareItems } = useSelector((state) => state.compare);
+  const { data: wishlistItems, refetch: wishListItemsRefetch } = useGetAllWishListQuery()
+  const { data: cartItems, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+
   
   return (
     <Fragment>
@@ -29,11 +34,11 @@ const ProductGridList = ({
                   wishlistItem => wishlistItem.id === product.id
                 )
               }
-              compareItem={
-                compareItems.find(
-                  compareItem => compareItem.id === product.id
-                )
-              }
+              // compareItem={
+              //   compareItems.find(
+              //     compareItem => compareItem.id === product.id
+              //   )
+              // }
             />
           </div>
         );

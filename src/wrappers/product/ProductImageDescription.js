@@ -10,15 +10,18 @@ import { useGetAllCartItemsQuery } from "../../store/apiSlice/cartApiSlice";
 import { useGetAllWishListQuery } from "../../store/apiSlice/productSlice";
 
 const ProductImageDescription = ({ spaceTopClass, spaceBottomClass, galleryType, product }) => {
+  const { isAuthenticated } = useSelector(
+    (state) => state.auth
+  )
   const currency = useSelector((state) => state.currency);
   // const { cartItems } = useSelector((state) => state.cart);
-  // const { wishlistItems } = useSelector((state) => state.wishlist);
+  const { storewishlistItems } = useSelector((state) => state.wishlist);
   const { data: wishlistItems, refetch: wishListItemsRefetch } = useGetAllWishListQuery()
   console.log("wishlist", wishlistItems)
   console.log("wishlist produc", product.id)
-  
+
   // const { compareItems } = useSelector((state) => state.compare);
-  const wishlistItem = wishlistItems?.find(item => item.id === product.id);
+  const wishlistItem = isAuthenticated ? wishlistItems?.find(item => item.id === product.id) : storewishlistItems?.find(item => item.id === product.id);
   // const compareItem = compareItems.find(item => item.id === product.id);
   const { data: cartItems, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
 

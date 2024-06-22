@@ -1,14 +1,14 @@
 import PropTypes from "prop-types";
 import React, { Fragment, useState } from "react";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getProductCartQuantity } from "../../helpers/product";
 import Rating from "./sub-components/ProductRating";
 import { addToCart } from "../../store/slices/cart-slice";
 // import { addToWishlist } from "../../store/slices/wishlist-slice";
 import { addToCompare } from "../../store/slices/compare-slice";
 import { useAddToCartMutation } from "../../store/apiSlice/cartApiSlice";
-import { successToast } from "../../helpers/toast";
+import { successToast, warningToast } from "../../helpers/toast";
 import { useAddToWishListMutation } from "../../store/apiSlice/productSlice";
 
 const ProductDescriptionInfo = ({
@@ -23,6 +23,9 @@ const ProductDescriptionInfo = ({
   wishListItemsRefetch,
   refetch
 }) => {
+  const { isAuthenticated } = useSelector(
+    (state) => state.auth
+  )
   const dispatch = useDispatch();
   const [selectedProductColor, setSelectedProductColor] = useState(
     product.variation ? product.variation[0].color : ""
@@ -46,9 +49,6 @@ const ProductDescriptionInfo = ({
   const [addToWishlist] = useAddToWishListMutation();
 
 
-
-
-  console.log("error", error)
 
 
   return (
@@ -227,12 +227,17 @@ const ProductDescriptionInfo = ({
                   ? "Added to wishlist"
                   : "Add to wishlist"
               }
-              onClick={() =>
-                // dispatch(addToWishlist(product))
-                addToWishlist(product.id).then(() => {
-                  successToast("Wishlist item deleted successfully")
-                  wishListItemsRefetch()
-                }).catch(() => { })
+              onClick={() => {
+                if (isAuthenticated) {
+                  // dispatch(addToWishlist(product))
+                  addToWishlist(product.id).then(() => {
+                    successToast("Wishlist item addedd successfully")
+                    wishListItemsRefetch()
+                  }).catch(() => { })
+                }else{
+                  warningToast("Please login to add this item to wishlist")
+                }
+              }
               }
             >
               <i className="pe-7s-like" />

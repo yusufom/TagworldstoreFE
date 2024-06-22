@@ -20,7 +20,7 @@ export const productApiSlice = apiSlice.injectEndpoints({
         }),
         getAllWishList: builder.query({
             query: () => ({
-                url: base + `/wishlist/`,
+                url: base + `/wishlist/list/`,
                 method: 'GET',
             })
         }),
@@ -28,6 +28,19 @@ export const productApiSlice = apiSlice.injectEndpoints({
             query: (id) => ({
                 url: base + `/review/${id}/`,
                 method: 'GET',
+            })
+        }),
+        getSlides: builder.query({
+            query: () => ({
+                url: base + `/slides/views/`,
+                method: 'GET',
+            })
+        }),
+        addReview: builder.mutation({
+            query: (data) => ({
+                url: base + `/review/create/`,
+                method: 'POST',
+                body: data
             })
         }),
         deleteFromWishList: builder.mutation({
@@ -53,5 +66,7 @@ export const {
     useGetAllWishListQuery,
     useDeleteFromWishListMutation,
     useAddToWishListMutation,
-    useGetReviewQuery
+    useGetReviewQuery,
+    useAddReviewMutation,
+    useGetSlidesQuery
 } = productApiSlice;

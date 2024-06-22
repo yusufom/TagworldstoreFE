@@ -17,9 +17,6 @@ const MenuCart = () => {
 
   let cartTotalPrice = 0;
 
-
-  console.log("cartItems", cartItems)
-
   return (
     <div className="shopping-cart-content">
       {cartItems && cartItems.length > 0 ? (

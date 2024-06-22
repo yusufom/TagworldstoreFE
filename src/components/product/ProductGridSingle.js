@@ -14,7 +14,6 @@ const ProductGridSingle = ({
   currency,
   cartItem,
   wishlistItem,
-  compareItem,
   spaceBottomClass
 }) => {
   const [modalShow, setModalShow] = useState(false);
@@ -30,11 +29,12 @@ const ProductGridSingle = ({
       <div className={clsx("product-wrap", spaceBottomClass)}>
         <div className="product-img">
           <Link to={process.env.PUBLIC_URL + "/product/" + product.slug}>
-            <div style={{width: "600px"}}>
+            <div style={{ height: "250px" }}>
               <img
                 className="default-img"
                 src={process.env.PUBLIC_URL + product.image[0].image}
                 alt=""
+                style={{ height: "100%" }}
               />
             </div>
             {product.image.length > 1 ? (
@@ -158,7 +158,6 @@ const ProductGridSingle = ({
         finalProductPrice={finalProductPrice}
         finalDiscountedPrice={finalDiscountedPrice}
         wishlistItem={wishlistItem}
-        compareItem={compareItem}
       />
     </Fragment>
   );

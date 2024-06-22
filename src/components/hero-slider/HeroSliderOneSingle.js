@@ -14,7 +14,7 @@ const HeroSliderOneSingle = ({ data }) => {
               <div className="slider-btn btn-hover">
                 <Link
                   className="animated"
-                  to={process.env.PUBLIC_URL + data.url}
+                  to={data.link}
                 >
                   SHOP NOW
                 </Link>
@@ -22,9 +22,9 @@ const HeroSliderOneSingle = ({ data }) => {
             </div>
           </div>
           <div className="col-xl-6 col-lg-6 col-md-6 col-12 col-sm-6">
-            <div className="slider-single-img slider-animated-1">
+            <div className="slider-single-img slider-animated-1 w-[720px] h-[720px]" >
               <img
-                className="animated img-fluid"
+                className="animated img-fluid w-full h-full"
                 src={process.env.PUBLIC_URL + data.image}
                 alt=""
               />

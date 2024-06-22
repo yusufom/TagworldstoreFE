@@ -9,11 +9,14 @@ import { getProductCartQuantity } from "../../helpers/product";
 import { addToCart } from "../../store/slices/cart-slice";
 import { addToWishlist } from "../../store/slices/wishlist-slice";
 import { addToCompare } from "../../store/slices/compare-slice";
+import { useGetAllCartItemsQuery } from "../../store/apiSlice/cartApiSlice";
 
-function ProductModal({ product, currency, discountedPrice, finalProductPrice, finalDiscountedPrice, show, onHide, wishlistItem, compareItem }) {
+function ProductModal({ product, currency, discountedPrice, finalProductPrice, finalDiscountedPrice, show, onHide, wishlistItem }) {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const dispatch = useDispatch();
-  const { cartItems } = useSelector((state) => state.cart);
+  const { data: cartItems } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+
+  // const { cartItems } = useSelector((state) => state.cart);
 
   const [selectedProductColor, setSelectedProductColor] = useState(
     product.variation ? product.variation[0].color : ""
@@ -290,7 +293,7 @@ function ProductModal({ product, currency, discountedPrice, finalProductPrice, f
                     <i className="pe-7s-like" />
                   </button>
                 </div>
-                <div className="pro-details-compare">
+                {/* <div className="pro-details-compare">
                   <button
                     className={compareItem !== undefined ? "active" : ""}
                     disabled={compareItem !== undefined}
@@ -303,7 +306,7 @@ function ProductModal({ product, currency, discountedPrice, finalProductPrice, f
                   >
                     <i className="pe-7s-shuffle" />
                   </button>
-                </div>
+                </div> */}
               </div>
             )}
           </div>
