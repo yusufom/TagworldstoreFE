@@ -5,9 +5,11 @@ import { getDiscountPrice } from "../../helpers/product";
 import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
-import { useGetAllCartItemsQuery, useCreateOrderMutation, useStartCreateOrderMutation } from "../../store/apiSlice/cartApiSlice";
+import { useGetAllCartItemsQuery, useCreateOrderMutation, useStartCreateOrderMutation, useConfirmOrderMutation } from "../../store/apiSlice/cartApiSlice";
 import useQuery from "../../hooks/userQuery";
 import { instanceOf } from "prop-types";
+import React from "react";
+import { successToast } from "../../helpers/toast";
 
 const Checkout = () => {
   let cartTotalPrice = 0;
@@ -16,10 +18,41 @@ const Checkout = () => {
   let query = useQuery();
 
   let { pathname } = useLocation();
-  // console.log(searchParams.get("soc12sde"))
-  // console.log(typeof Boolean(searchParams.get("success")))
-  // console.log(searchParams.get("canceled"))
+  console.log(searchParams.get("soc12sde"))
+  console.log(typeof Boolean(searchParams.get("success")))
+  console.log(searchParams.get("canceled"))
   const currency = useSelector((state) => state.currency);
+  const [confirmOrder, { isLoading: confirmOrderLoading }] = useConfirmOrderMutation()
+
+
+  React.useEffect(() => {
+    const soc = searchParams.get("soc12sde")
+    if (soc) {
+      const success = Boolean(searchParams.get("success"))
+      const cancelled = Boolean(searchParams.get("canceled"))
+      if (success) {
+        confirmOrder({ order_id: soc, status: "success" }).unwrap().then((res) => {
+          console.log('res', res)
+          window.location.href = "/checkout"
+          successToast("Order was successfully placed")
+        }).catch((err) => {
+          console.log('err', err)
+        })
+      } else if (cancelled) {
+        confirmOrder({ order_id: soc, status: "canceled" }).unwrap().then((res) => {
+          console.log('res', res)
+          window.location.href = "/checkout"
+          successToast("Order was canceled")
+        }).catch((err) => {
+          console.log('err', err)
+        })
+      }
+    }
+
+
+
+  }, [searchParams, confirmOrder])
+
   // const { cartItems } = useSelector((state) => state.cart);
   const { data: cartItems, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
 

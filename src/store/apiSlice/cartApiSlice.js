@@ -48,12 +48,19 @@ export const cartApiSlice = apiSlice.injectEndpoints({
             query: (data) => ({
                 url: base + `/cart/create_checkout_session/`,
                 method: 'POST',
-                body: { line_items: data.line_items, pkid: data.pkid},
+                body: { line_items: data.line_items, pkid: data.pkid },
+            })
+        }),
+        confirmOrder: builder.mutation({
+            query: (data) => ({
+                url: base + `/update_order/`,
+                method: 'PUT',
+                body: data,
             })
         })
     })
 })
 
 export const {
-    useAddToCartMutation, useGetAllCartItemsQuery, useDeleteFromCartMutation, useDecreaseQuantityMutation, useCreateOrderMutation, useStartCreateOrderMutation
+    useAddToCartMutation, useGetAllCartItemsQuery, useDeleteFromCartMutation, useDecreaseQuantityMutation, useCreateOrderMutation, useStartCreateOrderMutation, useConfirmOrderMutation
 } = cartApiSlice;
