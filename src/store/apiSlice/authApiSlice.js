@@ -41,7 +41,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
         }),
         changePassword: builder.mutation({
             query: (credentials) => ({
-                url: '/auth/influencer/change_password/',
+                url: base + '/users/set_password/',
                 method: 'POST',
                 body: credentials
             })
@@ -57,7 +57,7 @@ export const {
     useDeleteAccountMutation,
     useForgotUsernamePasswordMutation,
     useLogoutMutation,
-    useRegisterMutation
+    useRegisterMutation,
 } = authApiSlice;
 
 export const {

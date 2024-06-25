@@ -7,7 +7,7 @@ import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import { addToCart } from "../../store/slices/cart-slice";
 import { deleteFromWishlist, deleteAllFromWishlist } from "../../store/slices/wishlist-slice"
-import { useGetAllWishListQuery, useDeleteFromWishListMutation } from "../../store/apiSlice/productSlice";
+import { useGetAllWishListQuery, useDeleteFromWishListMutation, useClearWishListMutation } from "../../store/apiSlice/productSlice";
 import { useGetAllCartItemsQuery } from "../../store/apiSlice/cartApiSlice";
 import { successToast } from "../../helpers/toast";
 
@@ -22,6 +22,7 @@ const Wishlist = () => {
   const { data: wishlistItems, refetch } = useGetAllWishListQuery()
   const { data: cartItems } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
   const [deleteFromWishList] = useDeleteFromWishListMutation();
+  const [clearWishList] = useClearWishListMutation();
 
 
 
@@ -209,7 +210,10 @@ const Wishlist = () => {
                         </Link>
                       </div>
                       <div className="cart-clear">
-                        <button onClick={() => dispatch(deleteAllFromWishlist())}>
+                        <button onClick={() => clearWishList().unwrap().then(() => {
+                          refetch()
+                          successToast("Wishlist items cleared successfully")
+                        }).catch(() => { })}>
                           Clear Wishlist
                         </button>
                       </div>
@@ -226,7 +230,7 @@ const Wishlist = () => {
                     </div>
                     <div className="item-empty-area__text">
                       No items found in wishlist <br />{" "}
-                      <Link to={process.env.PUBLIC_URL + "/shop-grid-standard"}>
+                      <Link to={process.env.PUBLIC_URL + "/shop"}>
                         Add Items
                       </Link>
                     </div>

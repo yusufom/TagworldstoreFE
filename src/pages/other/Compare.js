@@ -25,11 +25,11 @@ const Compare = () => {
       />
       <LayoutOne headerTop="visible">
         {/* breadcrumb */}
-        <Breadcrumb 
+        <Breadcrumb
           pages={[
-            {label: "Home", path: process.env.PUBLIC_URL + "/" },
-            {label: "Compare", path: process.env.PUBLIC_URL + pathname }
-          ]} 
+            { label: "Home", path: process.env.PUBLIC_URL + "/" },
+            { label: "Compare", path: process.env.PUBLIC_URL + pathname }
+          ]}
         />
         <div className="compare-main-area pt-90 pb-100">
           <div className="container">
@@ -110,7 +110,7 @@ const Compare = () => {
                                         }
                                         className={
                                           cartItem !== undefined &&
-                                          cartItem.quantity > 0
+                                            cartItem.quantity > 0
                                             ? "active"
                                             : ""
                                         }
@@ -125,7 +125,7 @@ const Compare = () => {
                                         }
                                       >
                                         {cartItem !== undefined &&
-                                        cartItem.quantity > 0
+                                          cartItem.quantity > 0
                                           ? "Added"
                                           : "Add to cart"}
                                       </button>
@@ -216,7 +216,7 @@ const Compare = () => {
                     </div>
                     <div className="item-empty-area__text">
                       No items found in compare <br />{" "}
-                      <Link to={process.env.PUBLIC_URL + "/shop-grid-standard"}>
+                      <Link to={process.env.PUBLIC_URL + "/shop"}>
                         Add Items
                       </Link>
                     </div>

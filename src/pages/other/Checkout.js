@@ -1,24 +1,33 @@
 import { Fragment } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getDiscountPrice } from "../../helpers/product";
 import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
-import { useGetAllCartItemsQuery, useCreateOrderMutation } from "../../store/apiSlice/cartApiSlice";
+import { useGetAllCartItemsQuery, useCreateOrderMutation, useStartCreateOrderMutation } from "../../store/apiSlice/cartApiSlice";
+import useQuery from "../../hooks/userQuery";
+import { instanceOf } from "prop-types";
 
 const Checkout = () => {
   let cartTotalPrice = 0;
+  let [searchParams] = useSearchParams();
+
+  let query = useQuery();
 
   let { pathname } = useLocation();
+  // console.log(searchParams.get("soc12sde"))
+  // console.log(typeof Boolean(searchParams.get("success")))
+  // console.log(searchParams.get("canceled"))
   const currency = useSelector((state) => state.currency);
   // const { cartItems } = useSelector((state) => state.cart);
   const { data: cartItems, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
 
   const [createOrder, { isLoading }] = useCreateOrderMutation()
+  const [startCreateOrder, { isLoading: startCreateOrderLoading }] = useStartCreateOrderMutation()
 
   const lineitems = cartItems.map((cartItem, key) => {
-   
+
     return {
       price: cartItem.product.stripe_price,
       quantity: cartItem.quantity,
@@ -26,16 +35,28 @@ const Checkout = () => {
     }
   })
 
+  const lineitemsID = cartItems.map((cartItem, key) => {
+
+    return {
+      id: cartItem.id.toString(),
+    }
+  })
+
   const handleCreateOrder = () => {
 
+    startCreateOrder(lineitemsID).unwrap()
+      .then((res) => {
+        createOrder({ line_items: lineitems, pkid: res.pkid }).unwrap().then((res) => {
+          // console.log('res', res)
+          // refetch()
+          window.location.href = res.url
+        }).catch((err) => {
+          console.log('err', err)
+        });
+      }).catch((err) => { });
 
-    createOrder(lineitems).unwrap().then((res) => {
-      console.log('res', res)
-      // refetch()
-      window.location.href = res.url
-    }).catch((err) => {
-      console.log('err', err)
-    });
+
+
 
     console.log('lineitems', lineitems)
   };
@@ -241,7 +262,7 @@ const Checkout = () => {
                     </div>
                     <div className="item-empty-area__text">
                       No items found in cart to checkout <br />{" "}
-                      <Link to={process.env.PUBLIC_URL + "/shop-grid-standard"}>
+                      <Link to={process.env.PUBLIC_URL + "/shop"}>
                         Shop Now
                       </Link>
                     </div>

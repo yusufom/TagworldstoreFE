@@ -5,12 +5,12 @@ import clsx from "clsx";
 
 const NavMenu = ({ menuWhiteClass, sidebarMenu }) => {
   const { t } = useTranslation();
-  
+
   return (
     <div
       className={clsx(sidebarMenu
-          ? "sidebar-menu"
-          : `main-menu ${menuWhiteClass ? menuWhiteClass : ""}`)}
+        ? "sidebar-menu"
+        : `main-menu ${menuWhiteClass ? menuWhiteClass : ""}`)}
     >
       <nav>
         <ul>
@@ -23,11 +23,11 @@ const NavMenu = ({ menuWhiteClass, sidebarMenu }) => {
             <Link to={process.env.PUBLIC_URL + "/shop"}>
               {" "}
               {t("shop")}
-              
+
             </Link>
           </li>
           {/* <li>
-            <Link to={process.env.PUBLIC_URL + "/shop-grid-standard"}>
+            <Link to={process.env.PUBLIC_URL + "/shop"}>
               {t("collection")}
             </Link>
           </li> */}
@@ -124,11 +124,11 @@ const NavMenu = ({ menuWhiteClass, sidebarMenu }) => {
               </li>
             </ul>
           </li> */}
-          <li>
+          {/* <li>
             <Link to={process.env.PUBLIC_URL + "/contact"}>
               {t("contact_us")}
             </Link>
-          </li>
+          </li> */}
         </ul>
       </nav>
     </div>

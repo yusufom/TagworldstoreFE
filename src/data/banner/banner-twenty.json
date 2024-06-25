@@ -4,7 +4,7 @@
     "image": "/assets/img/banner/banner27.jpg",
     "title": "Cup cakes",
     "subtitle": "Choose Your Products Here",
-    "link": "/shop-grid-standard",
+    "link": "/shop",
     "textAlign": "right"
   },
   {
@@ -12,7 +12,7 @@
     "image": "/assets/img/banner/banner28.jpg",
     "title": "Vanilla cakes",
     "subtitle": "Choose Your Products Here",
-    "link": "/shop-grid-standard",
+    "link": "/shop",
     "textAlign": "left"
   }
 ]

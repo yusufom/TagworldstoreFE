@@ -45,15 +45,22 @@ export const productApiSlice = apiSlice.injectEndpoints({
         }),
         deleteFromWishList: builder.mutation({
             query: (id) => ({
-                url: base + `/wishlist/`,
+                url: base + `/wishlist/update/`,
                 method: 'PUT',
                 body: { product: id }
             })
         }),
+        clearWishList: builder.mutation({
+            query: (id) => ({
+                url: base + `/wishlist/clear/`,
+                method: 'PUT',
+                body: { product: "id" }
+            })
+        }),
         addToWishList: builder.mutation({
             query: (id) => ({
-                url: base + `/wishlist/`,
-                method: 'Post',
+                url: base + `/wishlist/create/`,
+                method: 'POST',
                 body: { product: id }
             })
         })
@@ -68,5 +75,6 @@ export const {
     useAddToWishListMutation,
     useGetReviewQuery,
     useAddReviewMutation,
-    useGetSlidesQuery
+    useGetSlidesQuery,
+    useClearWishListMutation
 } = productApiSlice;

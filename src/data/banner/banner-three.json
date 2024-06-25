@@ -5,7 +5,7 @@
     "title": "HeadPhone",
     "subtitle": "Starting at",
     "price": "$99.00",
-    "link": "/shop-grid-standard"
+    "link": "/shop"
   },
   {
     "id": 2,
@@ -13,6 +13,6 @@
     "title": "Bluetooth",
     "subtitle": "Starting at",
     "price": "$79.00",
-    "link": "/shop-grid-standard"
+    "link": "/shop"
   }
 ]

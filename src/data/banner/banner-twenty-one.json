@@ -5,7 +5,7 @@
     "title": "Dog Food",
     "subtitle": "Starting at",
     "price": "$99.00",
-    "link": "/shop-grid-standard"
+    "link": "/shop"
   },
   {
     "id": 2,
@@ -13,7 +13,7 @@
     "title": "Fish Food",
     "subtitle": "Starting at",
     "price": "$79.00",
-    "link": "/shop-grid-standard"
+    "link": "/shop"
   },
   {
     "id": 3,
@@ -21,6 +21,6 @@
     "title": "Cat Food",
     "subtitle": "Starting at",
     "price": "$29.00",
-    "link": "/shop-grid-standard"
+    "link": "/shop"
   }
 ]

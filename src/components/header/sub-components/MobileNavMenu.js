@@ -230,12 +230,12 @@ const MobileNavMenu = () => {
           </Link>
           {/* <ul className="sub-menu">
             <li className="menu-item-has-children">
-              <Link to={process.env.PUBLIC_URL + "/shop-grid-standard"}>
+              <Link to={process.env.PUBLIC_URL + "/shop"}>
                 {t("shop_layout")}
               </Link>
               <ul className="sub-menu">
                 <li>
-                  <Link to={process.env.PUBLIC_URL + "/shop-grid-standard"}>
+                  <Link to={process.env.PUBLIC_URL + "/shop"}>
                     {t("shop_grid_standard")}
                   </Link>
                 </li>
@@ -338,7 +338,7 @@ const MobileNavMenu = () => {
           </ul> */}
         </li>
         {/* <li>
-          <Link to={process.env.PUBLIC_URL + "/shop-grid-standard"}>
+          <Link to={process.env.PUBLIC_URL + "/shop"}>
             {t("collection")}
           </Link>
         </li> */}
@@ -419,11 +419,11 @@ const MobileNavMenu = () => {
             </li>
           </ul>
         </li> */}
-        <li>
+        {/* <li>
           <Link to={process.env.PUBLIC_URL + "/contact"}>
             {t("contact_us")}
           </Link>
-        </li>
+        </li> */}
       </ul>
     </nav>
   );
