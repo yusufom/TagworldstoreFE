@@ -58,7 +58,7 @@ export const store = configureStore({
             //     ],
             // },
         }).concat(apiSlice.middleware, cartApiSlice.middleware),
-    devTools: true,
+    devTools: false,
 });
 
 export const persistor = persistStore(store);

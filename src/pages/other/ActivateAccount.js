@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useActivateAccountMutation } from '../../store/apiSlice/authApiSlice';
 import { errorToast, successToast } from '../../helpers/toast';
 
 const ActivateAccount = () => {
   const location = useLocation();
-  const history = useHistory();
 
   const [activateAccount, { isLoading }] = useActivateAccountMutation();
 
@@ -24,14 +23,14 @@ const ActivateAccount = () => {
     if (uid && token) {
       // Make a request to the activation endpoint
       activateAccount({ uid: uid, token: token }).unwrap().then(() => {
-        history.push('/login-register');
+        window.location.href = '/login-register';
         successToast("Account activated successfully, Please proceed to login")
       }).catch(() => {
-        history.push('/');
+        window.location.href =  '/';
         errorToast("Account activation failed, Please try again later")
       });
     }
-  }, [location, history, activateAccount]);
+  }, [location, activateAccount]);
 
   return (
     <div>
