@@ -25,7 +25,7 @@ const persistConfig = {
     key: "@#",
     version: 1.1,
     storage,
-    blacklist: ["product"]
+    blacklist: ["product", "api", 'compare', 'user']
 }
 
 export const rootReducer = combineReducers({
