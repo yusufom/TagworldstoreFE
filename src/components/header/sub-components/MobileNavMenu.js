@@ -1,8 +1,13 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 
 const MobileNavMenu = () => {
   const { t } = useTranslation();
+
+  const { isAuthenticated } = useSelector(
+    (state) => state.auth
+  )
 
   return (
     <nav className="offcanvas-navigation" id="offcanvas-navigation">
@@ -365,16 +370,20 @@ const MobileNavMenu = () => {
                 {t("compare")}
               </Link>
             </li> */}
-            <li>
-              <Link to={process.env.PUBLIC_URL + "/my-account"}>
-                {t("my_account")}
-              </Link>
-            </li>
-            <li>
-              <Link to={process.env.PUBLIC_URL + "/login-register"}>
-                {t("login_register")}
-              </Link>
-            </li>
+            {isAuthenticated ?
+                <li>
+
+                  <Link to={process.env.PUBLIC_URL + "/my-account"}>
+                    {t("my_account")}
+                  </Link>
+                </li>
+                :
+                <li>
+                  <Link to={process.env.PUBLIC_URL + "/login-register"}>
+                    {t("login_register")}
+                  </Link>
+                </li>
+              }
             {/* <li>
               <Link to={process.env.PUBLIC_URL + "/about"}>
                 {t("about_us")}

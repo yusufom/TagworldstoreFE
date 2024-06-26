@@ -2,9 +2,13 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import clsx from "clsx";
+import { useSelector } from "react-redux";
 
 const NavMenu = ({ menuWhiteClass, sidebarMenu }) => {
   const { t } = useTranslation();
+  const { isAuthenticated } = useSelector(
+    (state) => state.auth
+  )
 
   return (
     <div
@@ -63,16 +67,20 @@ const NavMenu = ({ menuWhiteClass, sidebarMenu }) => {
                   {t("compare")}
                 </Link>
               </li> */}
-              <li>
-                <Link to={process.env.PUBLIC_URL + "/my-account"}>
-                  {t("my_account")}
-                </Link>
-              </li>
-              <li>
-                <Link to={process.env.PUBLIC_URL + "/login-register"}>
-                  {t("login_register")}
-                </Link>
-              </li>
+              {isAuthenticated ?
+                <li>
+
+                  <Link to={process.env.PUBLIC_URL + "/my-account"}>
+                    {t("my_account")}
+                  </Link>
+                </li>
+                :
+                <li>
+                  <Link to={process.env.PUBLIC_URL + "/login-register"}>
+                    {t("login_register")}
+                  </Link>
+                </li>
+              }
               {/* <li>
                 <Link to={process.env.PUBLIC_URL + "/about"}>
                   {t("about_us")}
