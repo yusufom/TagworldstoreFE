@@ -59,7 +59,7 @@ const Checkout = () => {
   const [createOrder, { isLoading }] = useCreateOrderMutation()
   const [startCreateOrder, { isLoading: startCreateOrderLoading }] = useStartCreateOrderMutation()
 
-  const lineitems = cartItems.map((cartItem, key) => {
+  const lineitems = cartItems?.map((cartItem, key) => {
 
     return {
       price: cartItem.product.stripe_price,
@@ -68,7 +68,7 @@ const Checkout = () => {
     }
   })
 
-  const lineitemsID = cartItems.map((cartItem, key) => {
+  const lineitemsID = cartItems?.map((cartItem, key) => {
 
     return {
       id: cartItem.id.toString(),
@@ -112,7 +112,7 @@ const Checkout = () => {
         />
         <div className="checkout-area pt-95 pb-100">
           <div className="container">
-            {cartItems && cartItems.length >= 1 ? (
+            {cartItems && cartItems?.length >= 1 ? (
               <div className="row">
                 <div className="col-lg-7">
                   <div className="billing-info-wrap">
@@ -222,7 +222,7 @@ const Checkout = () => {
                         </div>
                         <div className="your-order-middle">
                           <ul>
-                            {cartItems.map((cartItem, key) => {
+                            {cartItems?.map((cartItem, key) => {
                               const discountedPrice = getDiscountPrice(
                                 cartItem.product.price,
                                 cartItem.product.discount
