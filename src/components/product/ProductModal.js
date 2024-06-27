@@ -10,9 +10,10 @@ import { addToCart } from "../../store/slices/cart-slice";
 import { addToWishlist } from "../../store/slices/wishlist-slice";
 import { addToCompare } from "../../store/slices/compare-slice";
 import { useGetAllCartItemsQuery } from "../../store/apiSlice/cartApiSlice";
-import { warningToast } from "../../helpers/toast";
+import { successToast, warningToast } from "../../helpers/toast";
+import { useAddToWishListMutation } from "../../store/apiSlice/productSlice";
 
-function ProductModal({ product, currency, discountedPrice, finalProductPrice, finalDiscountedPrice, show, onHide, wishlistItem }) {
+function ProductModal({ product, currency, discountedPrice, finalProductPrice, finalDiscountedPrice, show, onHide, wishlistItem, wishListItemsRefetch }) {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const dispatch = useDispatch();
   const { data: cartItems } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
@@ -38,6 +39,9 @@ function ProductModal({ product, currency, discountedPrice, finalProductPrice, f
     selectedProductColor,
     selectedProductSize
   );
+
+  const [addToWishlist] = useAddToWishListMutation();
+
 
 
   const gallerySwiperParams = {
@@ -294,7 +298,12 @@ function ProductModal({ product, currency, discountedPrice, finalProductPrice, f
                         ? "Added to wishlist"
                         : "Add to wishlist"
                     }
-                    onClick={() => isAuthenticated ? dispatch(addToWishlist(product)): warningToast("Please login to add item to wish list")}
+                    onClick={() => isAuthenticated ? 
+                      addToWishlist(product.id).then(() => {
+                        successToast("Wishlist item addedd successfully")
+                        wishListItemsRefetch()
+                      }).catch(() => { })
+                      : warningToast("Please login to add item to wish list")}
                   >
                     <i className="pe-7s-like" />
                   </button>

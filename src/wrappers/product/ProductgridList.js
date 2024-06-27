@@ -16,7 +16,7 @@ const ProductGridList = ({
   const { data: wishlistItems, refetch: wishListItemsRefetch } = useGetAllWishListQuery()
   const { data: cartItems, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
 
-  
+
   return (
     <Fragment>
       {products?.map(product => {
@@ -34,11 +34,12 @@ const ProductGridList = ({
                   wishlistItem => wishlistItem.id === product.id
                 )
               }
-              // compareItem={
-              //   compareItems.find(
-              //     compareItem => compareItem.id === product.id
-              //   )
-              // }
+              wishListItemsRefetch={wishListItemsRefetch}
+            // compareItem={
+            //   compareItems.find(
+            //     compareItem => compareItem.id === product.id
+            //   )
+            // }
             />
           </div>
         );

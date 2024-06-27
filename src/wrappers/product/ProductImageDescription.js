@@ -17,8 +17,6 @@ const ProductImageDescription = ({ spaceTopClass, spaceBottomClass, galleryType,
   // const { cartItems } = useSelector((state) => state.cart);
   const { storewishlistItems } = useSelector((state) => state.wishlist);
   const { data: wishlistItems, refetch: wishListItemsRefetch } = useGetAllWishListQuery()
-  console.log("wishlist", wishlistItems)
-  console.log("wishlist produc", product.id)
 
   // const { compareItems } = useSelector((state) => state.compare);
   const wishlistItem = isAuthenticated ? wishlistItems?.find(item => item.id === product.id) : storewishlistItems?.find(item => item.id === product.id);

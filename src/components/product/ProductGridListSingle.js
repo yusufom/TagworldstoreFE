@@ -7,15 +7,17 @@ import { getDiscountPrice } from "../../helpers/product";
 import Rating from "./sub-components/ProductRating";
 import ProductModal from "./ProductModal";
 import { addToCart } from "../../store/slices/cart-slice";
-import { addToWishlist } from "../../store/slices/wishlist-slice";
+// import { addToWishlist } from "../../store/slices/wishlist-slice";
 import { addToCompare } from "../../store/slices/compare-slice";
-import { warningToast } from "../../helpers/toast";
+import { successToast, warningToast } from "../../helpers/toast";
+import { useAddToWishListMutation } from "../../store/apiSlice/productSlice";
 
 const ProductGridListSingle = ({
   product,
   currency,
   cartItem,
   wishlistItem,
+  wishListItemsRefetch,
   // compareItem,
   spaceBottomClass
 }) => {
@@ -29,6 +31,9 @@ const ProductGridListSingle = ({
   const { isAuthenticated } = useSelector(
     (state) => state.auth
   )
+  const [addToWishlist] = useAddToWishListMutation();
+
+
 
   return (
     <Fragment>
@@ -76,7 +81,13 @@ const ProductGridListSingle = ({
                     ? "Added to wishlist"
                     : "Add to wishlist"
                 }
-                onClick={() => isAuthenticated ? dispatch(addToWishlist(product)) : warningToast("Please login to add to item wish list")}
+                onClick={() => isAuthenticated ?
+                  addToWishlist(product.id).then(() => {
+                    successToast("Wishlist item addedd successfully")
+                    wishListItemsRefetch()
+                  }).catch(() => { })
+                  :
+                  warningToast("Please login to add to item wish list")}
               >
                 <i className="pe-7s-like" />
               </button>
@@ -289,7 +300,13 @@ const ProductGridListSingle = ({
                         ? "Added to wishlist"
                         : "Add to wishlist"
                     }
-                    onClick={() => dispatch(addToWishlist(product))}
+                    onClick={() => isAuthenticated ?
+                      addToWishlist(product.id).then(() => {
+                        successToast("Wishlist item addedd successfully")
+                        wishListItemsRefetch()
+                      }).catch(() => { })
+                      :
+                      warningToast("Please login to add to item wish list")}
                   >
                     <i className="pe-7s-like" />
                   </button>
@@ -323,6 +340,7 @@ const ProductGridListSingle = ({
         finalProductPrice={finalProductPrice}
         finalDiscountedPrice={finalDiscountedPrice}
         wishlistItem={wishlistItem}
+        wishListItemsRefetch={wishListItemsRefetch}
       // compareItem={compareItem}
       />
     </Fragment>
