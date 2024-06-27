@@ -2,19 +2,22 @@ import { Fragment, useState } from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Rating from "./sub-components/ProductRating";
 import { getDiscountPrice } from "../../helpers/product";
 import ProductModal from "./ProductModal";
 import { addToCart } from "../../store/slices/cart-slice";
 import { addToWishlist } from "../../store/slices/wishlist-slice";
+import { useAddToWishListMutation } from "../../store/apiSlice/productSlice";
+import { successToast, warningToast } from "../../helpers/toast";
 
 const ProductGridSingle = ({
   product,
   currency,
   cartItem,
   wishlistItem,
-  spaceBottomClass
+  spaceBottomClass,
+  wishListItemsRefetch
 }) => {
   const [modalShow, setModalShow] = useState(false);
   const discountedPrice = getDiscountPrice(product.price, product.discount);
@@ -22,7 +25,12 @@ const ProductGridSingle = ({
   const finalDiscountedPrice = +(
     discountedPrice * currency.currencyRate
   ).toFixed(2);
+  const { isAuthenticated } = useSelector(
+    (state) => state.auth
+  )
   const dispatch = useDispatch();
+  const [addToWishlist] = useAddToWishListMutation();
+
 
   return (
     <Fragment>
@@ -37,24 +45,24 @@ const ProductGridSingle = ({
                 style={{ height: "100%" }}
               />
             </div>
-            {product.image.length > 1 ? (
+            {product?.image?.length > 1 ? (
               <img
                 className="hover-img"
-                src={process.env.PUBLIC_URL + product.image[1].image}
+                src={process.env.PUBLIC_URL + product?.image[1].image}
                 alt=""
               />
             ) : (
               ""
             )}
           </Link>
-          {product.discount || product.new ? (
+          {product?.discount || product?.new ? (
             <div className="product-img-badges">
-              {product.discount ? (
-                <span className="pink">-{product.discount}%</span>
+              {product?.discount ? (
+                <span className="pink">-{product?.discount}%</span>
               ) : (
                 ""
               )}
-              {product.new ? <span className="purple">New</span> : ""}
+              {product?.new ? <span className="purple">New</span> : ""}
             </div>
           ) : (
             ""
@@ -70,7 +78,18 @@ const ProductGridSingle = ({
                     ? "Added to wishlist"
                     : "Add to wishlist"
                 }
-                onClick={() => dispatch(addToWishlist(product))}
+                onClick={() => {
+                  if (isAuthenticated) {
+                    // dispatch(addToWishlist(product))
+                    addToWishlist(product.id).then(() => {
+                      successToast("Wishlist item addedd successfully")
+                      wishListItemsRefetch()
+                    }).catch(() => { })
+                  } else {
+                    warningToast("Please login to add this item to wishlist")
+                  }
+                }
+                }
               >
                 <i className="pe-7s-like" />
               </button>

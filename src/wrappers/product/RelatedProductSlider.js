@@ -32,7 +32,7 @@ const settings = {
 
 const RelatedProductSlider = ({ spaceBottomClass, category }) => {
   const { data: products, isLoading } = useGetAllProductsQuery({ refetchOnMountOrArgChange: true });
-  const { data: wishlistItems, refetch } = useGetAllWishListQuery()
+  const { data: wishlistItems, refetch:wishListItemsRefetch } = useGetAllWishListQuery()
   const { data: cartItems } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
 
   // const { products } = useSelector((state) => state.product);
@@ -65,6 +65,7 @@ const RelatedProductSlider = ({ spaceBottomClass, category }) => {
                       (wishlistItem) => wishlistItem?.id === product?.id
                     )
                   }
+                  wishListItemsRefetch={wishListItemsRefetch}
                   // compareItem={
                   //   compareItems.find(
                   //     (compareItem) => compareItem.id === product.id

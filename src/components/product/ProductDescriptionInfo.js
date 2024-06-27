@@ -53,7 +53,7 @@ const ProductDescriptionInfo = ({
 
   return (
     <div className="product-details-content ml-70">
-      <h2>{product.name}</h2>
+      <h2>{product?.name}</h2>
       <div className="product-details-price">
         {discountedPrice !== null ? (
           <Fragment>
@@ -66,33 +66,33 @@ const ProductDescriptionInfo = ({
           <span>{currency.currencySymbol + finalProductPrice} </span>
         )}
       </div>
-      {product.rating && product.rating > 0 ? (
+      {product?.rating && product?.rating > 0 ? (
         <div className="pro-details-rating-wrap">
           <div className="pro-details-rating">
-            <Rating ratingValue={product.rating} />
+            <Rating ratingValue={product?.rating} />
           </div>
         </div>
       ) : (
         ""
       )}
       <div className="pro-details-list">
-        <p>{product.short_description}</p>
+        <p>{product?.short_description}</p>
       </div>
 
-      {product.variation ? (
+      {product?.variation ? (
         <div className="pro-details-size-color">
           <div className="pro-details-color-wrap">
             <span>Color</span>
             <div className="pro-details-color-content">
-              {product.variation.map((single, key) => {
+              {product?.variation?.map((single, key) => {
                 return (
                   <label
-                    className={`pro-details-color-content--single ${single.color}`}
+                    className={`pro-details-color-content--single ${single?.color}`}
                     key={key}
                   >
                     <input
                       type="radio"
-                      value={single.color}
+                      value={single?.color}
                       name="product-color"
                       checked={
                         single.color === selectedProductColor ? "checked" : ""
@@ -148,11 +148,11 @@ const ProductDescriptionInfo = ({
       ) : (
         ""
       )}
-      {product.affiliateLink ? (
+      {product?.affiliateLink ? (
         <div className="pro-details-quality">
           <div className="pro-details-cart btn-hover ml-0">
             <a
-              href={product.affiliateLink}
+              href={product?.affiliateLink}
               rel="noopener noreferrer"
               target="_blank"
             >
