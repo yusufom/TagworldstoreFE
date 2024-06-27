@@ -42,8 +42,6 @@ const RelatedProductSlider = ({ spaceBottomClass, category }) => {
   // const { compareItems } = useSelector((state) => state.compare);
   const prods = getProducts(products, category, null, 6);
 
-  console.log("prod", prods)
-
   return (
     <div className={clsx("related-product-area", spaceBottomClass)}>
       <div className="container">
@@ -54,17 +52,17 @@ const RelatedProductSlider = ({ spaceBottomClass, category }) => {
         />
         {prods?.length ? (
           <Swiper options={settings}>
-            {prods.map(product => (
-              <SwiperSlide key={product.id}>
+            {prods?.map(product => (
+              <SwiperSlide key={product?.id}>
                 <ProductGridSingle
                   product={product}
                   currency={currency}
                   cartItem={
-                    cartItems.find((cartItem) => cartItem.id === product.id)
+                    cartItems?.find((cartItem) => cartItem?.id === product?.id)
                   }
                   wishlistItem={
-                    wishlistItems.find(
-                      (wishlistItem) => wishlistItem.id === product.id
+                    wishlistItems?.find(
+                      (wishlistItem) => wishlistItem?.id === product?.id
                     )
                   }
                   // compareItem={

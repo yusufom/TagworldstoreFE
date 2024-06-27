@@ -1,6 +1,6 @@
 import { Fragment, useState, useEffect } from 'react';
 import Paginator from 'react-hooks-paginator';
-import { useSelector, useDispatch } from "react-redux";
+// import { useSelector, useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom"
 import { getSortedProducts } from '../../helpers/product';
 import SEO from "../../components/seo";
@@ -10,7 +10,7 @@ import ShopSidebar from '../../wrappers/product/ShopSidebar';
 import ShopTopbar from '../../wrappers/product/ShopTopbar';
 import ShopProducts from '../../wrappers/product/ShopProducts';
 import { useGetAllProductsQuery } from "../../store/apiSlice/productSlice";
-import { apiSlice } from '../../store/api';
+// import { apiSlice } from '../../store/api';
 
 
 

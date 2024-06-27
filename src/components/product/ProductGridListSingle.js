@@ -8,7 +8,7 @@ import Rating from "./sub-components/ProductRating";
 import ProductModal from "./ProductModal";
 import { addToCart } from "../../store/slices/cart-slice";
 // import { addToWishlist } from "../../store/slices/wishlist-slice";
-import { addToCompare } from "../../store/slices/compare-slice";
+// import { addToCompare } from "../../store/slices/compare-slice";
 import { successToast, warningToast } from "../../helpers/toast";
 import { useAddToWishListMutation } from "../../store/apiSlice/productSlice";
 
