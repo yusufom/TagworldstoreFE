@@ -9,13 +9,18 @@ import { errorToast, successToast } from "../../../helpers/toast";
 const MenuCart = () => {
   const dispatch = useDispatch();
   const currency = useSelector((state) => state.currency);
-  // const { cartItems } = useSelector((state) => state.cart);
-  const { data: cartItems, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
+  const { cartItemsNotAuth } = useSelector((state) => state.cart);
+  const { data: cartItemsAuth, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
 
   const [deleteFromCart, { isLoading: deleteFromCartLoading, error: deleteFromCartError }] = useDeleteFromCartMutation();
 
 
   let cartTotalPrice = 0;
+
+  const cartItems = isAuthenticated ? cartItemsAuth : cartItemsNotAuth;
+
 
   return (
     <div className="shopping-cart-content">

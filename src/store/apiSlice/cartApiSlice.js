@@ -37,6 +37,12 @@ export const cartApiSlice = apiSlice.injectEndpoints({
                 method: 'GET',
             })
         }),
+        getUserOrders: builder.query({
+            query: () => ({
+                url: base + `/`,
+                method: 'GET'
+            })
+        }),
         startCreateOrder: builder.mutation({
             query: (data) => ({
                 url: base + `/`,
@@ -62,5 +68,5 @@ export const cartApiSlice = apiSlice.injectEndpoints({
 })
 
 export const {
-    useAddToCartMutation, useGetAllCartItemsQuery, useDeleteFromCartMutation, useDecreaseQuantityMutation, useCreateOrderMutation, useStartCreateOrderMutation, useConfirmOrderMutation
+    useAddToCartMutation, useGetAllCartItemsQuery, useDeleteFromCartMutation, useDecreaseQuantityMutation, useCreateOrderMutation, useStartCreateOrderMutation, useConfirmOrderMutation, useGetUserOrdersQuery
 } = cartApiSlice;

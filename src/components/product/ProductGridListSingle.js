@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { Fragment, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
 import { getDiscountPrice } from "../../helpers/product";
@@ -9,6 +9,7 @@ import ProductModal from "./ProductModal";
 import { addToCart } from "../../store/slices/cart-slice";
 import { addToWishlist } from "../../store/slices/wishlist-slice";
 import { addToCompare } from "../../store/slices/compare-slice";
+import { warningToast } from "../../helpers/toast";
 
 const ProductGridListSingle = ({
   product,
@@ -25,6 +26,9 @@ const ProductGridListSingle = ({
     discountedPrice * currency.currencyRate
   ).toFixed(2);
   const dispatch = useDispatch();
+  const { isAuthenticated } = useSelector(
+    (state) => state.auth
+  )
 
   return (
     <Fragment>
@@ -36,7 +40,7 @@ const ProductGridListSingle = ({
                 className="default-img"
                 src={process.env.PUBLIC_URL + product.image[0].image}
                 alt=""
-                style={{height: "100%"}}
+                style={{ height: "100%" }}
               />
             </div>
             {product.image.length > 1 ? (
@@ -72,7 +76,7 @@ const ProductGridListSingle = ({
                     ? "Added to wishlist"
                     : "Add to wishlist"
                 }
-                onClick={() => dispatch(addToWishlist(product))}
+                onClick={() => isAuthenticated ? dispatch(addToWishlist(product)) : warningToast("Please login to add to item wish list")}
               >
                 <i className="pe-7s-like" />
               </button>
@@ -93,7 +97,9 @@ const ProductGridListSingle = ({
                 </Link>
               ) : product.stock && product.stock > 0 ? (
                 <button
-                  onClick={() => dispatch(addToCart(product))}
+                  onClick={() =>
+                    isAuthenticated ? dispatch(addToCart(product)) : warningToast("Please login to add item to cart")
+                  }
                   className={
                     cartItem !== undefined && cartItem.quantity > 0
                       ? "active"
@@ -241,7 +247,12 @@ const ProductGridListSingle = ({
                     </Link>
                   ) : product.stock && product.stock > 0 ? (
                     <button
-                      onClick={() => dispatch(addToCart(product))}
+                      onClick={() => dispatch(addToCart({
+                        ...product,
+                        quantity: 1,
+                        selectedProductColor: "",
+                        selectedProductSize: ""
+                      }))}
                       className={
                         cartItem !== undefined && cartItem.quantity > 0
                           ? "active"
@@ -312,7 +323,7 @@ const ProductGridListSingle = ({
         finalProductPrice={finalProductPrice}
         finalDiscountedPrice={finalDiscountedPrice}
         wishlistItem={wishlistItem}
-        // compareItem={compareItem}
+      // compareItem={compareItem}
       />
     </Fragment>
   );

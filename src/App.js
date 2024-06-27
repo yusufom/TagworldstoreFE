@@ -14,6 +14,7 @@ const Product = lazy(() => import("./pages/shop-product/Product"));
 const Cart = lazy(() => import("./pages/other/Cart"));
 const Wishlist = lazy(() => import("./pages/other/Wishlist"));
 const ActivateAccount = lazy(() => import("./pages/other/ActivateAccount"));
+const Orders = lazy(() => import("./pages/other/Orders"));
 // const Compare = lazy(() => import("./pages/other/Compare"));
 const Checkout = lazy(() => import("./pages/other/Checkout"));
 const Shop = lazy(() => import("./pages/shop/ShopGridStandard"));
@@ -74,10 +75,10 @@ function App() {
               path={process.env.PUBLIC_URL + "/activate"}
               element={<ActivateAccount />}
             />
-            {/* <Route
-              path={process.env.PUBLIC_URL + "/compare"}
-              element={<Compare />}
-            /> */}
+            <Route
+              path={process.env.PUBLIC_URL + "/my-orders"}
+              element={<Orders />}
+            />
             <Route
               path={process.env.PUBLIC_URL + "/checkout"}
               element={<Checkout />}

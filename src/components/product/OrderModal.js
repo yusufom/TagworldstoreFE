@@ -4,21 +4,17 @@ import { EffectFade, Thumbs } from 'swiper';
 import { Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Rating from "./sub-components/ProductRating";
-import Swiper, { SwiperSlide } from "../../components/swiper";
+import Swiper, { SwiperSlide } from "../swiper";
 import { getProductCartQuantity } from "../../helpers/product";
 import { addToCart } from "../../store/slices/cart-slice";
 import { addToWishlist } from "../../store/slices/wishlist-slice";
 import { addToCompare } from "../../store/slices/compare-slice";
 import { useGetAllCartItemsQuery } from "../../store/apiSlice/cartApiSlice";
-import { warningToast } from "../../helpers/toast";
 
-function ProductModal({ product, currency, discountedPrice, finalProductPrice, finalDiscountedPrice, show, onHide, wishlistItem }) {
+function OrderModal({ product, currency, discountedPrice, finalProductPrice, finalDiscountedPrice, show, onHide, wishlistItem }) {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const dispatch = useDispatch();
   const { data: cartItems } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
-  const { isAuthenticated } = useSelector(
-    (state) => state.auth
-  )
 
   // const { cartItems } = useSelector((state) => state.cart);
 
@@ -62,6 +58,7 @@ function ProductModal({ product, currency, discountedPrice, finalProductPrice, f
     navigation: true
   };
 
+  console.log(thumbsSwiper, "thumbswiper")
 
   const onCloseModal = () => {
     setThumbsSwiper(null)
@@ -266,15 +263,12 @@ function ProductModal({ product, currency, discountedPrice, finalProductPrice, f
                   {productStock && productStock > 0 ? (
                     <button
                       onClick={() =>
-                        isAuthenticated ?
                         dispatch(addToCart({
                           ...product,
                           quantity: quantityCount,
                           selectedProductColor: selectedProductColor ? selectedProductColor : product.selectedProductColor ? product.selectedProductColor : null,
                           selectedProductSize: selectedProductSize ? selectedProductSize : product.selectedProductSize ? product.selectedProductSize : null
-                        })) 
-                        :
-                        warningToast("Please login to purchase this item")
+                        }))
                       }
                       disabled={productCartQty >= productStock}
                     >
@@ -294,7 +288,7 @@ function ProductModal({ product, currency, discountedPrice, finalProductPrice, f
                         ? "Added to wishlist"
                         : "Add to wishlist"
                     }
-                    onClick={() => isAuthenticated ? dispatch(addToWishlist(product)): warningToast("Please login to add item to wish list")}
+                    onClick={() => dispatch(addToWishlist(product))}
                   >
                     <i className="pe-7s-like" />
                   </button>
@@ -323,7 +317,7 @@ function ProductModal({ product, currency, discountedPrice, finalProductPrice, f
   );
 }
 
-ProductModal.propTypes = {
+OrderModal.propTypes = {
   currency: PropTypes.shape({}),
   discountedprice: PropTypes.number,
   finaldiscountedprice: PropTypes.number,
@@ -335,4 +329,4 @@ ProductModal.propTypes = {
   compareItem: PropTypes.shape({})
 };
 
-export default ProductModal;
+export default OrderModal;

@@ -27,10 +27,10 @@ const ProductGridList = ({
               product={product}
               currency={currency}
               cartItem={
-                cartItems.find(cartItem => cartItem.id === product.id)
+                cartItems?.find(cartItem => cartItem.id === product.id)
               }
               wishlistItem={
-                wishlistItems.find(
+                wishlistItems?.find(
                   wishlistItem => wishlistItem.id === product.id
                 )
               }

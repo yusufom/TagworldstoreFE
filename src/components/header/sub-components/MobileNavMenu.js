@@ -370,20 +370,29 @@ const MobileNavMenu = () => {
                 {t("compare")}
               </Link>
             </li> */}
-            {isAuthenticated ?
-                <li>
+            {isAuthenticated &&
+              <li>
 
-                  <Link to={process.env.PUBLIC_URL + "/my-account"}>
-                    {t("my_account")}
-                  </Link>
-                </li>
-                :
-                <li>
-                  <Link to={process.env.PUBLIC_URL + "/login-register"}>
-                    {t("login_register")}
-                  </Link>
-                </li>
-              }
+                <Link to={process.env.PUBLIC_URL + "/my-account"}>
+                  {t("my_account")}
+                </Link>
+              </li>
+            }
+            {isAuthenticated &&
+              <li>
+
+                <Link to={process.env.PUBLIC_URL + "/my-orders"}>
+                  {t("my_orders")}
+                </Link>
+              </li>
+            }
+            {!isAuthenticated &&
+              <li>
+                <Link to={process.env.PUBLIC_URL + "/login-register"}>
+                  {t("login_register")}
+                </Link>
+              </li>
+            }
             {/* <li>
               <Link to={process.env.PUBLIC_URL + "/about"}>
                 {t("about_us")}

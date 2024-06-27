@@ -67,14 +67,23 @@ const NavMenu = ({ menuWhiteClass, sidebarMenu }) => {
                   {t("compare")}
                 </Link>
               </li> */}
-              {isAuthenticated ?
+              {isAuthenticated &&
                 <li>
 
                   <Link to={process.env.PUBLIC_URL + "/my-account"}>
                     {t("my_account")}
                   </Link>
                 </li>
-                :
+              }
+              {isAuthenticated &&
+                <li>
+
+                  <Link to={process.env.PUBLIC_URL + "/my-orders"}>
+                    {t("my_orders")}
+                  </Link>
+                </li>
+              }
+              {!isAuthenticated &&
                 <li>
                   <Link to={process.env.PUBLIC_URL + "/login-register"}>
                     {t("login_register")}
