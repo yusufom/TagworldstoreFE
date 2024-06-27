@@ -83,37 +83,43 @@ const ProductDescriptionTab = ({ spaceBottomClass, productFullDesc, product_id }
                 <div className="row">
                   <div className={isAuthenticated ? "col-lg-7" : "col-lg-12"}>
                     <div className="review-wrapper">
-                      {data?.map((review, index) => {
-                        return (
-                          <div className="single-review">
+                      {data.length > 0 ?
 
-                            <div className="review-content">
-                              <div className="review-top-wrap">
-                                <div className="review-left">
-                                  <div className="review-name">
-                                    <h4>{review.customer}</h4>
+                        data?.map((review, index) => {
+                          return (
+                            <div className="single-review">
+
+                              <div className="review-content">
+                                <div className="review-top-wrap">
+                                  <div className="review-left">
+                                    <div className="review-name">
+                                      <h4>{review.customer}</h4>
+                                    </div>
+                                    <div className="review-rating">
+                                      <i className="fa fa-star" />
+                                      <i className="fa fa-star" />
+                                      <i className="fa fa-star" />
+                                      <i className="fa fa-star" />
+                                      <i className="fa fa-star" />
+                                    </div>
                                   </div>
-                                  <div className="review-rating">
-                                    <i className="fa fa-star" />
-                                    <i className="fa fa-star" />
-                                    <i className="fa fa-star" />
-                                    <i className="fa fa-star" />
-                                    <i className="fa fa-star" />
+                                  <div className="review-left">
+                                    <button>Reply</button>
                                   </div>
                                 </div>
-                                <div className="review-left">
-                                  <button>Reply</button>
+                                <div className="review-bottom">
+                                  <p>
+                                    {review.review}
+                                  </p>
                                 </div>
-                              </div>
-                              <div className="review-bottom">
-                                <p>
-                                  {review.review}
-                                </p>
                               </div>
                             </div>
-                          </div>
-                        )
-                      })}
+                          )
+
+                        })
+                        :
+                        <p>No reviews yet</p>
+                      }
 
                       {/* <div className="single-review">
 

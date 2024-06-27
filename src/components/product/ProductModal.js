@@ -24,13 +24,13 @@ function ProductModal({ product, currency, discountedPrice, finalProductPrice, f
   // const { cartItems } = useSelector((state) => state.cart);
 
   const [selectedProductColor, setSelectedProductColor] = useState(
-    product.variation ? product.variation[0].color : ""
+    product?.variation ? product?.variation[0]?.color : ""
   );
   const [selectedProductSize, setSelectedProductSize] = useState(
-    product.variation ? product.variation[0].size[0].name : ""
+    product?.variation ? product?.variation[0]?.size[0].name : ""
   );
   const [productStock, setProductStock] = useState(
-    product.variation ? product.variation[0].size[0].stock : product.stock
+    product?.variation ? product?.variation[0]?.size[0]?.stock : product?.stock
   );
   const [quantityCount, setQuantityCount] = useState(1);
   const productCartQty = getProductCartQuantity(
@@ -118,7 +118,7 @@ function ProductModal({ product, currency, discountedPrice, finalProductPrice, f
         </div>
         <div className="col-md-7 col-sm-12 col-xs-12">
           <div className="product-details-content quickview-content">
-            <h2>{product.name}</h2>
+            <h2>{product?.name}</h2>
             <div className="product-details-price">
               {discountedPrice !== null ? (
                 <Fragment>
@@ -133,7 +133,7 @@ function ProductModal({ product, currency, discountedPrice, finalProductPrice, f
                 <span>{currency.currencySymbol + finalProductPrice} </span>
               )}
             </div>
-            {product.rating && product.rating > 0 ? (
+            {product?.rating && product?.rating > 0 ? (
               <div className="pro-details-rating-wrap">
                 <div className="pro-details-rating">
                   <Rating ratingValue={product.rating} />
@@ -143,7 +143,7 @@ function ProductModal({ product, currency, discountedPrice, finalProductPrice, f
               ""
             )}
             <div className="pro-details-list">
-              <p>{product.short_description}</p>
+              <p>{product?.short_description}</p>
             </div>
 
             {product?.variation ? (
@@ -154,22 +154,22 @@ function ProductModal({ product, currency, discountedPrice, finalProductPrice, f
                     {product?.variation?.map((single, key) => {
                       return (
                         <label
-                          className={`pro-details-color-content--single ${single.color}`}
+                          className={`pro-details-color-content--single ${single?.color}`}
                           key={key}
                         >
                           <input
                             type="radio"
-                            value={single.color}
+                            value={single?.color}
                             name="product-color"
                             checked={
-                              single.color === selectedProductColor
+                              single?.color === selectedProductColor
                                 ? "checked"
                                 : ""
                             }
                             onChange={() => {
-                              setSelectedProductColor(single.color);
-                              setSelectedProductSize(single.size[0].name);
-                              setProductStock(single.size[0].stock);
+                              setSelectedProductColor(single?.color);
+                              setSelectedProductSize(single?.size[0]?.name);
+                              setProductStock(single?.size[0]?.stock);
                               setQuantityCount(1);
                             }}
                           />
@@ -182,10 +182,10 @@ function ProductModal({ product, currency, discountedPrice, finalProductPrice, f
                 <div className="pro-details-size">
                   <span>Size</span>
                   <div className="pro-details-size-content">
-                    {product.variation &&
-                      product.variation.map(single => {
-                        return single.color === selectedProductColor
-                          ? single.size.map((singleSize, key) => {
+                    {product?.variation &&
+                      product?.variation?.map(single => {
+                        return single?.color === selectedProductColor
+                          ? single?.size?.map((singleSize, key) => {
                               return (
                                 <label
                                   className={`pro-details-size-content--single`}
@@ -193,7 +193,7 @@ function ProductModal({ product, currency, discountedPrice, finalProductPrice, f
                                 >
                                   <input
                                     type="radio"
-                                    value={singleSize.name}
+                                    value={singleSize?.name}
                                     checked={
                                       singleSize.name ===
                                       selectedProductSize

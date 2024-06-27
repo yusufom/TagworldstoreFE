@@ -28,13 +28,13 @@ const ProductDescriptionInfo = ({
   )
   const dispatch = useDispatch();
   const [selectedProductColor, setSelectedProductColor] = useState(
-    product.variation ? product.variation[0].color : ""
+    product?.variation ? product?.variation[0]?.color : ""
   );
   const [selectedProductSize, setSelectedProductSize] = useState(
-    product.variation ? product.variation[0].size[0].name : ""
+    product?.variation ? product?.variation[0]?.size[0]?.name : ""
   );
   const [productStock, setProductStock] = useState(
-    product.variation ? product.variation[0].size[0].stock : product.stock
+    product?.variation ? product?.variation[0]?.size[0]?.stock : product?.stock
   );
   const [quantityCount, setQuantityCount] = useState(1);
 

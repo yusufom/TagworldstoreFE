@@ -29,7 +29,7 @@ const ProductGridSingle = ({
       <div className={clsx("product-wrap", spaceBottomClass)}>
         <div className="product-img">
           <Link to={process.env.PUBLIC_URL + "/product/" + product.slug}>
-            <div style={{ height: "250px" }}>
+            <div style={{ height: "300px" }}>
               <img
                 className="default-img"
                 src={process.env.PUBLIC_URL + product.image[0].image}

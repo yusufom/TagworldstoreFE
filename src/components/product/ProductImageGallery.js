@@ -60,11 +60,12 @@ const ProductImageGallery = ({ product }) => {
                 <button className="lightgallery-button" onClick={() => setIndex(key)}>
                   <i className="pe-7s-expand1"></i>
                 </button>
-                <div className="single-image" style={{width: "800px"}}>
+                <div className="single-image" >
                   <img
                     src={process.env.PUBLIC_URL + single.image}
                     className="img-fluid"
                     alt=""
+                    style={{width: "100%", height: "100%"}}
                   />
                 </div>
               </SwiperSlide>
