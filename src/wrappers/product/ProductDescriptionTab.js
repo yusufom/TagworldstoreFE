@@ -83,7 +83,7 @@ const ProductDescriptionTab = ({ spaceBottomClass, productFullDesc, product_id }
                 <div className="row">
                   <div className={isAuthenticated ? "col-lg-7" : "col-lg-12"}>
                     <div className="review-wrapper">
-                      {data.length > 0 ?
+                      {data?.length > 0 ?
 
                         data?.map((review, index) => {
                           return (
