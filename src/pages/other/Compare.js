@@ -15,7 +15,7 @@ const Compare = () => {
 
   const currency = useSelector((state) => state.currency);
   const { compareItems } = useSelector((state) => state.compare);
-  const { cartItems } = useSelector((state) => state.cart);
+  const { cartItems } = useSelector((state) => state.cart.cartItems);
 
   return (
     <Fragment>

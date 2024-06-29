@@ -21,7 +21,11 @@ const ProductImageDescription = ({ spaceTopClass, spaceBottomClass, galleryType,
   // const { compareItems } = useSelector((state) => state.compare);
   const wishlistItem = isAuthenticated ? wishlistItems?.find(item => item.id === product.id) : storewishlistItems?.find(item => item.id === product.id);
   // const compareItem = compareItems.find(item => item.id === product.id);
-  const { data: cartItems, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+  // const { data: cartItems, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+  const { cartItems:reduxCartItems } = useSelector((state) => state.cart);
+  const { data: apiCartItems, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+
+  const cartItems = isAuthenticated ? apiCartItems : reduxCartItems;
 
   const discountedPrice = getDiscountPrice(product.price, product.discount);
   const finalProductPrice = +(product.price * currency.currencyRate).toFixed(2);

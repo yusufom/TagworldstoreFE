@@ -29,11 +29,18 @@ const ShopGridStandard = () => {
     const { data: products, isLoading } = useGetAllProductsQuery({ refetchOnMountOrArgChange: true });
 
     const pageLimit = 15;
-    let { pathname } = useLocation();
+    let { pathname, search } = useLocation();
+
 
     const getLayout = (layout) => {
         setLayout(layout)
     }
+
+    const getQueryParams = (search) => {
+        return new URLSearchParams(search);
+    };
+
+
 
     const getSortParams = (sortType, sortValue) => {
         setSortType(sortType);
@@ -46,12 +53,19 @@ const ShopGridStandard = () => {
     }
 
     useEffect(() => {
+        const queryParams = getQueryParams(search);
+        const search_q = queryParams.get('search');
+        if (search_q) {
+            getSortParams("name", search_q)
+        }
+
+
         let sortedProducts = getSortedProducts(products, sortType, sortValue);
         const filterSortedProducts = getSortedProducts(sortedProducts, filterSortType, filterSortValue);
         sortedProducts = filterSortedProducts;
         setSortedProducts(sortedProducts);
         setCurrentData(sortedProducts?.slice(offset, offset + pageLimit));
-    }, [offset, products, sortType, sortValue, filterSortType, filterSortValue]);
+    }, [offset, products, sortType, sortValue, filterSortType, filterSortValue, search]);
 
     if (isLoading) {
         return (

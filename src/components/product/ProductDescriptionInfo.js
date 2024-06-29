@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getProductCartQuantity } from "../../helpers/product";
 import Rating from "./sub-components/ProductRating";
-// import { addToCart } from "../../store/slices/cart-slice";
+import { addToCart } from "../../store/slices/cart-slice";
 // import { addToWishlist } from "../../store/slices/wishlist-slice";
 // import { addToCompare } from "../../store/slices/compare-slice";
 import { useAddToCartMutation } from "../../store/apiSlice/cartApiSlice";
@@ -195,18 +195,20 @@ const ProductDescriptionInfo = ({
             {productStock && productStock > 0 ? (
               <button
                 onClick={() => {
-                  addToCartM({
-                    product: { ...product },
-                    quantity: quantityCount,
-                    selected_product_color: selectedProductColor ? selectedProductColor : product.selected_product_color ? product.selected_product_color : null,
-                    selected_product_size: selectedProductSize ? selectedProductSize : product.selected_product_size ? product.selected_product_size : null
-                  }).unwrap().then(() => { successToast("Added To Cart"); refetch() }).catch(() => { });
-                  // dispatch(addToCart({
-                  //   ...product,
-                  //   quantity: quantityCount,
-                  //   selected_product_color: selectedProductColor ? selectedProductColor : product.selectedProductColor ? product.selectedProductColor : null,
-                  //   selected_product_size: selectedProductSize ? selectedProductSize : product.selectedProductSize ? product.selectedProductSize : null
-                  // }))
+                  isAuthenticated ?
+                    addToCartM({
+                      product: { ...product },
+                      quantity: quantityCount,
+                      selected_product_color: selectedProductColor ? selectedProductColor : product.selected_product_color ? product.selected_product_color : null,
+                      selected_product_size: selectedProductSize ? selectedProductSize : product.selected_product_size ? product.selected_product_size : null
+                    }).unwrap().then(() => { successToast("Added To Cart"); refetch() }).catch(() => { })
+                    :
+                    dispatch(addToCart({
+                      product: { ...product },
+                      quantity: quantityCount,
+                      selected_product_color: selectedProductColor ? selectedProductColor : product.selectedProductColor ? product.selectedProductColor : null,
+                      selected_product_size: selectedProductSize ? selectedProductSize : product.selectedProductSize ? product.selectedProductSize : null
+                    }))
                 }
                 }
                 disabled={productCartQty >= productStock}

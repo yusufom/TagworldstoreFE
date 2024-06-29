@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getDiscountPrice } from "../../../helpers/product";
-import { deleteFromCart } from "../../../store/slices/cart-slice"
+import { deleteFromCart as notAuthDeleteFromCart } from "../../../store/slices/cart-slice"
 import { useDeleteFromCartMutation, useGetAllCartItemsQuery } from "../../../store/apiSlice/cartApiSlice";
 import { errorToast, successToast } from "../../../helpers/toast";
 
@@ -11,13 +11,13 @@ const MenuCart = () => {
   const currency = useSelector((state) => state.currency);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
-  const { cartItemsNotAuth } = useSelector((state) => state.cart);
-  const { data: cartItemsAuth, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
 
   const [deleteFromCart, { isLoading: deleteFromCartLoading, error: deleteFromCartError }] = useDeleteFromCartMutation();
 
 
   let cartTotalPrice = 0;
+  const { cartItems: cartItemsNotAuth } = useSelector((state) => state.cart);
+  const { data: cartItemsAuth, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
 
   const cartItems = isAuthenticated ? cartItemsAuth : cartItemsNotAuth;
 
@@ -27,7 +27,7 @@ const MenuCart = () => {
       {cartItems && cartItems.length > 0 ? (
         <Fragment>
           <ul>
-            {cartItems.map((item) => {
+            {cartItems?.map((item) => {
               const discountedPrice = getDiscountPrice(
                 item.product.price,
                 item.product.discount
@@ -43,13 +43,15 @@ const MenuCart = () => {
                 ? (cartTotalPrice += finalDiscountedPrice * item.quantity)
                 : (cartTotalPrice += finalProductPrice * item.quantity);
 
+
+
               return (
                 <li className="single-shopping-cart" key={item.id}>
                   <div className="shopping-cart-img">
                     <Link to={process.env.PUBLIC_URL + "/product/" + item.id}>
                       <img
                         alt=""
-                        src={item.product.image[0].image}
+                        src={item?.product?.image[0]?.image || ""}
                         className="img-fluid"
                       />
                     </Link>
@@ -60,7 +62,7 @@ const MenuCart = () => {
                         to={process.env.PUBLIC_URL + "/product/" + item.product.id}
                       >
                         {" "}
-                        {item.product.name}{" "}
+                        {item?.product?.name}{" "}
                       </Link>
                     </h4>
                     <h6>Qty: {item.quantity}</h6>
@@ -80,14 +82,14 @@ const MenuCart = () => {
                     )}
                   </div>
                   <div className="shopping-cart-delete">
-                    <button onClick={() => deleteFromCart(item.id).unwrap()
+                    <button onClick={() => isAuthenticated ? deleteFromCart(item.id).unwrap()
                       .then(() => {
                         successToast("Item deleted successfully")
                         refetch()
                       })
                       .catch(() => {
                         errorToast("Something went wrong")
-                      })}>
+                      }) : dispatch(notAuthDeleteFromCart(item.id))}>
                       <i className="fa fa-times-circle" />
                     </button>
                   </div>
@@ -107,12 +109,21 @@ const MenuCart = () => {
             <Link className="default-btn" to={process.env.PUBLIC_URL + "/cart"}>
               view cart
             </Link>
-            <Link
-              className="default-btn"
-              to={process.env.PUBLIC_URL + "/checkout"}
-            >
-              checkout
-            </Link>
+            {isAuthenticated ?
+              <Link
+                className="default-btn"
+                to={process.env.PUBLIC_URL + "/checkout"}
+              >
+                checkout
+              </Link> :
+              <Link
+                className="default-btn"
+                to={process.env.PUBLIC_URL + "/login-register"}
+              >
+                checkout
+              </Link>
+            }
+
           </div>
         </Fragment>
       ) : (

@@ -10,13 +10,14 @@ const ProductGridList = ({
   spaceBottomClass
 }) => {
   const currency = useSelector((state) => state.currency);
-  // const { cartItems } = useSelector((state) => state.cart);
+  const isAuthenticated = useSelector((state) => state.auth);
   // const { wishlistItems } = useSelector((state) => state.wishlist);
-  // const { compareItems } = useSelector((state) => state.compare);
+  // const { reduxCartItems } = useSelector((state) => state.compare);
   const { data: wishlistItems, refetch: wishListItemsRefetch } = useGetAllWishListQuery()
-  const { data: cartItems, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+  const { cartItems:reduxCartItems } = useSelector((state) => state.cart);
+  const { data: apiCartItems, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
 
-
+  const cartItems = isAuthenticated ? apiCartItems : reduxCartItems;
   return (
     <Fragment>
       {products?.map(product => {

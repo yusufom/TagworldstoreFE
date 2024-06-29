@@ -5,9 +5,9 @@ import SEO from "../../components/seo";
 import { getDiscountPrice } from "../../helpers/product";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
-import { addToCart, decreaseQuantity, deleteFromCart, deleteAllFromCart } from "../../store/slices/cart-slice";
+import { addToCart, decreaseQuantity as decreaseQuantityNotAuth, deleteFromCart as notAuthDeleteFromCart, deleteAllFromCart as notAuthDeleteAllFromCart } from "../../store/slices/cart-slice";
 import { cartItemStock } from "../../helpers/product";
-import { useAddToCartMutation, useDeleteFromCartMutation, useGetAllCartItemsQuery, useDecreaseQuantityMutation } from "../../store/apiSlice/cartApiSlice";
+import { useAddToCartMutation, useDeleteFromCartMutation, useGetAllCartItemsQuery, useDecreaseQuantityMutation, useLazyDeleteAllFromCartQuery } from "../../store/apiSlice/cartApiSlice";
 import { apiSlice } from "../../store/api";
 import { errorToast, successToast, warningToast } from "../../helpers/toast";
 
@@ -17,6 +17,8 @@ const Cart = () => {
   const [quantityCount] = useState(1);
   const dispatch = useDispatch();
   let { pathname } = useLocation();
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
 
   const currency = useSelector((state) => state.currency);
   // const { cartItems } = useSelector((state) => state.cart);
@@ -24,9 +26,14 @@ const Cart = () => {
 
   const [addToCartM, { isLoading, error }] = useAddToCartMutation();
   const [deleteFromCart, { isLoading: deleteFromCartLoading, error: deleteFromCartError }] = useDeleteFromCartMutation();
+  const { deleteAllFromCart, isLoading: deleteAllFromCartLoading } = useLazyDeleteAllFromCartQuery();
   const [decreaseQuantity, { isLoading: decreaseQuantityLoading, error: decreaseQuantityError }] = useDecreaseQuantityMutation();
 
-  const { data: cartItems, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+
+  const { cartItems: cartItemsNotAuth } = useSelector((state) => state.cart);
+  const { data: cartItemsAuth, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+
+  const cartItems = isAuthenticated ? cartItemsAuth : cartItemsNotAuth;
 
 
   // dispatch(apiSlice.util.resetApiState());
@@ -156,8 +163,12 @@ const Cart = () => {
                                     <button
                                       className="dec qtybutton"
                                       onClick={() =>
-                                        // dispatch(decreaseQuantity(cartItem))
-                                        decreaseQuantity(cartItem.id).unwrap().then(() => { warningToast("Item Decremented From Cart"); refetch() }).catch(() => { })
+                                        !isAuthenticated ?
+                                          dispatch(decreaseQuantityNotAuth(cartItem))
+                                          :
+                                          decreaseQuantity(cartItem.id).unwrap().then(() => { warningToast("Item Decremented From Cart"); refetch() }).catch(() => { })
+
+
                                       }
                                     >
                                       -
@@ -171,10 +182,16 @@ const Cart = () => {
                                     <button
                                       className="inc qtybutton"
                                       onClick={() => {
-                                        addToCartM({
-                                          ...cartItem,
-                                          quantity: quantityCount
-                                        }).unwrap().then(() => { successToast("Added To Cart"); refetch() }).catch(() => { });
+                                        isAuthenticated ?
+                                          addToCartM({
+                                            ...cartItem,
+                                            quantity: quantityCount
+                                          }).unwrap().then(() => { successToast("Added To Cart"); refetch() }).catch(() => { })
+                                          :
+                                          dispatch(addToCart({
+                                            ...cartItem,
+                                            quantity: quantityCount
+                                          }));
 
                                       }
                                       }
@@ -208,15 +225,17 @@ const Cart = () => {
                                 <td className="product-remove">
                                   <button
                                     onClick={() =>
-                                      // dispatch(deleteFromCart(cartItem.cartItemId))
-                                      deleteFromCart(cartItem.id).unwrap()
-                                        .then(() => {
-                                          successToast("Item deleted successfully")
-                                          refetch()
-                                        })
-                                        .catch(() => {
-                                          errorToast("Something went wrong")
-                                        })
+                                      !isAuthenticated ?
+                                        dispatch(notAuthDeleteFromCart(cartItem.id))
+                                        :
+                                        deleteFromCart(cartItem.id).unwrap()
+                                          .then(() => {
+                                            successToast("Item deleted successfully")
+                                            refetch()
+                                          })
+                                          .catch(() => {
+                                            errorToast("Something went wrong")
+                                          })
                                     }
                                   >
                                     <i className="fa fa-times"></i>
@@ -241,7 +260,7 @@ const Cart = () => {
                         </Link>
                       </div>
                       <div className="cart-clear">
-                        <button onClick={() => dispatch(deleteAllFromCart())}>
+                        <button onClick={() => !isAuthenticated ? dispatch(notAuthDeleteAllFromCart()) : deleteAllFromCart()}>
                           Clear Shopping Cart
                         </button>
                       </div>
@@ -251,7 +270,7 @@ const Cart = () => {
 
                 <div className="row">
                   <div className="col-lg-4 col-md-6">
-                    <div className="cart-tax">
+                    {/* <div className="cart-tax">
                       <div className="title-wrap">
                         <h4 className="cart-bottom-title section-bg-gray">
                           Estimate Shipping And Tax
@@ -291,11 +310,11 @@ const Cart = () => {
                           </button>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
 
                   <div className="col-lg-4 col-md-6">
-                    <div className="discount-code-wrapper">
+                    {/* <div className="discount-code-wrapper">
                       <div className="title-wrap">
                         <h4 className="cart-bottom-title section-bg-gray">
                           Use Coupon Code
@@ -310,7 +329,7 @@ const Cart = () => {
                           </button>
                         </form>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
 
                   <div className="col-lg-4 col-md-12">
@@ -333,9 +352,15 @@ const Cart = () => {
                           {currency.currencySymbol + cartTotalPrice.toFixed(2)}
                         </span>
                       </h4>
-                      <Link to={process.env.PUBLIC_URL + "/checkout"}>
-                        Proceed to Checkout
-                      </Link>
+                      {isAuthenticated ?
+                        <Link to={process.env.PUBLIC_URL + "/checkout"}>
+                          Proceed to Checkout
+                        </Link>
+                        :
+                        <Link to={process.env.PUBLIC_URL + "/login-register"}>
+                          Proceed to Checkout
+                        </Link>
+                      }
                     </div>
                   </div>
                 </div>

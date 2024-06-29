@@ -14,7 +14,7 @@ const cartSlice = createSlice({
         addToCart(state, action) {
             const product = action.payload.product;
             const cartItemData = action.payload
-            if (!product.variation) {
+            if (!product?.variation) {
                 const cartItem = state.cartItems.find(item => item.id === cartItemData.id);
                 if (!cartItem) {
                     state.cartItems.push({
@@ -83,7 +83,6 @@ const cartSlice = createSlice({
         },
         deleteFromCart(state, action) {
             state.cartItems = state.cartItems.filter(item => item.cartItemId !== action.payload);
-            cogoToast.error("Removed From Cart", { position: "bottom-left" });
         },
         decreaseQuantity(state, action) {
             const product = action.payload;

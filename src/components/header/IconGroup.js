@@ -1,17 +1,29 @@
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import clsx from "clsx";
 import MenuCart from "./sub-components/MenuCart";
 import { useGetAllCartItemsQuery } from "../../store/apiSlice/cartApiSlice";
 import { useGetAllWishListQuery } from "../../store/apiSlice/productSlice";
 import { unauthenticate } from "../../store/slices/auth-slice";
+import { useFormik } from 'formik';
 
 const IconGroup = ({ iconWhiteClass }) => {
   const dispatch = useDispatch();
   const handleClick = e => {
     e.currentTarget.nextSibling.classList.toggle("active");
   };
+
+  const formik = useFormik(
+    {
+      initialValues: { "search": "" },
+      validationSchema: "",
+      enableReinitialize: true,
+      onSubmit: async (values) => {
+        window.location.href = `/shop?search=${values.search}`
+      }
+    }
+  )
 
   const triggerMobileMenu = () => {
     const offcanvasMobileMenu = document.querySelector(
@@ -24,13 +36,20 @@ const IconGroup = ({ iconWhiteClass }) => {
   const { data: wishlistItems } = useGetAllWishListQuery()
 
   // const { cartItems } = useSelector((state) => state.cart);
-  const { data: cartItems } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+  // const { data: cartItems } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
   const { isAuthenticated } = useSelector(
     (state) => state.auth
   )
 
+  const { cartItems: cartItemsNotAuth } = useSelector((state) => state.cart);
+  const { data: cartItemsAuth, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
 
-  
+  const cartItems = isAuthenticated ? cartItemsAuth : cartItemsNotAuth;
+
+  const navigate = useNavigate()
+
+
+
 
 
   return (
@@ -40,9 +59,11 @@ const IconGroup = ({ iconWhiteClass }) => {
           <i className="pe-7s-search" />
         </button>
         <div className="search-content">
-          <form action="#">
-            <input type="text" placeholder="Search" />
-            <button className="button-search">
+          <form method="POST">
+            <input type="text" placeholder="Search" onChange={formik.handleChange}
+              value={formik.values.search}
+              name={'search'} />
+            <button className="button-search" onClick={formik.handleSubmit}>
               <i className="pe-7s-search" />
             </button>
           </form>
@@ -77,10 +98,13 @@ const IconGroup = ({ iconWhiteClass }) => {
                     my account
                   </Link>
                 </li>
-                <li>
-                  <p onClick={() => dispatch(unauthenticate())} className="text-red-500 cursor-pointer">
+                <li className="cursor-pointer">
+                  <Link to={'/login-register'} onClick={() => {
+                    dispatch(unauthenticate())
+
+                  }} className="text-red-500 ">
                     log out
-                  </p>
+                  </Link>
                 </li>
               </>
               : null

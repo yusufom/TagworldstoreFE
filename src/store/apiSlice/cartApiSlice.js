@@ -50,6 +50,16 @@ export const cartApiSlice = apiSlice.injectEndpoints({
                 body: { items: data },
             })
         }),
+        startCreateMultipleCart: builder.mutation({
+            query: (data) => ({
+                url: base + `/create_multiple/`,
+                method: 'PUT',
+                body: { items: data.data },
+                headers: {
+                    Authorization: `JWT ${data.token}`
+                }
+            })
+        }),
         createOrder: builder.mutation({
             query: (data) => ({
                 url: base + `/cart/create_checkout_session/`,
@@ -68,5 +78,5 @@ export const cartApiSlice = apiSlice.injectEndpoints({
 })
 
 export const {
-    useAddToCartMutation, useGetAllCartItemsQuery, useDeleteFromCartMutation, useDecreaseQuantityMutation, useCreateOrderMutation, useStartCreateOrderMutation, useConfirmOrderMutation, useGetUserOrdersQuery
+    useAddToCartMutation, useGetAllCartItemsQuery, useDeleteFromCartMutation, useDecreaseQuantityMutation, useCreateOrderMutation, useStartCreateOrderMutation, useConfirmOrderMutation, useGetUserOrdersQuery, useLazyDeleteAllFromCartQuery, useStartCreateMultipleCartMutation
 } = cartApiSlice;

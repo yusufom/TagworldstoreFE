@@ -20,8 +20,6 @@ const ProductGrid = ({
   const { compareItems } = useSelector((state) => state.compare);
   const prods = getProducts(products, category, type, limit)
 
-  console.log(products, 'prods')
-
   if (isLoading) {
     return (
       <div className="flone-preloader-wrapper">
