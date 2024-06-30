@@ -20,7 +20,8 @@ const ProductGridList = ({
   const cartItems = isAuthenticated ? apiCartItems : reduxCartItems;
   return (
     <Fragment>
-      {products?.map(product => {
+      {products?.length > 0 ?
+      products?.map(product => {
         return (
           <div className="col-xl-4 col-sm-6" key={product.id}>
             <ProductGridListSingle
@@ -44,7 +45,9 @@ const ProductGridList = ({
             />
           </div>
         );
-      })}
+      }) :
+      <div className="text-center">Sorry, this catalogue is empty</div>
+    }
     </Fragment>
   );
 };
