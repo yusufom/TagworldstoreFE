@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getDiscountPrice } from "../../helpers/product";
@@ -6,212 +6,232 @@ import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import { useGetAllCartItemsQuery, useCreateOrderMutation, useStartCreateOrderMutation, useConfirmOrderMutation } from "../../store/apiSlice/cartApiSlice";
-import useQuery from "../../hooks/userQuery";
-import { instanceOf } from "prop-types";
-import React from "react";
-import { successToast } from "../../helpers/toast";
+import { useGetAllBillingAddressesQuery, useCreateBillingAddressMutation } from "../../store/apiSlice/billingApiSlice";
+import { successToast, errorToast } from "../../helpers/toast";
+import { countries } from '../../constants';
 
 const Checkout = () => {
-  let cartTotalPrice = 0;
-  let [searchParams] = useSearchParams();
-
-  let query = useQuery();
-
-  let { pathname } = useLocation();
-  console.log(searchParams.get("soc12sde"))
-  console.log(typeof Boolean(searchParams.get("success")))
-  console.log(searchParams.get("canceled"))
+  const [selectedAddress, setSelectedAddress] = useState("");
+  const [newAddress, setNewAddress] = useState({
+    first_name: "",
+    last_name: "",
+    country: "",
+    street_address: "",
+    apartment: "",
+    city: "",
+    state: "",
+    postcode: "",
+    phone: "",
+    email: "",
+  });
+  const [additionalNote, setAdditionalNote] = useState("");
+  const [searchParams] = useSearchParams();
+  const { pathname } = useLocation();
   const currency = useSelector((state) => state.currency);
-  const [confirmOrder, { isLoading: confirmOrderLoading }] = useConfirmOrderMutation()
 
+  const { data: billingAddresses, isLoading: billingLoading, isError: billingError } = useGetAllBillingAddressesQuery();
+  const { data: cartItems, isLoading: cartLoading, isError: cartError } = useGetAllCartItemsQuery();
+  const [createBillingAddress] = useCreateBillingAddressMutation();
+  const [createOrder] = useCreateOrderMutation();
+  const [startCreateOrder] = useStartCreateOrderMutation();
+  const [confirmOrder] = useConfirmOrderMutation();
 
-  React.useEffect(() => {
-    const soc = searchParams.get("soc12sde")
+  useEffect(() => {
+    const soc = searchParams.get("soc12sde");
     if (soc) {
-      const success = Boolean(searchParams.get("success"))
-      const cancelled = Boolean(searchParams.get("canceled"))
+      const success = Boolean(searchParams.get("success"));
+      const cancelled = Boolean(searchParams.get("canceled"));
       if (success) {
-        confirmOrder({ order_id: soc, status: "success" }).unwrap().then((res) => {
-          console.log('res', res)
-          window.location.href = "/checkout"
-          successToast("Order was successfully placed")
-        }).catch((err) => {
-          console.log('err', err)
-        })
+        confirmOrder({ order_id: soc, status: "success" }).unwrap()
+          .then(() => {
+            window.location.href = "/checkout";
+            successToast("Order was successfully placed");
+          })
+          .catch((error) => {
+            console.error("Confirm order error:", error);
+            errorToast("Failed to confirm order");
+          });
       } else if (cancelled) {
-        confirmOrder({ order_id: soc, status: "canceled" }).unwrap().then((res) => {
-          console.log('res', res)
-          window.location.href = "/checkout"
-          successToast("Order was canceled")
-        }).catch((err) => {
-          console.log('err', err)
-        })
+        confirmOrder({ order_id: soc, status: "canceled" }).unwrap()
+          .then(() => {
+            window.location.href = "/checkout";
+            successToast("Order was canceled");
+          })
+          .catch((error) => {
+            console.error("Cancel order error:", error);
+            errorToast("Failed to cancel order");
+          });
       }
     }
+  }, [searchParams, confirmOrder]);
 
-
-
-  }, [searchParams, confirmOrder])
-
-  // const { cartItems } = useSelector((state) => state.cart);
-  const { data: cartItems, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
-
-  const [createOrder, { isLoading }] = useCreateOrderMutation()
-  const [startCreateOrder, { isLoading: startCreateOrderLoading }] = useStartCreateOrderMutation()
-
-  const lineitems = cartItems?.map((cartItem, key) => {
-
-    return {
-      price: cartItem.product.stripe_price,
-      quantity: cartItem.quantity,
-      // line_total: discountedPrice!= null? finalDiscountedPrice : finalProductPrice
-    }
-  })
-
-  const lineitemsID = cartItems?.map((cartItem, key) => {
-
-    return {
-      id: cartItem.id.toString(),
-    }
-  })
-
-  const handleCreateOrder = () => {
-
-    startCreateOrder(lineitemsID).unwrap()
-      .then((res) => {
-        createOrder({ line_items: lineitems, pkid: res.pkid }).unwrap().then((res) => {
-          // console.log('res', res)
-          // refetch()
-          window.location.href = res.url
-        }).catch((err) => {
-          console.log('err', err)
-        });
-      }).catch((err) => { });
-
-
-
-
-    console.log('lineitems', lineitems)
+  const handleAddressChange = (e) => {
+    const { name, value } = e.target;
+    setNewAddress({ ...newAddress, [name]: value });
   };
 
+  const handleCreateOrder = () => {
+    const lineItems = cartItems?.map((cartItem) => ({
+      price: cartItem.product.stripe_price,
+      quantity: cartItem.quantity,
+    }));
 
+    const lineItemsID = cartItems?.map((cartItem) => ({
+      id: cartItem.id.toString(),
+    }));
+
+    const handleOrder = (addressId) => {
+      startCreateOrder(lineItemsID).unwrap()
+        .then((res) => {
+          createOrder({ line_items: lineItems, pkid: res.pkid, address: addressId, note: additionalNote }).unwrap()
+            .then((res) => {
+              window.location.href = res.url;
+            })
+            .catch((error) => {
+              console.error("Create order error:", error);
+              errorToast("Failed to create order");
+            });
+        })
+        .catch((error) => {
+          console.error("Start create order error:", error);
+          errorToast("Failed to start creating order");
+        });
+    };
+
+    if (selectedAddress === "new") {
+      createBillingAddress(newAddress).unwrap()
+        .then((res) => {
+          handleOrder(res.id);
+        })
+        .catch((error) => {
+          console.error("Create billing address error:", error);
+          errorToast("Failed to create billing address");
+        });
+    } else {
+      handleOrder(selectedAddress);
+    }
+  };
+
+  let cartTotalPrice = 0;
 
   return (
     <Fragment>
-      <SEO
-        titleTemplate="Checkout"
-        description="Checkout page of flone react minimalist eCommerce template."
-      />
+      <SEO titleTemplate="Checkout" description="Checkout page" />
       <LayoutOne headerTop="visible">
-        {/* breadcrumb */}
-        <Breadcrumb
-          pages={[
-            { label: "Home", path: process.env.PUBLIC_URL + "/" },
-            { label: "Checkout", path: process.env.PUBLIC_URL + pathname }
-          ]}
-        />
+        <Breadcrumb pages={[{ label: "Home", path: process.env.PUBLIC_URL + "/" }, { label: "Checkout", path: process.env.PUBLIC_URL + pathname }]} />
         <div className="checkout-area pt-95 pb-100">
           <div className="container">
-            {cartItems && cartItems?.length >= 1 ? (
+            {(billingLoading || cartLoading) ? (
+              <p>Loading...</p>
+            ) : (billingError || cartError) ? (
+              <p>Error loading data</p>
+            ) : (cartItems && cartItems.length >= 1) ? (
               <div className="row">
                 <div className="col-lg-7">
                   <div className="billing-info-wrap">
                     <h3>Billing Details</h3>
                     <div className="row">
-                      <div className="col-lg-6 col-md-6">
-                        <div className="billing-info mb-20">
-                          <label>First Name</label>
-                          <input type="text" />
-                        </div>
+                      <div className="col-lg-12 mb-20">
+                        <label>Select Billing Address</label>
+                        <select
+                          className="border billing-select"
+                          style={{
+                            padding: '10px 2px'
+                          }}
+                          onChange={(e) => setSelectedAddress(e.target.value)}
+                          value={selectedAddress}>
+                          <option value="">Select Address</option>
+                          {billingAddresses?.map((address) => (
+                            <option key={address.id} value={address.id}>
+                              {`${address.first_name} ${address.last_name} - ${address.street_address}, ${address.city}, ${address.country}`}
+                            </option>
+                          ))}
+                          <option value="new">Add New Address</option>
+                        </select>
                       </div>
-                      <div className="col-lg-6 col-md-6">
-                        <div className="billing-info mb-20">
-                          <label>Last Name</label>
-                          <input type="text" />
-                        </div>
-                      </div>
-                      <div className="col-lg-12">
-                        <div className="billing-info mb-20">
-                          <label>Company Name</label>
-                          <input type="text" />
-                        </div>
-                      </div>
-                      <div className="col-lg-12">
-                        <div className="billing-select mb-20">
-                          <label>Country</label>
-                          <select>
-                            <option>Select a country</option>
-                            <option>Azerbaijan</option>
-                            <option>Bahamas</option>
-                            <option>Bahrain</option>
-                            <option>Bangladesh</option>
-                            <option>Barbados</option>
-                          </select>
-                        </div>
-                      </div>
-                      <div className="col-lg-12">
-                        <div className="billing-info mb-20">
-                          <label>Street Address</label>
-                          <input
-                            className="billing-address"
-                            placeholder="House number and street name"
-                            type="text"
+                      {selectedAddress === "new" && (
+                        <>
+                          <div className="col-lg-6 col-md-6">
+                            <div className="billing-info mb-20">
+                              <label>First Name</label>
+                              <input type="text" name="first_name" onChange={handleAddressChange} />
+                            </div>
+                          </div>
+                          <div className="col-lg-6 col-md-6">
+                            <div className="billing-info mb-20">
+                              <label>Last Name</label>
+                              <input type="text" name="last_name" onChange={handleAddressChange} />
+                            </div>
+                          </div>
+                          <div className="col-lg-12">
+                            <div className="billing-select mb-20">
+                              <label>Country</label>
+                              <select name="country" onChange={handleAddressChange} value={newAddress.country}>
+                                <option value="">Select a country</option>
+                                {countries.map((country) => (
+                                  <option key={country.code} value={country.name}>
+                                    {country.name}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+                          <div className="col-lg-12">
+                            <div className="billing-info mb-20">
+                              <label>Street Address</label>
+                              <input className="billing-address" placeholder="House number and street name" name="street_address" type="text" onChange={handleAddressChange} />
+                              <input placeholder="Apartment, suite, unit etc." name="apartment" type="text" onChange={handleAddressChange} />
+                            </div>
+                          </div>
+                          <div className="col-lg-6 col-md-6">
+                            <div className="billing-info mb-20">
+                              <label>City</label>
+                              <input type="text" name="city" onChange={handleAddressChange} />
+                            </div>
+                          </div>
+                          <div className="col-lg-6 col-md-6">
+                            <div className="billing-info mb-20">
+                              <label>State</label>
+                              <input type="text" name="state" onChange={handleAddressChange} />
+                            </div>
+                          </div>
+                          <div className="col-lg-6 col-md-6">
+                            <div className="billing-info mb-20">
+                              <label>Postcode</label>
+                              <input type="text" name="postcode" onChange={handleAddressChange} />
+                            </div>
+                          </div>
+                          <div className="col-lg-6 col-md-6">
+                            <div className="billing-info mb-20">
+                              <label>Phone</label>
+                              <input type="text" name="phone" onChange={handleAddressChange} />
+                            </div>
+                          </div>
+                          <div className="col-lg-6 col-md-6">
+                            <div className="billing-info mb-20">
+                              <label>Email</label>
+                              <input type="email" name="email" onChange={handleAddressChange} />
+                            </div>
+                          </div>
+                        </>
+                      )}
+                      <div className="additional-info-wrap">
+                        <h4>Additional information</h4>
+                        <div className="additional-info">
+                          <label>Order notes</label>
+                          <textarea
+                            placeholder="Notes about your order, e.g. special notes for delivery."
+                            name="message"
+                            onChange={(e) => setAdditionalNote(e.target.value)}
                           />
-                          <input
-                            placeholder="Apartment, suite, unit etc."
-                            type="text"
-                          />
                         </div>
-                      </div>
-                      <div className="col-lg-12">
-                        <div className="billing-info mb-20">
-                          <label>Town / City</label>
-                          <input type="text" />
-                        </div>
-                      </div>
-                      <div className="col-lg-6 col-md-6">
-                        <div className="billing-info mb-20">
-                          <label>State / County</label>
-                          <input type="text" />
-                        </div>
-                      </div>
-                      <div className="col-lg-6 col-md-6">
-                        <div className="billing-info mb-20">
-                          <label>Postcode / ZIP</label>
-                          <input type="text" />
-                        </div>
-                      </div>
-                      <div className="col-lg-6 col-md-6">
-                        <div className="billing-info mb-20">
-                          <label>Phone</label>
-                          <input type="text" />
-                        </div>
-                      </div>
-                      <div className="col-lg-6 col-md-6">
-                        <div className="billing-info mb-20">
-                          <label>Email Address</label>
-                          <input type="text" />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="additional-info-wrap">
-                      <h4>Additional information</h4>
-                      <div className="additional-info">
-                        <label>Order notes</label>
-                        <textarea
-                          placeholder="Notes about your order, e.g. special notes for delivery. "
-                          name="message"
-                          defaultValue={""}
-                        />
                       </div>
                     </div>
                   </div>
                 </div>
-
                 <div className="col-lg-5">
                   <div className="your-order-area">
-                    <h3>Your order</h3>
+                    <h3>Your Order</h3>
                     <div className="your-order-wrap gray-bg-4">
                       <div className="your-order-product-info">
                         <div className="your-order-top">
@@ -222,39 +242,18 @@ const Checkout = () => {
                         </div>
                         <div className="your-order-middle">
                           <ul>
-                            {cartItems?.map((cartItem, key) => {
-                              const discountedPrice = getDiscountPrice(
-                                cartItem.product.price,
-                                cartItem.product.discount
-                              );
-                              const finalProductPrice = (
-                                cartItem.product.price * currency.currencyRate
-                              ).toFixed(2);
-                              const finalDiscountedPrice = (
-                                discountedPrice * currency.currencyRate
-                              ).toFixed(2);
-
-                              discountedPrice != null
-                                ? (cartTotalPrice +=
-                                  finalDiscountedPrice * cartItem.quantity)
-                                : (cartTotalPrice +=
-                                  finalProductPrice * cartItem.quantity);
+                            {cartItems.map((cartItem, key) => {
+                              const discountedPrice = getDiscountPrice(cartItem.product.price, cartItem.product.discount);
+                              const finalProductPrice = (cartItem.product.price * currency.currencyRate).toFixed(2);
+                              const finalDiscountedPrice = (discountedPrice * currency.currencyRate).toFixed(2);
+                              discountedPrice != null ? (cartTotalPrice += finalDiscountedPrice * cartItem.quantity) : (cartTotalPrice += finalProductPrice * cartItem.quantity);
                               return (
                                 <li key={key}>
                                   <span className="order-middle-left">
                                     {cartItem.product.name} X {cartItem.quantity}
                                   </span>{" "}
                                   <span className="order-price">
-                                    {discountedPrice !== null
-                                      ? currency.currencySymbol +
-                                      (
-                                        finalDiscountedPrice *
-                                        cartItem.quantity
-                                      ).toFixed(2)
-                                      : currency.currencySymbol +
-                                      (
-                                        finalProductPrice * cartItem.quantity
-                                      ).toFixed(2)}
+                                    {discountedPrice !== null ? currency.currencySymbol + finalDiscountedPrice : currency.currencySymbol + finalProductPrice}
                                   </span>
                                 </li>
                               );
@@ -270,19 +269,20 @@ const Checkout = () => {
                         <div className="your-order-total">
                           <ul>
                             <li className="order-total">Total</li>
-                            <li>
-                              {currency.currencySymbol +
-                                cartTotalPrice.toFixed(2)}
-                            </li>
+                            <li>{currency.currencySymbol + cartTotalPrice.toFixed(2)}</li>
                           </ul>
                         </div>
                       </div>
                       <div className="payment-method"></div>
+                      <div className="place-order mt-25">
+                        <button
+                          onClick={handleCreateOrder}
+                          disabled={(selectedAddress === "new" && !Object.values(newAddress).every(val => val !== "")) || (!selectedAddress)}
+                          className="btn-hover">
+                          Place Order
+                        </button>
+                      </div>
                     </div>
-                    <div className="place-order mt-25">
-                      <button type="submit" className="btn-hover" onClick={handleCreateOrder}>Place Order</button>
-                    </div>
-
                   </div>
                 </div>
               </div>
@@ -294,10 +294,8 @@ const Checkout = () => {
                       <i className="pe-7s-cash"></i>
                     </div>
                     <div className="item-empty-area__text">
-                      No items found in cart to checkout <br />{" "}
-                      <Link to={process.env.PUBLIC_URL + "/shop"}>
-                        Shop Now
-                      </Link>
+                      No items found in cart to checkout <br />
+                      <Link to={process.env.PUBLIC_URL + "/shop"}>Shop Now</Link>
                     </div>
                   </div>
                 </div>
