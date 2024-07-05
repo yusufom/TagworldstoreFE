@@ -6,6 +6,7 @@
       margin-bottom: 20px;
       border: 1px solid #ebebeb;
     }
+
     &-button {
       background-color: #f9f9f9;
       font-size: 15px;
@@ -16,6 +17,7 @@
       display: block;
       padding: 16px 55px;
       position: relative;
+
       span {
         color: #242424;
         font-size: 15px;
@@ -23,21 +25,25 @@
         position: absolute;
         top: 16px;
       }
-      &[aria-expanded="true"]{
+
+      &[aria-expanded="true"] {
         border-bottom: 1px solid #ebebeb;
       }
+
       &:focus {
         box-shadow: none;
       }
+
       @media #{$xs-layout} {
         line-height: 22px;
         font-size: 14px;
         padding: 16px 30px 16px 40px;
       }
-  
+
       &:hover {
         color: $theme-color;
       }
+
       &::before {
         color: #000;
         content: "\f107";
@@ -48,10 +54,12 @@
         right: 10px;
         top: 19px;
       }
+
       &:hover::before {
         color: $theme-color;
       }
     }
+
     &-body {
       border-bottom: 1px solid #ebebeb;
     }
@@ -62,28 +70,34 @@
   .myaccount-info-wrapper {
     padding: 30px 20px;
     background-color: #fff;
+
     .account-info-wrapper {
       border-bottom: 1px solid #eaeaea;
       margin-bottom: 28px;
       padding-bottom: 30px;
+
       h4 {
         font-size: 15px;
         margin: 0;
         text-transform: uppercase;
       }
+
       h5 {
         font-size: 16px;
         letter-spacing: 0.2px;
         margin-top: 7px;
       }
     }
+
     .billing-info {
       margin-bottom: 20px;
+
       label {
         color: #000;
         font-size: 14px;
         text-transform: capitalize;
       }
+
       input {
         background: transparent none repeat scroll 0 0;
         border: 1px solid #ebebeb;
@@ -92,11 +106,13 @@
         padding: 0 15px;
       }
     }
+
     .billing-back-btn {
       display: flex;
       justify-content: flex-end;
       margin-top: 26px;
       align-items: center;
+
       .billing-back {
         a {
           color: #000;
@@ -104,15 +120,18 @@
           font-size: 14px;
           font-weight: 500;
           text-transform: uppercase;
+
           &:hover {
             color: $theme-color;
           }
+
           i {
             font-size: 16px;
             color: $theme-color;
           }
         }
       }
+
       .billing-btn {
         button {
           background-color: #f2f2f2;
@@ -126,6 +145,7 @@
           text-transform: uppercase;
           cursor: pointer;
           transition: all 0.3s ease 0s;
+
           &:hover {
             background: $theme-color;
             color: #fff;
@@ -133,15 +153,19 @@
         }
       }
     }
+
     .entries-wrapper {
       border: 1px solid #eaeaea;
       position: relative;
+
       @media #{$xs-layout} {
         padding: 30px 10px;
+
         &::before {
           display: none;
         }
       }
+
       &::before {
         position: absolute;
         content: "";
@@ -151,11 +175,14 @@
         top: 0;
         background-color: #eaeaea;
       }
+
       .entries-info {
         padding: 30px 20px;
+
         @media #{$xs-layout} {
           padding: 0 10px 30px;
         }
+
         p {
           color: #000;
           font-size: 15px;
@@ -163,7 +190,9 @@
           text-transform: capitalize;
         }
       }
+
       .entries-edit-delete {
+
         a,
         button {
           background: none;
@@ -176,11 +205,14 @@
           padding: 12px 15px;
           text-transform: uppercase;
           font-weight: 500;
+
           &:hover {
             background-color: $theme-color;
           }
+
           &.edit {
             background-color: #df5c39;
+
             &:hover {
               background-color: $theme-color;
             }

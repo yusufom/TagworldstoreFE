@@ -11,7 +11,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { unauthenticate } from "../../store/slices/auth-slice";
 import { useFormik } from "formik";
 import { errorToast, successToast } from "../../helpers/toast";
-import { useNavigate } from "react-router-dom";
 
 const MyAccount = () => {
   let { pathname } = useLocation();
@@ -50,11 +49,11 @@ const MyAccount = () => {
   });
 
   const changePasswordformik = useFormik({
-    initialValues: { "current_password": "", "new_password": "", "new_password_confirm": "" },
+    initialValues: { "current_password": "", "new_password": "", "re_new_password": "" },
     validationSchema: "",
     enableReinitialize: true,
     onSubmit: async (values) => {
-      if (values.new_password !== values.new_password_confirm) {
+      if (values.new_password !== values.re_new_password) {
         errorToast("New Passwords do not match");
         return;
       } else {
@@ -299,8 +298,8 @@ const MyAccount = () => {
                                 <input
                                   type="password"
                                   onChange={changePasswordformik.handleChange}
-                                  value={changePasswordformik.values.new_password_confirm}
-                                  name={'new_password_confirm'}
+                                  value={changePasswordformik.values.re_new_password}
+                                  name={'re_new_password'}
                                 />
                               </div>
                             </div>
@@ -367,8 +366,16 @@ const MyAccount = () => {
 
         {/* Edit Address Div */}
         {showEditDiv && (
-          <div className="custom-modal">
-            <div className="custom-modal-content">
+          <div className="custom-modal"
+          style={{
+                overflow: 'hidden'
+              }}
+          >
+            <div className="custom-modal-content"
+              style={{
+                marginTop: '50px', maxHeight: '350px', overflowY: 'scroll'
+              }}
+            >
               <div className="custom-modal-header">
                 <h5 className="custom-modal-title">Edit Billing Address</h5>
                 <button type="button" className="close" onClick={handleEditDivClose}>
@@ -419,7 +426,11 @@ const MyAccount = () => {
                   </div>
                   <div className="billing-back-btn">
                     <div className="billing-btn">
-                      <button type="button" onClick={editFormik.handleSubmit}>
+                      <button type="button" 
+                      style={{
+                        backgroundColor:'#F06B0E'
+                      }}
+                       onClick={editFormik.handleSubmit}>
                         {updateLoading ? "Loading" : 'Submit'}
                       </button>
                     </div>
@@ -432,8 +443,16 @@ const MyAccount = () => {
 
         {/* Add Address Div */}
         {showAddDiv && (
-          <div className="custom-modal">
-            <div className="custom-modal-content">
+          <div className="custom-modal"
+          style={{
+                overflow: 'hidden'
+              }}
+          >
+            <div className="custom-modal-content"
+              style={{
+                marginTop: '50px', maxHeight: '350px', overflowY: 'scroll'
+              }}
+            >
               <div className="custom-modal-header">
                 <h5 className="custom-modal-title">Add Billing Address</h5>
                 <button type="button" className="close" onClick={handleAddDivClose}>
@@ -484,7 +503,11 @@ const MyAccount = () => {
                   </div>
                   <div className="billing-back-btn">
                     <div className="billing-btn">
-                      <button type="button" onClick={addFormik.handleSubmit}>
+                      <button type="button" 
+                       style={{
+                        backgroundColor:'#F06B0E'
+                      }}
+                      onClick={addFormik.handleSubmit}>
                         {createLoading ? "Loading" : 'Submit'}
                       </button>
                     </div>
@@ -509,10 +532,10 @@ const MyAccount = () => {
                 <p>Are you sure you want to delete this address?</p>
                 <div className="billing-back-btn">
                   <div className="billing-btn">
-                    <button type="button" onClick={handleDeleteAddress}>
+                    <button className="bg-orange" type="button" onClick={handleDeleteAddress}>
                       {deleteLoading ? "Loading" : 'Yes'}
                     </button>
-                    <button type="button" onClick={handleDeleteCancel}>No</button>
+                    <button className="bg-orange" type="button" onClick={handleDeleteCancel}>No</button>
                   </div>
                 </div>
               </div>

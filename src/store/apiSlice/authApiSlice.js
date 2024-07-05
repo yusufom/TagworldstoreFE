@@ -1,5 +1,5 @@
 
-import {apiSlice} from "../api";
+import { apiSlice } from "../api";
 
 const base = "auth"
 
@@ -39,9 +39,16 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 body: data
             })
         }),
-        forgotUsernamePassword: builder.mutation({
+        forgotPassword: builder.mutation({
             query: (credentials) => ({
-                url: '/auth/influencer/password_request/',
+                url: base + '/users/reset_password/',
+                method: 'GET',
+                body: credentials
+            })
+        }),
+        forgotPasswordReset: builder.mutation({
+            query: (credentials) => ({
+                url: base + '/users/reset_password_confirm/',
                 method: 'GET',
                 body: credentials
             })
@@ -57,17 +64,17 @@ export const authApiSlice = apiSlice.injectEndpoints({
 })
 
 
-// export const { useGetUserQuery, useLoginMutation, useCheckCodeMutation, useChangePasswordMutation, useDeleteAccountMutation, useForgotUsernamePasswordMutation, useLogoutMutation, useRegisterMutation } = authApiSlice;
 export const {
     useLoginMutation,
     useChangePasswordMutation,
     useDeleteAccountMutation,
-    useForgotUsernamePasswordMutation,
+    useForgotPasswordMutation,
+    useForgotPasswordResetMutation,
     useLogoutMutation,
     useRegisterMutation,
     useActivateAccountMutation
 } = authApiSlice;
 
 export const {
-    endpoints: {login},
+    endpoints: { login },
 } = authApiSlice

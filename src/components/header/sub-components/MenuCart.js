@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getDiscountPrice } from "../../../helpers/product";
-import { deleteFromCart as notAuthDeleteFromCart } from "../../../store/slices/cart-slice"
+import { deleteFromCart as notAuthDeleteFromCart } from "../../../store/slices/cart-slice";
 import { useDeleteFromCartMutation, useGetAllCartItemsQuery } from "../../../store/apiSlice/cartApiSlice";
 import { errorToast, successToast } from "../../../helpers/toast";
 
@@ -11,16 +11,13 @@ const MenuCart = () => {
   const currency = useSelector((state) => state.currency);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
-
   const [deleteFromCart, { isLoading: deleteFromCartLoading, error: deleteFromCartError }] = useDeleteFromCartMutation();
-
 
   let cartTotalPrice = 0;
   const { cartItems: cartItemsNotAuth } = useSelector((state) => state.cart);
   const { data: cartItemsAuth, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
 
   const cartItems = isAuthenticated ? cartItemsAuth : cartItemsNotAuth;
-
 
   return (
     <div className="shopping-cart-content">
@@ -43,15 +40,13 @@ const MenuCart = () => {
                 ? (cartTotalPrice += finalDiscountedPrice * item.quantity)
                 : (cartTotalPrice += finalProductPrice * item.quantity);
 
-
-
               return (
                 <li className="single-shopping-cart" key={item.id}>
                   <div className="shopping-cart-img">
                     <Link to={process.env.PUBLIC_URL + "/product/" + item.id}>
                       <img
                         alt=""
-                        src={item?.product?.image[0]?.image || ""}
+                        src={item?.product?.image?.[0]?.image || ""}
                         className="img-fluid"
                       />
                     </Link>
@@ -85,10 +80,10 @@ const MenuCart = () => {
                     <button onClick={() => isAuthenticated ? deleteFromCart(item.id).unwrap()
                       .then(() => {
                         successToast("Item deleted successfully")
-                        refetch()
+                        refetch();
                       })
                       .catch(() => {
-                        errorToast("Something went wrong")
+                        errorToast("Something went wrong");
                       }) : dispatch(notAuthDeleteFromCart(item.id))}>
                       <i className="fa fa-times-circle" />
                     </button>

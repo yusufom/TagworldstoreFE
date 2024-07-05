@@ -19,33 +19,20 @@ const Cart = () => {
   let { pathname } = useLocation();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
-
   const currency = useSelector((state) => state.currency);
-  // const { cartItems } = useSelector((state) => state.cart);
-
-
   const [addToCartM, { isLoading, error }] = useAddToCartMutation();
   const [deleteFromCart, { isLoading: deleteFromCartLoading, error: deleteFromCartError }] = useDeleteFromCartMutation();
   const { deleteAllFromCart, isLoading: deleteAllFromCartLoading } = useLazyDeleteAllFromCartQuery();
   const [decreaseQuantity, { isLoading: decreaseQuantityLoading, error: decreaseQuantityError }] = useDecreaseQuantityMutation();
-
 
   const { cartItems: cartItemsNotAuth } = useSelector((state) => state.cart);
   const { data: cartItemsAuth, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
 
   const cartItems = isAuthenticated ? cartItemsAuth : cartItemsNotAuth;
 
-
-  // dispatch(apiSlice.util.resetApiState());
-
-
-
   return (
     <Fragment>
-      <SEO
-        titleTemplate="Cart"
-        description="Cart page of flone react minimalist eCommerce template."
-      />
+      <SEO titleTemplate="Cart" description="Cart page of flone react minimalist eCommerce template." />
 
       <LayoutOne headerTop="visible">
         {/* breadcrumb */}
@@ -89,9 +76,9 @@ const Cart = () => {
 
                             discountedPrice != null
                               ? (cartTotalPrice +=
-                                finalDiscountedPrice * cartItem.quantity)
+                                  finalDiscountedPrice * cartItem.quantity)
                               : (cartTotalPrice +=
-                                finalProductPrice * cartItem.quantity);
+                                  finalProductPrice * cartItem.quantity);
                             return (
                               <tr key={key}>
                                 <td className="product-thumbnail">
@@ -102,14 +89,22 @@ const Cart = () => {
                                       cartItem.slug
                                     }
                                   >
-                                    <img
-                                      className="img-fluid"
-                                      src={
-                                        process.env.PUBLIC_URL +
-                                        cartItem.product.image[0].image
-                                      }
-                                      alt=""
-                                    />
+                                    {cartItem.product.image && cartItem.product.image[0] ? (
+                                      <img
+                                        className="img-fluid"
+                                        src={
+                                          process.env.PUBLIC_URL +
+                                          cartItem.product.image[0].image
+                                        }
+                                        alt=""
+                                      />
+                                    ) : (
+                                      <img
+                                        className="img-fluid"
+                                        src="default-image-path"
+                                        alt=""
+                                      />
+                                    )}
                                   </Link>
                                 </td>
 
@@ -124,7 +119,7 @@ const Cart = () => {
                                     {cartItem.name}
                                   </Link>
                                   {cartItem.selected_product_color &&
-                                    cartItem.selected_product_size ? (
+                                  cartItem.selected_product_size ? (
                                     <div className="cart-item-variation">
                                       <span>
                                         Color: {cartItem.selected_product_color}
@@ -163,12 +158,15 @@ const Cart = () => {
                                     <button
                                       className="dec qtybutton"
                                       onClick={() =>
-                                        !isAuthenticated ?
-                                          dispatch(decreaseQuantityNotAuth(cartItem))
-                                          :
-                                          decreaseQuantity(cartItem.id).unwrap().then(() => { warningToast("Item Decremented From Cart"); refetch() }).catch(() => { })
-
-
+                                        !isAuthenticated
+                                          ? dispatch(decreaseQuantityNotAuth(cartItem))
+                                          : decreaseQuantity(cartItem.id)
+                                              .unwrap()
+                                              .then(() => {
+                                                warningToast("Item Decremented From Cart");
+                                                refetch();
+                                              })
+                                              .catch(() => {})
                                       }
                                     >
                                       -
@@ -182,28 +180,33 @@ const Cart = () => {
                                     <button
                                       className="inc qtybutton"
                                       onClick={() => {
-                                        isAuthenticated ?
-                                          addToCartM({
-                                            ...cartItem,
-                                            quantity: quantityCount
-                                          }).unwrap().then(() => { successToast("Added To Cart"); refetch() }).catch(() => { })
-                                          :
-                                          dispatch(addToCart({
-                                            ...cartItem,
-                                            quantity: quantityCount
-                                          }));
-
-                                      }
-                                      }
+                                        isAuthenticated
+                                          ? addToCartM({
+                                              ...cartItem,
+                                              quantity: quantityCount
+                                            })
+                                              .unwrap()
+                                              .then(() => {
+                                                successToast("Added To Cart");
+                                                refetch();
+                                              })
+                                              .catch(() => {})
+                                          : dispatch(
+                                              addToCart({
+                                                ...cartItem,
+                                                quantity: quantityCount
+                                              })
+                                            );
+                                      }}
                                       disabled={
                                         cartItem !== undefined &&
                                         cartItem.quantity &&
                                         cartItem.quantity >=
-                                        cartItemStock(
-                                          cartItem.product,
-                                          cartItem.selected_product_color,
-                                          cartItem.selected_product_size
-                                        )
+                                          cartItemStock(
+                                            cartItem.product,
+                                            cartItem.selected_product_color,
+                                            cartItem.selected_product_size
+                                          )
                                       }
                                     >
                                       +
@@ -213,29 +216,29 @@ const Cart = () => {
                                 <td className="product-subtotal">
                                   {discountedPrice !== null
                                     ? currency.currencySymbol +
-                                    (
-                                      finalDiscountedPrice * cartItem.quantity
-                                    ).toFixed(2)
+                                      (
+                                        finalDiscountedPrice * cartItem.quantity
+                                      ).toFixed(2)
                                     : currency.currencySymbol +
-                                    (
-                                      finalProductPrice * cartItem.quantity
-                                    ).toFixed(2)}
+                                      (
+                                        finalProductPrice * cartItem.quantity
+                                      ).toFixed(2)}
                                 </td>
 
                                 <td className="product-remove">
                                   <button
                                     onClick={() =>
-                                      !isAuthenticated ?
-                                        dispatch(notAuthDeleteFromCart(cartItem.id))
-                                        :
-                                        deleteFromCart(cartItem.id).unwrap()
-                                          .then(() => {
-                                            successToast("Item deleted successfully")
-                                            refetch()
-                                          })
-                                          .catch(() => {
-                                            errorToast("Something went wrong")
-                                          })
+                                      !isAuthenticated
+                                        ? dispatch(notAuthDeleteFromCart(cartItem.id))
+                                        : deleteFromCart(cartItem.id)
+                                            .unwrap()
+                                            .then(() => {
+                                              successToast("Item deleted successfully");
+                                              refetch();
+                                            })
+                                            .catch(() => {
+                                              errorToast("Something went wrong");
+                                            })
                                     }
                                   >
                                     <i className="fa fa-times"></i>
@@ -253,9 +256,7 @@ const Cart = () => {
                   <div className="col-lg-12">
                     <div className="cart-shiping-update-wrapper">
                       <div className="cart-shiping-update">
-                        <Link
-                          to={process.env.PUBLIC_URL + "/shop"}
-                        >
+                        <Link to={process.env.PUBLIC_URL + "/shop"}>
                           Continue Shopping
                         </Link>
                       </div>
@@ -269,69 +270,8 @@ const Cart = () => {
                 </div>
 
                 <div className="row">
-                  <div className="col-lg-4 col-md-6">
-                    {/* <div className="cart-tax">
-                      <div className="title-wrap">
-                        <h4 className="cart-bottom-title section-bg-gray">
-                          Estimate Shipping And Tax
-                        </h4>
-                      </div>
-                      <div className="tax-wrapper">
-                        <p>
-                          Enter your destination to get a shipping estimate.
-                        </p>
-                        <div className="tax-select-wrapper">
-                          <div className="tax-select">
-                            <label>* Country</label>
-                            <select className="email s-email s-wid">
-                              <option>Bangladesh</option>
-                              <option>Albania</option>
-                              <option>Åland Islands</option>
-                              <option>Afghanistan</option>
-                              <option>Belgium</option>
-                            </select>
-                          </div>
-                          <div className="tax-select">
-                            <label>* Region / State</label>
-                            <select className="email s-email s-wid">
-                              <option>Bangladesh</option>
-                              <option>Albania</option>
-                              <option>Åland Islands</option>
-                              <option>Afghanistan</option>
-                              <option>Belgium</option>
-                            </select>
-                          </div>
-                          <div className="tax-select">
-                            <label>* Zip/Postal Code</label>
-                            <input type="text" />
-                          </div>
-                          <button className="cart-btn-2" type="submit">
-                            Get A Quote
-                          </button>
-                        </div>
-                      </div>
-                    </div> */}
-                  </div>
-
-                  <div className="col-lg-4 col-md-6">
-                    {/* <div className="discount-code-wrapper">
-                      <div className="title-wrap">
-                        <h4 className="cart-bottom-title section-bg-gray">
-                          Use Coupon Code
-                        </h4>
-                      </div>
-                      <div className="discount-code">
-                        <p>Enter your coupon code if you have one.</p>
-                        <form>
-                          <input type="text" required name="name" />
-                          <button className="cart-btn-2" type="submit">
-                            Apply Coupon
-                          </button>
-                        </form>
-                      </div>
-                    </div> */}
-                  </div>
-
+                  <div className="col-lg-4 col-md-6"></div>
+                  <div className="col-lg-4 col-md-6"></div>
                   <div className="col-lg-4 col-md-12">
                     <div className="grand-totall">
                       <div className="title-wrap">
@@ -341,26 +281,13 @@ const Cart = () => {
                       </div>
                       <h5>
                         Total products{" "}
-                        <span>
-                          {currency.currencySymbol + cartTotalPrice.toFixed(2)}
-                        </span>
+                        <span>{currency.currencySymbol + cartTotalPrice.toFixed(2)}</span>
                       </h5>
-
                       <h4 className="grand-totall-title">
                         Grand Total{" "}
-                        <span>
-                          {currency.currencySymbol + cartTotalPrice.toFixed(2)}
-                        </span>
+                        <span>{currency.currencySymbol + cartTotalPrice.toFixed(2)}</span>
                       </h4>
-                      {isAuthenticated ?
-                        <Link to={process.env.PUBLIC_URL + "/checkout"}>
-                          Proceed to Checkout
-                        </Link>
-                        :
-                        <Link to={process.env.PUBLIC_URL + "/login-register"}>
-                          Proceed to Checkout
-                        </Link>
-                      }
+                      <Link to={process.env.PUBLIC_URL + "/checkout"}>Proceed to Checkout</Link>
                     </div>
                   </div>
                 </div>
@@ -374,9 +301,7 @@ const Cart = () => {
                     </div>
                     <div className="item-empty-area__text">
                       No items found in cart <br />{" "}
-                      <Link to={process.env.PUBLIC_URL + "/shop"}>
-                        Shop Now
-                      </Link>
+                      <Link to={process.env.PUBLIC_URL + "/shop"}>Shop Now</Link>
                     </div>
                   </div>
                 </div>
