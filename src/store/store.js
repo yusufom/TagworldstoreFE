@@ -22,7 +22,7 @@ import authReducer from "./slices/auth-slice";
 import { cartApiSlice } from './apiSlice/cartApiSlice';
 
 const persistConfig = {
-    key: "test",
+    key: "test1.2",
     version: 1.1,
     storage,
     blacklist: ["product", "api", 'compare', 'user']
