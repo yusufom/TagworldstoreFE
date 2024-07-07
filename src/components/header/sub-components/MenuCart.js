@@ -29,29 +29,29 @@ const MenuCart = () => {
           <ul>
             {cartItems?.map((item) => {
               const discountedPrice = getDiscountPrice(
-                item.product.price,
-                item.product.discount
+                item?.product?.price,
+                item?.product?.discount
               );
               const finalProductPrice = (
-                item.product.price * currency.currencyRate
+                item?.product?.price * currency.currencyRate
               ).toFixed(2);
               const finalDiscountedPrice = (
                 discountedPrice * currency.currencyRate
               ).toFixed(2);
 
               discountedPrice != null
-                ? (cartTotalPrice += finalDiscountedPrice * item.quantity)
-                : (cartTotalPrice += finalProductPrice * item.quantity);
+                ? (cartTotalPrice += finalDiscountedPrice * item?.quantity)
+                : (cartTotalPrice += finalProductPrice * item?.quantity);
 
 
 
               return (
-                <li className="single-shopping-cart" key={item.id}>
+                <li className="single-shopping-cart" key={item?.id}>
                   <div className="shopping-cart-img">
-                    <Link to={process.env.PUBLIC_URL + "/product/" + item.id}>
+                    <Link to={process.env.PUBLIC_URL + "/product/" + item?.id}>
                       <img
                         alt=""
-                        src={item?.product?.image[0]?.image || ""}
+                        src={item?.product?.image ? item?.product?.image[0]?.image : ""}
                         className="img-fluid"
                       />
                     </Link>
@@ -59,7 +59,7 @@ const MenuCart = () => {
                   <div className="shopping-cart-title">
                     <h4>
                       <Link
-                        to={process.env.PUBLIC_URL + "/product/" + item.product.id}
+                        to={process.env.PUBLIC_URL + "/product/" + item?.product?.id}
                       >
                         {" "}
                         {item?.product?.name}{" "}
@@ -74,8 +74,8 @@ const MenuCart = () => {
                     {item.selectedProductColor &&
                       item.selectedProductSize ? (
                       <div className="cart-item-variation">
-                        <span>Color: {item.selected_product_color}</span>
-                        <span>Size: {item.selected_product_size}</span>
+                        <span>Color: {item?.selected_product_color}</span>
+                        <span>Size: {item?.selected_product_size}</span>
                       </div>
                     ) : (
                       ""
