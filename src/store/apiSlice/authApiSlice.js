@@ -1,4 +1,3 @@
-
 import { apiSlice } from "../api";
 
 const base = "auth"
@@ -39,17 +38,17 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 body: data
             })
         }),
-        forgotPassword: builder.mutation({
+        sendForgotPasswordLink: builder.mutation({
             query: (credentials) => ({
                 url: base + '/users/reset_password/',
-                method: 'GET',
+                method: 'POST',
                 body: credentials
             })
         }),
         forgotPasswordReset: builder.mutation({
             query: (credentials) => ({
                 url: base + '/users/reset_password_confirm/',
-                method: 'GET',
+                method: 'POST',
                 body: credentials
             })
         }),
@@ -63,12 +62,11 @@ export const authApiSlice = apiSlice.injectEndpoints({
     })
 })
 
-
 export const {
     useLoginMutation,
     useChangePasswordMutation,
     useDeleteAccountMutation,
-    useForgotPasswordMutation,
+    useSendForgotPasswordLinkMutation,
     useForgotPasswordResetMutation,
     useLogoutMutation,
     useRegisterMutation,
@@ -77,4 +75,4 @@ export const {
 
 export const {
     endpoints: { login },
-} = authApiSlice
+} = authApiSlice;

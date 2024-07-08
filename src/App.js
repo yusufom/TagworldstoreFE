@@ -7,6 +7,7 @@ const HomeFashion = lazy(() => import("./pages/home/HomeFashion"));
 
 const MyAccount = lazy(() => import("./pages/other/MyAccount"));
 const LoginRegister = lazy(() => import("./pages/other/LoginRegister"));
+const ForgotPassword = lazy(() => import("./pages/other/ForgotPassword"));
 const NotFound = lazy(() => import("./pages/other/NotFound"));
 const Product = lazy(() => import("./pages/shop-product/Product"));
 
@@ -60,6 +61,10 @@ function App() {
             <Route
               path={process.env.PUBLIC_URL + "/login-register"}
               element={<LoginRegister />}
+            />
+            <Route
+              path={process.env.PUBLIC_URL + "/forgotpassword"}
+              element={<ForgotPassword />}
             />
 
             <Route

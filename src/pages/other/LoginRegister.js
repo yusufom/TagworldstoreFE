@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Link, useLocation, Navigate, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Tab from "react-bootstrap/Tab";
 import Nav from "react-bootstrap/Nav";
 import SEO from "../../components/seo";
@@ -16,84 +16,63 @@ import { deleteAllFromCart } from "../../store/slices/cart-slice";
 const LoginRegister = () => {
   let { pathname } = useLocation();
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const { isAuthenticated } = useSelector(
-    (state) => state.auth
-  )
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.cart);
-
 
   const [login, { isLoading }] = useLoginMutation();
   const [register, { isLoading: registerLoading }] = useRegisterMutation();
-  const [startCreateMultipleCart, { isLoading: startCreateMultipleCartLoading }] = useStartCreateMultipleCartMutation()
+  const [startCreateMultipleCart, { isLoading: startCreateMultipleCartLoading }] = useStartCreateMultipleCartMutation();
 
+  const formik = useFormik({
+    initialValues: { username: "", password: "" },
+    validationSchema: "",
+    enableReinitialize: true,
+    onSubmit: async (values) => {
+      try {
+        const res = await login(values).unwrap();
+        dispatch(authenticate(res));
+        successToast("Login successful");
 
-  const formik = useFormik(
-    {
-      initialValues: { "username": "", "password": "" },
-      validationSchema: "",
-      enableReinitialize: true,
-      onSubmit: async (values) => {
-        login(values)
-          .then((res) => {
-            dispatch(authenticate(res.data))
-            successToast("Login successful")
-
-            if (cartItems.length > 0) {
-              startCreateMultipleCart({ token: res.data.access, data: cartItems }).then(async (res) => {
-                dispatch(deleteAllFromCart())
-              }).catch(async (err) => { })
-
-            }
-            window.location.href = "/";
-          })
-          .catch(error => {
-            console.error('Error in userLogin:', error);
-            errorToast(error.data.detail);
-          });
+        if (cartItems.length > 0) {
+          await startCreateMultipleCart({ token: res.access, data: cartItems });
+          dispatch(deleteAllFromCart());
+        }
+        window.location.href = "/";
+      } catch (error) {
+        console.error('Error in userLogin:', error);
+        errorToast(error?.data?.detail || "An error occurred during login.");
       }
     }
-  )
+  });
 
-  const registerFormik = useFormik(
-    {
-      initialValues: { "username": "", "password": "", "email": "" },
-      validationSchema: "",
-      enableReinitialize: true,
-      onSubmit: async (values) => {
-        register(values)
-          .unwrap()
-          .then((res) => {
-            console.log(res);
-            successToast("Registration successful, Please visit your email to activate your account")
-          })
-          .catch(error => {
-            console.error('Error in userLogin:', error);
-            const errorToastData = error.data
-            if (errorToastData.password) {
-              errorToast(errorToastData.password[0])
-            } else if (errorToastData.username) {
-              errorToast(errorToastData.username[0])
-            }
-          });
+  const registerFormik = useFormik({
+    initialValues: { username: "", password: "", email: "" },
+    validationSchema: "",
+    enableReinitialize: true,
+    onSubmit: async (values) => {
+      try {
+        const res = await register(values).unwrap();
+        successToast("Registration successful, Please visit your email to activate your account");
+      } catch (error) {
+        console.error('Error in userRegister:', error);
+        const errorToastData = error?.data || {};
+        if (errorToastData.password) {
+          errorToast(errorToastData.password[0]);
+        } else if (errorToastData.username) {
+          errorToast(errorToastData.username[0]);
+        } else {
+          errorToast("An error occurred during registration.");
+        }
       }
     }
-  )
-
-  // if (isAuthenticated) {
-  //   return <Navigate to={`/`} />;
-  // }
-
+  });
 
   return (
     <Fragment>
-      <SEO
-        titleTemplate="Login"
-        description="Login page of flone react minimalist eCommerce template."
-      />
+      <SEO titleTemplate="Login" description="Login page of flone react minimalist eCommerce template." />
       <LayoutOne headerTop="visible">
-        {/* breadcrumb */}
         <Breadcrumb
           pages={[
             { label: "Home", path: process.env.PUBLIC_URL + "/" },
@@ -105,15 +84,13 @@ const LoginRegister = () => {
             <div className="row">
               <div className="col-lg-7 col-md-12 ms-auto me-auto">
                 <div className="login-register-wrapper">
-                  <Tab.Container defaultActiveKey="login" >
+                  <Tab.Container defaultActiveKey="login">
                     <Nav variant="pills" className="login-register-tab-list">
                       <Nav.Item>
                         <Nav.Link eventKey="login">
                           <h4>Login</h4>
                         </Nav.Link>
                       </Nav.Item>
-
-
                       <Nav.Item>
                         <Nav.Link eventKey="register">
                           <h4>Register</h4>
@@ -143,11 +120,11 @@ const LoginRegister = () => {
                                 <div className="login-toggle-btn">
                                   <input type="checkbox" />
                                   <label className="ml-10">Remember me</label>
-                                  <Link to={process.env.PUBLIC_URL + "/"}>
+                                  <Link to={process.env.PUBLIC_URL + "/forgotpassword"}>
                                     Forgot Password?
                                   </Link>
                                 </div>
-                                <button onClick={formik.handleSubmit}>
+                                <button type="button" onClick={formik.handleSubmit}>
                                   <span>Login</span>
                                 </button>
                               </div>
@@ -180,9 +157,8 @@ const LoginRegister = () => {
                                 value={registerFormik.values.password}
                                 name={'password'}
                               />
-
                               <div className="button-box">
-                                <button onClick={registerFormik.handleSubmit}>
+                                <button type="button" onClick={registerFormik.handleSubmit}>
                                   <span>Register</span>
                                 </button>
                               </div>
