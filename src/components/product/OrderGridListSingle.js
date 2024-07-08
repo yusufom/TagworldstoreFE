@@ -21,7 +21,7 @@ const OrderGridListSingle = ({
               <p>
                 Order ID:
                 <h3>
-                  <Link to={process.env.PUBLIC_URL + "/product/" + order.id}>
+                  <Link to={'#'}>
                     {order.pkid}
                   </Link>
                 </h3>

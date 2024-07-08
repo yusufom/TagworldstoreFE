@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 
 import { setActiveSort } from "../../helpers/product";
 
-const ShopTag = ({ tags, getSortParams }) => {
+const ShopTag = ({ tags, getSortParams, setSearchTerm }) => {
   return (
     <div className="sidebar-widget mt-50">
       <h4 className="pro-sidebar-title">Tag </h4>
@@ -15,6 +15,7 @@ const ShopTag = ({ tags, getSortParams }) => {
                   <button
                     onClick={e => {
                       getSortParams("tag", tag);
+                      setSearchTerm("")
                       setActiveSort(e);
                     }}
                   >

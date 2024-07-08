@@ -10,6 +10,7 @@ import ShopSidebar from '../../wrappers/product/ShopSidebar';
 import ShopTopbar from '../../wrappers/product/ShopTopbar';
 import ShopProducts from '../../wrappers/product/ShopProducts';
 import { useGetAllProductsQuery } from "../../store/apiSlice/productSlice";
+import { useSearchParams } from "react-router-dom";
 // import { apiSlice } from '../../store/api';
 
 
@@ -25,6 +26,8 @@ const ShopGridStandard = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [currentData, setCurrentData] = useState([]);
     const [sortedProducts, setSortedProducts] = useState([]);
+    // eslint-disable-next-line no-unused-vars
+    const [searchParams, setSearchParams] = useSearchParams();
     // const { products } = useSelector((state) => state.product);
     const { data: products, isLoading } = useGetAllProductsQuery({ refetchOnMountOrArgChange: true });
 
@@ -39,8 +42,6 @@ const ShopGridStandard = () => {
     const getQueryParams = (search) => {
         return new URLSearchParams(search);
     };
-
-
 
     const getSortParams = (sortType, sortValue) => {
         setSortType(sortType);
@@ -66,7 +67,6 @@ const ShopGridStandard = () => {
         setSortedProducts(sortedProducts);
         setCurrentData(sortedProducts?.slice(offset, offset + pageLimit));
     }, [offset, products, sortType, sortValue, filterSortType, filterSortValue, search]);
-
     if (isLoading) {
         return (
             <div className="flone-preloader-wrapper">
@@ -99,7 +99,7 @@ const ShopGridStandard = () => {
                         <div className="row">
                             <div className="col-lg-3 order-2 order-lg-1">
                                 {/* shop sidebar */}
-                                <ShopSidebar products={products} getSortParams={getSortParams} sideSpaceClass="mr-30" />
+                                <ShopSidebar products={products} getSortParams={getSortParams} setSearchTerm={setSearchParams} sideSpaceClass="mr-30" />
                             </div>
                             <div className="col-lg-9 order-1 order-lg-2">
                                 {/* shop topbar default */}

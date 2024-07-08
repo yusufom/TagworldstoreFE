@@ -12,7 +12,7 @@ import ShopColor from "../../components/product/ShopColor";
 import ShopSize from "../../components/product/ShopSize";
 import ShopTag from "../../components/product/ShopTag";
 
-const ShopSidebar = ({ products, getSortParams, sideSpaceClass }) => {
+const ShopSidebar = ({ products, getSortParams, sideSpaceClass, setSearchTerm }) => {
   const uniqueCategories = getIndividualCategories(products);
   const uniqueColors = getIndividualColors(products);
   const uniqueSizes = getProductsIndividualSizes(products);
@@ -21,22 +21,23 @@ const ShopSidebar = ({ products, getSortParams, sideSpaceClass }) => {
   return (
     <div className={clsx("sidebar-style", sideSpaceClass)}>
       {/* shop search */}
-      <ShopSearch getSortParams={getSortParams}/>
+      <ShopSearch getSortParams={getSortParams} setSearchTerm={setSearchTerm} />
 
       {/* filter by categories */}
       <ShopCategories
         categories={uniqueCategories}
         getSortParams={getSortParams}
+        setSearchTerm={setSearchTerm}
       />
 
       {/* filter by color */}
-      <ShopColor colors={uniqueColors} getSortParams={getSortParams} />
+      <ShopColor colors={uniqueColors} getSortParams={getSortParams} setSearchTerm={setSearchTerm} />
 
       {/* filter by size */}
-      <ShopSize sizes={uniqueSizes} getSortParams={getSortParams} />
+      <ShopSize sizes={uniqueSizes} getSortParams={getSortParams} setSearchTerm={setSearchTerm} />
 
       {/* filter by tag */}
-      <ShopTag tags={uniqueTags} getSortParams={getSortParams} />
+      <ShopTag tags={uniqueTags} getSortParams={getSortParams} setSearchTerm={setSearchTerm} />
     </div>
   );
 };

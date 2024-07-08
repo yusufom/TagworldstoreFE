@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 
 import { setActiveSort } from "../../helpers/product";
 
-const ShopColor = ({ colors, getSortParams }) => {
+const ShopColor = ({ colors, getSortParams, setSearchTerm }) => {
   return (
     <div className="sidebar-widget mt-50">
       <h4 className="pro-sidebar-title">Color </h4>
@@ -14,6 +14,7 @@ const ShopColor = ({ colors, getSortParams }) => {
                 <button
                   onClick={e => {
                     getSortParams("color", "");
+                    setSearchTerm("")
                     setActiveSort(e);
                   }}
                 >
@@ -28,6 +29,7 @@ const ShopColor = ({ colors, getSortParams }) => {
                     <button
                       onClick={e => {
                         getSortParams("color", color);
+                        setSearchTerm("")
                         setActiveSort(e);
                       }}
                     >

@@ -1,7 +1,7 @@
 import { useFormik } from 'formik';
 
 
-const ShopSearch = ({ getSortParams }) => {
+const ShopSearch = ({ getSortParams, setSearchTerm }) => {
 
   const formik = useFormik(
     {
@@ -9,6 +9,7 @@ const ShopSearch = ({ getSortParams }) => {
       validationSchema: "",
       enableReinitialize: true,
       onSubmit: async (values) => {
+        setSearchTerm("")
         getSortParams("name", values.search)
       }
     }
