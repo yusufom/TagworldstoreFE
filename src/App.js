@@ -10,7 +10,7 @@ const LoginRegister = lazy(() => import("./pages/other/LoginRegister"));
 const ForgotPassword = lazy(() => import("./pages/other/ForgotPassword"));
 const NotFound = lazy(() => import("./pages/other/NotFound"));
 const Product = lazy(() => import("./pages/shop-product/Product"));
-
+const PasswordReset = lazy(() => import('./pages/other/PasswordReset'))
 
 const Cart = lazy(() => import("./pages/other/Cart"));
 const Wishlist = lazy(() => import("./pages/other/Wishlist"));
@@ -65,6 +65,10 @@ function App() {
             <Route
               path={process.env.PUBLIC_URL + "/forgotpassword"}
               element={<ForgotPassword />}
+            />
+            <Route
+              path={process.env.PUBLIC_URL + "/password-reset"}
+              element={<PasswordReset />}
             />
 
             <Route
