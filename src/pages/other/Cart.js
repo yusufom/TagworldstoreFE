@@ -287,7 +287,7 @@ const Cart = () => {
                         Grand Total{" "}
                         <span>{currency.currencySymbol + cartTotalPrice.toFixed(2)}</span>
                       </h4>
-                      <Link to={process.env.PUBLIC_URL + "/checkout"}>Proceed to Checkout</Link>
+                      <Link to={isAuthenticated ? process.env.PUBLIC_URL + "/checkout" : "/login-register"}>Proceed to Checkout</Link>
                     </div>
                   </div>
                 </div>

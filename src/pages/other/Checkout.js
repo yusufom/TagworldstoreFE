@@ -1,5 +1,5 @@
 import { Fragment, useState, useEffect } from "react";
-import { Link, useLocation, useSearchParams } from "react-router-dom";
+import { Link, Navigate, useLocation, useSearchParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getDiscountPrice } from "../../helpers/product";
 import SEO from "../../components/seo";
@@ -122,9 +122,14 @@ const Checkout = () => {
         <div className="checkout-area pt-95 pb-100">
           <div className="container">
             {(billingLoading || cartLoading) ? (
-              <p>Loading...</p>
+              <div className="flone-preloader-wrapper">
+                <div className="flone-preloader">
+                  <span></span>
+                  <span></span>
+                </div>
+              </div>
             ) : (billingError || cartError) ? (
-              <p>Error loading data</p>
+              <Navigate to="/login-register"/>
             ) : (cartItems && cartItems.length >= 1) ? (
               <div className="row">
                 <div className="col-lg-7">
