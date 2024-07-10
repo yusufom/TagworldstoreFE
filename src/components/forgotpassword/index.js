@@ -33,33 +33,34 @@ const ForgotPasswordComponent = () => {
                     <div className="row">
                         <div className="col-lg-7 col-md-12 ms-auto me-auto">
                             <div className="login-register-wrapper">
-                                <div className="login-form-container">
-                                    <div className="login-register-form">
-                                        <h4>Forgot Password</h4>
-                                        <form onSubmit={formikSendLink.handleSubmit}>
-                                            <input
-                                                type="email"
-                                                placeholder="Email"
-                                                name="email"
-                                                onChange={formikSendLink.handleChange}
-                                                value={formikSendLink.values.email}
-                                            />
-                                            <div className="button-box">
-                                                <button type="submit" disabled={isLinkSending}>
-                                                    <span>Send Reset Link</span>
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                                {isLinkSent && (
-                                    <div className="login-form-container">
+                                {!isLinkSent ?
+                                    (<div className="login-form-container">
                                         <div className="login-register-form">
-                                            <h4>Reset Link Sent</h4>
-                                            <p>Please check your email for the password reset link.</p>
+                                            <h4>Forgot Password</h4>
+                                            <form onSubmit={formikSendLink.handleSubmit}>
+                                                <input
+                                                    type="email"
+                                                    placeholder="Email"
+                                                    name="email"
+                                                    onChange={formikSendLink.handleChange}
+                                                    value={formikSendLink.values.email}
+                                                />
+                                                <div className="button-box">
+                                                    <button type="submit" disabled={isLinkSending}>
+                                                        <span>Send Reset Link</span>
+                                                    </button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
-                                )}
+                                    ) : (
+                                        <div className="login-form-container">
+                                            <div className="login-register-form">
+                                                <h4>Reset Link Sent</h4>
+                                                <p>Please check your email for the password reset link.</p>
+                                            </div>
+                                        </div>
+                                    )}
                             </div>
                         </div>
                     </div>

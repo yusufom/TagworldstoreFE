@@ -34,7 +34,7 @@ const PasswordReset = () => {
             try {
                 await forgotPasswordReset({ uid, token, new_password: values.new_password, re_new_password: values.re_new_password }).unwrap();
                 successToast('Password reset successful.');
-                navigate('/login'); // Redirect to the login page
+                navigate('/login-register'); // Redirect to the login page
             } catch (error) {
                 errorToast('Failed to reset password.');
                 console.log(error);
