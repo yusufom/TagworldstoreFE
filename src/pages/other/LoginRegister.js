@@ -35,7 +35,7 @@ const LoginRegister = () => {
     validationSchema: "",
     enableReinitialize: true,
     onSubmit: async (values) => {
-      if(values.email === "" || values.password === ""){
+      if (values.email === "" || values.password === "") {
         errorToast("Email or Password is required");
         return
       }
@@ -62,15 +62,20 @@ const LoginRegister = () => {
   });
 
   const registerFormik = useFormik({
-    initialValues: { email: "", first_name: "", last_name: "", phone: "", password: "", confirm_password: ""  },
+    initialValues: { email: "", first_name: "", last_name: "", phone: "", password: "", confirm_password: "" },
     validationSchema: "",
     enableReinitialize: true,
     onSubmit: async (values) => {
-      if(values.email === "" || values.password === "" || values.first_name === "" || values.last_name === "" || values.phone === ""){
+      const regex = /^(?=.*[0-9])(?=.*[!@#$%^&*-])(?=.*[A-Z])(?=.*[a-z]).{8,}$/;
+      if (values.email === "" || values.password === "" || values.first_name === "" || values.last_name === "" || values.phone === "") {
         errorToast("All Fields are required");
         return
       }
-      if(values.password !== values.confirm_password){
+      if (!regex.test(values.password)) {
+        errorToast("Weak Password, Password must contain at least one number, one special character (!@#$%^&*-), one uppercase letter, and one lowercase letter.");
+        return
+      }
+      if (values.password !== values.confirm_password) {
         errorToast("Password does not match");
         return
       }
@@ -84,6 +89,14 @@ const LoginRegister = () => {
           errorToast(errorToastData.password[0]);
         } else if (errorToastData.username) {
           errorToast(errorToastData.username[0]);
+        } else if (errorToastData.email) {
+          errorToast(errorToastData.email[0]);
+        } else if (errorToastData.phone) {
+          errorToast(errorToastData.phone[0]);
+        } else if (errorToastData.first_name) {
+          errorToast(errorToastData.first_name[0]);
+        } else if (errorToastData.last_name) {
+          errorToast(errorToastData.last_name[0]);
         } else {
           errorToast("An error occurred during registration.");
         }
@@ -131,7 +144,7 @@ const LoginRegister = () => {
                                 value={formik.values.email}
                                 name={'email'}
                               />
-                              
+
                               <input
                                 type="password"
                                 placeholder="Password"
@@ -139,7 +152,7 @@ const LoginRegister = () => {
                                 value={formik.values.password}
                                 name={'password'}
                               />
-                              
+
                               <div className="button-box">
                                 <div className="login-toggle-btn">
                                   <input type="checkbox" />
@@ -168,7 +181,7 @@ const LoginRegister = () => {
                                 value={registerFormik.values.email}
                                 name={'email'}
                               />
-                               <input
+                              <input
                                 type="text"
                                 placeholder="First Name"
                                 onChange={registerFormik.handleChange}
@@ -195,7 +208,7 @@ const LoginRegister = () => {
                                 onChange={registerFormik.handleChange}
                                 value={registerFormik.values.password}
                                 name={'password'}
-                                
+
                               />
                               <input
                                 type="password"
