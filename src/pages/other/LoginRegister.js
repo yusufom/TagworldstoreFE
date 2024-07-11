@@ -171,22 +171,22 @@ const LoginRegister = () => {
                                <input
                                 type="text"
                                 placeholder="First Name"
-                                onChange={formik.handleChange}
-                                value={formik.values.first_name}
+                                onChange={registerFormik.handleChange}
+                                value={registerFormik.values.first_name}
                                 name={'first_name'}
                               />
                               <input
                                 type="text"
                                 placeholder="Last Name"
-                                onChange={formik.handleChange}
-                                value={formik.values.last_name}
+                                onChange={registerFormik.handleChange}
+                                value={registerFormik.values.last_name}
                                 name={'last_name'}
                               />
                               <input
                                 type="tel"
                                 placeholder="Phone"
-                                onChange={formik.handleChange}
-                                value={formik.values.phone}
+                                onChange={registerFormik.handleChange}
+                                value={registerFormik.values.phone}
                                 name={'phone'}
                               />
                               <input
@@ -200,8 +200,8 @@ const LoginRegister = () => {
                               <input
                                 type="password"
                                 placeholder="Confirm Password"
-                                onChange={formik.handleChange}
-                                value={formik.values.confirm_password}
+                                onChange={registerFormik.handleChange}
+                                value={registerFormik.values.confirm_password}
                                 name={'confirm_password'}
                               />
                               <div className="button-box">
