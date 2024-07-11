@@ -22,23 +22,25 @@ function OrderModal({ order, currency, show, onHide }) {
           <h2>Order Details</h2>
           <p>Order ID: {order?.pkid}</p>
           <p>Order Date: {new Date(order?.ordered_date).toLocaleDateString()}</p>
+          <p>Status: {order.status}</p>
           <p>Payment Status: {order?.is_paid ? "Paid" : "Not Paid"}</p>
           <div className="order-items">
             {order?.items?.map((item, index) => (
               <div className="order-item" key={index}>
                 <div className="order-item-image">
                   <img
-                    src={item.image ? item.image : placeholderImage}
+                    src={item?.product?.image ? item.product.image[0].image : placeholderImage}
                     alt="Product"
                     style={{ maxHeight: "100px" }}
                     className="img-fluid"
                   />
                 </div>
                 <div className="order-item-details">
-                  <p>Product ID: {item.product}</p>
-                  <p>Color: {item.selected_product_color}</p>
-                  <p>Size: {item.selected_product_size}</p>
+                  <p>Product ID: {item?.product.id}</p>
+                  <p>Color: {item?.selected_product_color}</p>
+                  <p>Size: {item?.selected_product_size}</p>
                   <p>Quantity: {item.quantity}</p>
+                  <p>Price: {item?.product.price}</p>
                 </div>
               </div>
             ))}

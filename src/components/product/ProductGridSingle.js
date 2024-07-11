@@ -36,7 +36,7 @@ const ProductGridSingle = ({
     <Fragment>
       <div className={clsx("product-wrap", spaceBottomClass)}>
         <div className="product-img">
-          <Link to={process.env.PUBLIC_URL + "/product/" + product.slug}>
+          <Link to={process.env.PUBLIC_URL + "/product/" + product.slug} reloadDocument>
             <div style={{ height: "300px" }}>
               <img
                 className="default-img"
@@ -105,7 +105,7 @@ const ProductGridSingle = ({
                   Buy now{" "}
                 </a>
               ) : product.variation && product.variation.length >= 1 ? (
-                <Link to={`${process.env.PUBLIC_URL}/product/${product.slug}`}>
+                <Link to={`${process.env.PUBLIC_URL}/product/${product.slug}`} reloadDocument>
                   Select Option
                 </Link>
               ) : product.stock && product.stock > 0 ? (

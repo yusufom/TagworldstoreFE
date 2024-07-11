@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 import { getDiscountPrice } from "../../helpers/product";
 import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
@@ -8,22 +8,47 @@ import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import { addToCart } from "../../store/slices/cart-slice";
 import { deleteFromWishlist, deleteAllFromWishlist } from "../../store/slices/wishlist-slice"
 import { useGetAllWishListQuery, useDeleteFromWishListMutation, useClearWishListMutation } from "../../store/apiSlice/productSlice";
-import { useGetAllCartItemsQuery } from "../../store/apiSlice/cartApiSlice";
-import { successToast } from "../../helpers/toast";
+import { useAddToCartMutation, useGetAllCartItemsQuery } from "../../store/apiSlice/cartApiSlice";
+import { successToast, warningToast } from "../../helpers/toast";
 
 const Wishlist = () => {
   const dispatch = useDispatch();
   let { pathname } = useLocation();
 
+  const { isAuthenticated } = useSelector(
+    (state) => state.auth
+  )
+
   const currency = useSelector((state) => state.currency);
   // const { wishlistItems } = useSelector((state) => state.wishlist);
   // const { cartItems } = useSelector((state) => state.cart);
 
-  const { data: wishlistItems, refetch } = useGetAllWishListQuery()
-  const { data: cartItems } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+  const { data: wishlistItems, refetch, isLoading: wishlistLoading } = useGetAllWishListQuery(undefined, {
+    skip: !isAuthenticated,
+  })
+  const { data: cartItems, refetch: cartItemsRefetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
   const [deleteFromWishList] = useDeleteFromWishListMutation();
   const [clearWishList] = useClearWishListMutation();
 
+  const [addToCartM, { isLoading }] = useAddToCartMutation();
+
+
+
+  if (!isAuthenticated) {
+    warningToast("Please login to view wishlist")
+    return <Navigate to={"/login-register"} />
+  }
+
+  if (wishlistLoading) {
+    return (
+        <div className="flone-preloader-wrapper">
+            <div className="flone-preloader">
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    )
+}
 
 
   return (
@@ -70,7 +95,7 @@ const Wishlist = () => {
                             const finalDiscountedPrice = (
                               discountedPrice * currency.currencyRate
                             ).toFixed(2);
-                            const cartItem = cartItems.find(
+                            const cartItem = cartItems?.find(
                               item => item.id === wishlistItem.id
                             );
                             return (
@@ -140,6 +165,7 @@ const Wishlist = () => {
                                     wishlistItem.variation.length >= 1 ? (
                                     <Link
                                       to={`${process.env.PUBLIC_URL}/product/${wishlistItem.slug}`}
+                                      reloadDocument
                                     >
                                       Select option
                                     </Link>
@@ -147,7 +173,13 @@ const Wishlist = () => {
                                     wishlistItem.stock > 0 ? (
                                     <button
                                       onClick={() =>
-                                        dispatch(addToCart(wishlistItem))
+                                        // dispatch(addToCart(wishlistItem))
+                                        addToCartM({
+                                          product: { ...wishlistItem },
+                                          quantity: 1,
+                                          selected_product_color: "",
+                                          selected_product_size: ""
+                                        }).unwrap().then(() => { successToast("Added To Cart"); cartItemsRefetch() }).catch(() => { })
                                       }
                                       className={
                                         cartItem !== undefined &&
@@ -168,7 +200,7 @@ const Wishlist = () => {
                                       {cartItem !== undefined &&
                                         cartItem.quantity > 0
                                         ? "Added"
-                                        : "Add to cart"}
+                                        : isLoading ? "Adding" : "Add To Cart"}
                                     </button>
                                   ) : (
                                     <button disabled className="active">

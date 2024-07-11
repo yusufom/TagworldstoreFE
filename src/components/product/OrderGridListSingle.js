@@ -22,12 +22,13 @@ const OrderGridListSingle = ({
             <div className="order-list-content">
               <p>
                 Order ID:
-                <h3>
+                <h5>
                   <Link to={'#'}>
                     {order.pkid}
                   </Link>
-                </h3>
+                </h5>
               </p>
+              <p>Order Status: {order.status}</p>
 
               <p>Payment Status: {order.is_paid ? "Paid" : (
                 "Pending"

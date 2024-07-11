@@ -32,8 +32,8 @@ const Checkout = () => {
   const { data: billingAddresses, isLoading: billingLoading, isError: billingError } = useGetAllBillingAddressesQuery();
   const { data: cartItems, isLoading: cartLoading, isError: cartError } = useGetAllCartItemsQuery();
   const [createBillingAddress] = useCreateBillingAddressMutation();
-  const [createOrder] = useCreateOrderMutation();
-  const [startCreateOrder] = useStartCreateOrderMutation();
+  const [createOrder, {isLoading: createOrderLoading}] = useCreateOrderMutation();
+  const [startCreateOrder, {isLoading: startCreateOrderLoading}] = useStartCreateOrderMutation();
   const [confirmOrder] = useConfirmOrderMutation();
 
   useEffect(() => {
@@ -286,7 +286,7 @@ const Checkout = () => {
                           onClick={handleCreateOrder}
                           disabled={(selectedAddress === "new" && !Object.values(newAddress).every(val => val !== "")) || (!selectedAddress)}
                           className="btn-hover">
-                          Place Order
+                          {startCreateOrderLoading ? "Placing Order..." : createOrderLoading ? "Redirecting..." : "Place Order"}
                         </button>
                       </div>
                     </div>

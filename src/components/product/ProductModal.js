@@ -20,9 +20,9 @@ function ProductModal({ product, currency, discountedPrice, finalProductPrice, f
   const { isAuthenticated } = useSelector(
     (state) => state.auth
   )
-  
+
   const { cartItems: cartItemsNotAuth } = useSelector((state) => state.cart);
-  const { data: cartItemsAuth, refetch } = useGetAllCartItemsQuery(undefined,{
+  const { data: cartItemsAuth, refetch } = useGetAllCartItemsQuery(undefined, {
     skip: !isAuthenticated,
   });
 
@@ -298,8 +298,7 @@ function ProductModal({ product, currency, discountedPrice, finalProductPrice, f
                         }
                         disabled={productCartQty >= productStock}
                       >
-                        {" "}
-                        Add To Cart{" "}
+                        {" "}{isLoading ? "Adding" : "Add To Cart"}{" "}
                       </button>
                     ) : (
                       <button disabled>Out of Stock</button>

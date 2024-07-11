@@ -11,6 +11,7 @@ import { addToCart } from "../../store/slices/cart-slice";
 // import { addToCompare } from "../../store/slices/compare-slice";
 import { successToast, warningToast } from "../../helpers/toast";
 import { useAddToWishListMutation } from "../../store/apiSlice/productSlice";
+import { useAddToCartMutation, useGetAllCartItemsQuery } from "../../store/apiSlice/cartApiSlice";
 
 const ProductGridListSingle = ({
   product,
@@ -18,6 +19,7 @@ const ProductGridListSingle = ({
   cartItem,
   wishlistItem,
   wishListItemsRefetch,
+  refetch,
   // compareItem,
   spaceBottomClass
 }) => {
@@ -32,6 +34,9 @@ const ProductGridListSingle = ({
     (state) => state.auth
   )
   const [addToWishlist] = useAddToWishListMutation();
+  const [addToCartM, { isLoading, error }] = useAddToCartMutation();
+
+
 
 
 
@@ -108,8 +113,22 @@ const ProductGridListSingle = ({
                 </Link>
               ) : product.stock && product.stock > 0 ? (
                 <button
-                  onClick={() =>
-                    isAuthenticated ? dispatch(addToCart(product)) : warningToast("Please login to add item to cart")
+                  onClick={() => {
+                    isAuthenticated ?
+                      addToCartM({
+                        product: { ...product },
+                        quantity: 1,
+                        selected_product_color: "",
+                        selected_product_size: ""
+                      }).unwrap().then(() => { successToast("Added To Cart"); refetch() }).catch(() => { })
+                      :
+                      dispatch(addToCart({
+                        product: { ...product },
+                        quantity: 1,
+                        selected_product_color: "",
+                        selected_product_size: ""
+                      }))
+                  }
                   }
                   className={
                     cartItem !== undefined && cartItem.quantity > 0
@@ -125,7 +144,7 @@ const ProductGridListSingle = ({
                   <i className="pe-7s-cart"></i>{" "}
                   {cartItem !== undefined && cartItem.quantity > 0
                     ? "Added"
-                    : "Add to cart"}
+                    : isLoading ? "Adding" : "Add To Cart"}
                 </button>
               ) : (
                 <button disabled className="active">

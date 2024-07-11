@@ -42,6 +42,7 @@ const ProductGridList = ({
                   )
                 }
                 wishListItemsRefetch={wishListItemsRefetch}
+                refetch={refetch}
               // compareItem={
               //   compareItems.find(
               //     compareItem => compareItem.id === product.id
@@ -51,7 +52,18 @@ const ProductGridList = ({
             </div>
           );
         }) :
-        <div className="text-center">Sorry, this catalogue is empty</div>
+        <div className="row">
+          <div className="col-lg-12">
+            <div className="item-empty-area text-center">
+              <div className="item-empty-area__icon mb-30">
+                <i className="pe-7s-like"></i>
+              </div>
+              <div className="item-empty-area__text">
+                Sorry, this catalogue is empty <br />{" "}
+              </div>
+            </div>
+          </div>
+        </div>
       }
     </Fragment>
   );

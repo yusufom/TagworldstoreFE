@@ -213,8 +213,8 @@ const ProductDescriptionInfo = ({
                 }
                 disabled={productCartQty >= productStock}
               >
-                {" "}
-                Add To Cart{" "}
+                {" "}{isLoading ? "Adding": "Add To Cart"}{" "}
+                
               </button>
             ) : (
               <button disabled>Out of Stock</button>
