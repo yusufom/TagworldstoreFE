@@ -70,7 +70,7 @@ const LoginRegister = () => {
         errorToast("All Fields are required");
         return
       }
-      if(values.password !== values.confirm_password  ){
+      if(values.password !== values.confirm_password){
         errorToast("Password does not match");
         return
       }
@@ -131,27 +131,7 @@ const LoginRegister = () => {
                                 value={formik.values.email}
                                 name={'email'}
                               />
-                               <input
-                                type="text"
-                                placeholder="First Name"
-                                onChange={formik.handleChange}
-                                value={formik.values.first_name}
-                                name={'first_name'}
-                              />
-                              <input
-                                type="text"
-                                placeholder="Last Name"
-                                onChange={formik.handleChange}
-                                value={formik.values.last_name}
-                                name={'last_name'}
-                              />
-                              <input
-                                type="tel"
-                                placeholder="Phone"
-                                onChange={formik.handleChange}
-                                value={formik.values.phone}
-                                name={'phone'}
-                              />
+                              
                               <input
                                 type="password"
                                 placeholder="Password"
@@ -159,13 +139,7 @@ const LoginRegister = () => {
                                 value={formik.values.password}
                                 name={'password'}
                               />
-                              <input
-                                type="password"
-                                placeholder="Confirm Password"
-                                onChange={formik.handleChange}
-                                value={formik.values.confirm_password}
-                                name={'confirm_password'}
-                              />
+                              
                               <div className="button-box">
                                 <div className="login-toggle-btn">
                                   <input type="checkbox" />
@@ -194,12 +168,26 @@ const LoginRegister = () => {
                                 value={registerFormik.values.email}
                                 name={'email'}
                               />
+                               <input
+                                type="text"
+                                placeholder="First Name"
+                                onChange={formik.handleChange}
+                                value={formik.values.first_name}
+                                name={'first_name'}
+                              />
                               <input
                                 type="text"
-                                placeholder="Username"
-                                onChange={registerFormik.handleChange}
-                                value={registerFormik.values.username}
-                                name={'username'}
+                                placeholder="Last Name"
+                                onChange={formik.handleChange}
+                                value={formik.values.last_name}
+                                name={'last_name'}
+                              />
+                              <input
+                                type="tel"
+                                placeholder="Phone"
+                                onChange={formik.handleChange}
+                                value={formik.values.phone}
+                                name={'phone'}
                               />
                               <input
                                 type="password"
@@ -207,6 +195,14 @@ const LoginRegister = () => {
                                 onChange={registerFormik.handleChange}
                                 value={registerFormik.values.password}
                                 name={'password'}
+                                
+                              />
+                              <input
+                                type="password"
+                                placeholder="Confirm Password"
+                                onChange={formik.handleChange}
+                                value={formik.values.confirm_password}
+                                name={'confirm_password'}
                               />
                               <div className="button-box">
                                 <button type="button" onClick={registerFormik.handleSubmit}>
