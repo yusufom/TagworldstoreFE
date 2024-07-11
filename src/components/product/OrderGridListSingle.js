@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { Fragment, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import OrderModal from "./OrderModal";
+import OrderModal from "../order/OrderModal";
 
 const OrderGridListSingle = ({
   order,
@@ -43,11 +43,11 @@ const OrderGridListSingle = ({
           </div>
         </div>
       </div>
-      {/* product modal */}
+      {/* order modal */}
       <OrderModal
         show={modalShow}
         onHide={() => setModalShow(false)}
-        product={order}
+        order={order}
         currency={currency}
       // compareItem={compareItem}
       />

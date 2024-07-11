@@ -74,6 +74,7 @@ const Checkout = () => {
     const lineItems = cartItems?.map((cartItem) => ({
       price: cartItem.product.stripe_price,
       quantity: cartItem.quantity,
+      image: cartItem.product.image && cartItem.product.image[0] ? cartItem.product.image[0].image : null,
     }));
 
     const lineItemsID = cartItems?.map((cartItem) => ({
@@ -114,6 +115,8 @@ const Checkout = () => {
 
   let cartTotalPrice = 0;
 
+  console.log(cartItems)
+
   return (
     <Fragment>
       <SEO titleTemplate="Checkout" description="Checkout page" />
@@ -129,7 +132,7 @@ const Checkout = () => {
                 </div>
               </div>
             ) : (billingError || cartError) ? (
-              <Navigate to="/login-register"/>
+              <Navigate to="/login-register" />
             ) : (cartItems && cartItems.length >= 1) ? (
               <div className="row">
                 <div className="col-lg-7">
