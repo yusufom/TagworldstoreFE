@@ -74,8 +74,7 @@ const Checkout = () => {
     const lineItems = cartItems?.map((cartItem) => ({
       price: cartItem.product.stripe_price,
       quantity: cartItem.quantity,
-      image: cartItem.product.image && cartItem.product.image[0] ? cartItem.product.image[0].image : null,
-    }));
+   }));
 
     const lineItemsID = cartItems?.map((cartItem) => ({
       id: cartItem.id.toString(),
