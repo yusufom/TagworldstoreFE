@@ -163,7 +163,7 @@ const LoginRegister = () => {
                                 </div>
                                 <button type="button" onClick={formik.handleSubmit}>
 
-                                  <span>{isLoading ? "Logging in.." : "Login"}Login</span>
+                                  <span>{isLoading ? "Logging in.." : "Login"}</span>
                                 </button>
                               </div>
                             </form>
