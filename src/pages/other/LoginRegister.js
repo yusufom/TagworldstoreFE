@@ -31,10 +31,14 @@ const LoginRegister = () => {
   const [startCreateMultipleCart, { isLoading: startCreateMultipleCartLoading }] = useStartCreateMultipleCartMutation();
 
   const formik = useFormik({
-    initialValues: { username: "", password: "" },
+    initialValues: { email: "", password: "" },
     validationSchema: "",
     enableReinitialize: true,
     onSubmit: async (values) => {
+      if(values.email === "" || values.password === ""){
+        errorToast("Email or Password is required");
+        return
+      }
       try {
         await login(values).unwrap().then(async (res) => {
           dispatch(authenticate(res));
@@ -58,10 +62,18 @@ const LoginRegister = () => {
   });
 
   const registerFormik = useFormik({
-    initialValues: { username: "", password: "", email: "" },
+    initialValues: { email: "", first_name: "", last_name: "", phone: "", password: "", confirm_password: ""  },
     validationSchema: "",
     enableReinitialize: true,
     onSubmit: async (values) => {
+      if(values.email === "" || values.password === "" || values.first_name === "" || values.last_name === "" || values.phone === ""){
+        errorToast("All Fields are required");
+        return
+      }
+      if(values.password !== values.confirm_password  ){
+        errorToast("Password does not match");
+        return
+      }
       try {
         const res = await register(values).unwrap();
         successToast("Registration successful, Please visit your email to activate your account");
@@ -114,10 +126,31 @@ const LoginRegister = () => {
                             <form method="POST">
                               <input
                                 type="text"
-                                placeholder="Username"
+                                placeholder="Email"
                                 onChange={formik.handleChange}
-                                value={formik.values.username}
-                                name={'username'}
+                                value={formik.values.email}
+                                name={'email'}
+                              />
+                               <input
+                                type="text"
+                                placeholder="First Name"
+                                onChange={formik.handleChange}
+                                value={formik.values.first_name}
+                                name={'first_name'}
+                              />
+                              <input
+                                type="text"
+                                placeholder="Last Name"
+                                onChange={formik.handleChange}
+                                value={formik.values.last_name}
+                                name={'last_name'}
+                              />
+                              <input
+                                type="tel"
+                                placeholder="Phone"
+                                onChange={formik.handleChange}
+                                value={formik.values.phone}
+                                name={'phone'}
                               />
                               <input
                                 type="password"
@@ -125,6 +158,13 @@ const LoginRegister = () => {
                                 onChange={formik.handleChange}
                                 value={formik.values.password}
                                 name={'password'}
+                              />
+                              <input
+                                type="password"
+                                placeholder="Confirm Password"
+                                onChange={formik.handleChange}
+                                value={formik.values.confirm_password}
+                                name={'confirm_password'}
                               />
                               <div className="button-box">
                                 <div className="login-toggle-btn">
