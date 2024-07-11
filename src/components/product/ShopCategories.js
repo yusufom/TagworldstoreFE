@@ -13,7 +13,6 @@ const ShopCategories = ({ categories, getSortParams, setSearchTerm }) => {
               <div className="sidebar-widget-list-left">
                 <button
                   onClick={e => {
-                    console.log("categoryingggggg")
                     setSearchTerm("")
                     getSortParams("category", "");
                     setActiveSort(e);

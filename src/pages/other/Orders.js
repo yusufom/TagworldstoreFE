@@ -1,15 +1,9 @@
 import { Fragment, useState, useEffect } from 'react';
 import Paginator from 'react-hooks-paginator';
-import { useSelector, useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom"
-import { getSortedProducts } from '../../helpers/product';
 import SEO from "../../components/seo";
 import LayoutOne from '../../layouts/LayoutOne';
 import Breadcrumb from '../../wrappers/breadcrumb/Breadcrumb';
-import ShopSidebar from '../../wrappers/product/ShopSidebar';
-import ShopTopbar from '../../wrappers/product/ShopTopbar';
-import ShopProducts from '../../wrappers/product/ShopProducts';
-import { apiSlice } from '../../store/api';
 import { useGetUserOrdersQuery } from '../../store/apiSlice/cartApiSlice';
 import ShopOrders from '../../wrappers/product/ShopOrders';
 
@@ -17,6 +11,7 @@ import ShopOrders from '../../wrappers/product/ShopOrders';
 
 
 const Orders = () => {
+    // eslint-disable-next-line no-unused-vars
     const [layout, setLayout] = useState('list');
     const [offset, setOffset] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);

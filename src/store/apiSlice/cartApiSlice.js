@@ -31,10 +31,10 @@ export const cartApiSlice = apiSlice.injectEndpoints({
                 method: 'PUT',
             })
         }),
-        deleteAllFromCart: builder.query({
-            query: (slug) => ({
-                url: base + `/cart/${slug}`,
-                method: 'GET',
+        deleteAllFromCart: builder.mutation({
+            query: () => ({
+                url: base + `/cart/delete_all/`,
+                method: 'DELETE',
             })
         }),
         getUserOrders: builder.query({
@@ -78,5 +78,5 @@ export const cartApiSlice = apiSlice.injectEndpoints({
 })
 
 export const {
-    useAddToCartMutation, useGetAllCartItemsQuery, useDeleteFromCartMutation, useDecreaseQuantityMutation, useCreateOrderMutation, useStartCreateOrderMutation, useConfirmOrderMutation, useGetUserOrdersQuery, useLazyDeleteAllFromCartQuery, useStartCreateMultipleCartMutation
+    useAddToCartMutation, useGetAllCartItemsQuery, useDeleteFromCartMutation, useDecreaseQuantityMutation, useCreateOrderMutation, useStartCreateOrderMutation, useConfirmOrderMutation, useGetUserOrdersQuery, useDeleteAllFromCartMutation, useStartCreateMultipleCartMutation
 } = cartApiSlice;

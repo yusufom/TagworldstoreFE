@@ -15,7 +15,6 @@ const ProductDescriptionTab = ({ spaceBottomClass, productFullDesc, product_id }
 
   const { data, refetch } = useGetReviewQuery(product_id)
   const [addReview] = useAddReviewMutation()
-  console.log("reviews", data)
 
   const formik = useFormik(
     {

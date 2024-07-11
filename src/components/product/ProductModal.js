@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import React, { Fragment, useState } from "react";
 import PropTypes from "prop-types";
 import { EffectFade, Thumbs } from 'swiper';
 import { Modal } from "react-bootstrap";
@@ -20,9 +20,11 @@ function ProductModal({ product, currency, discountedPrice, finalProductPrice, f
   const { isAuthenticated } = useSelector(
     (state) => state.auth
   )
-
+  
   const { cartItems: cartItemsNotAuth } = useSelector((state) => state.cart);
-  const { data: cartItemsAuth, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+  const { data: cartItemsAuth, refetch } = useGetAllCartItemsQuery(undefined,{
+    skip: !isAuthenticated,
+  });
 
   const cartItems = isAuthenticated ? cartItemsAuth : cartItemsNotAuth;
 

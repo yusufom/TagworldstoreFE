@@ -18,14 +18,14 @@ const params = {
 
 const HeroSliderOne = () => {
 
-  const { data: heroSliderData, refetch } = useGetSlidesQuery()
+  const { data: heroSliderData } = useGetSlidesQuery()
 
   return (
     <div className="slider-area">
       <div className="slider-active nav-style-1">
         {heroSliderData && (
           <Swiper options={params}>
-            {heroSliderData.map((single, key) => (
+            {heroSliderData?.map((single, key) => (
               <SwiperSlide key={key}>
                 <HeroSliderOneSingle
                   data={single}

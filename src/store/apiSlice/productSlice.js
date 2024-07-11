@@ -76,5 +76,7 @@ export const {
     useGetReviewQuery,
     useAddReviewMutation,
     useGetSlidesQuery,
-    useClearWishListMutation
+    useClearWishListMutation,
+    usePrefetch,
+    
 } = productApiSlice;

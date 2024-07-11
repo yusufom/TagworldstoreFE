@@ -11,6 +11,8 @@ const OrderGridListSingle = ({
 }) => {
   const dispatch = useDispatch();
   const [modalShow, setModalShow] = useState(false);
+
+
   return (
     <Fragment>
 
@@ -30,7 +32,7 @@ const OrderGridListSingle = ({
               <p>Payment Status: {order.is_paid ? "Paid" : (
                 "Pending"
               )}</p>
-              <p>Amount: #50</p>
+              <p>Amount: {currency.currencySymbol}{order.total_price}</p>
 
               <div className="shop-list-actions d-flex align-items-center">
                 <div className="shop-list-btn btn-hover">

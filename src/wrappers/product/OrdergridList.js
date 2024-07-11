@@ -11,13 +11,16 @@ const OrdergridList = ({
   spaceBottomClass
 }) => {
   const currency = useSelector((state) => state.currency);
+  console.log(orders)
 
   return (
     <Fragment>
       <h1>My Orders</h1>
-      {orders?.map(order => {
+      {orders?.length === 0 ?
+      <p>No orders yet</p> :
+      orders?.map(order => {
         return (
-          <div className="col-xl-4 col-sm-6" key={order.id}>
+          <div className="col-xl-12 col-sm-12" key={order.id}>
             <OrderGridListSingle
               spaceBottomClass={spaceBottomClass}
               order={order}

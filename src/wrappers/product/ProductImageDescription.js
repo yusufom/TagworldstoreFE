@@ -8,22 +8,28 @@ import ProductImageGallerySideThumb from "../../components/product/ProductImageG
 import ProductImageFixed from "../../components/product/ProductImageFixed";
 import { useGetAllCartItemsQuery } from "../../store/apiSlice/cartApiSlice";
 import { useGetAllWishListQuery } from "../../store/apiSlice/productSlice";
+import React from "react";
 
 const ProductImageDescription = ({ spaceTopClass, spaceBottomClass, galleryType, product }) => {
   const { isAuthenticated } = useSelector(
     (state) => state.auth
   )
+
   const currency = useSelector((state) => state.currency);
   // const { cartItems } = useSelector((state) => state.cart);
   const { storewishlistItems } = useSelector((state) => state.wishlist);
-  const { data: wishlistItems, refetch: wishListItemsRefetch } = useGetAllWishListQuery()
+  const { data: wishlistItems, refetch: wishListItemsRefetch } = useGetAllWishListQuery(undefined, {
+    skip: !isAuthenticated,
+  })
 
   // const { compareItems } = useSelector((state) => state.compare);
   const wishlistItem = isAuthenticated ? wishlistItems?.find(item => item.id === product.id) : storewishlistItems?.find(item => item.id === product.id);
   // const compareItem = compareItems.find(item => item.id === product.id);
   // const { data: cartItems, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
-  const { cartItems:reduxCartItems } = useSelector((state) => state.cart);
-  const { data: apiCartItems, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+  const { cartItems: reduxCartItems } = useSelector((state) => state.cart);
+  const { data: apiCartItems, refetch } = useGetAllCartItemsQuery(undefined, {
+    skip: !isAuthenticated,
+  });
 
   const cartItems = isAuthenticated ? apiCartItems : reduxCartItems;
 

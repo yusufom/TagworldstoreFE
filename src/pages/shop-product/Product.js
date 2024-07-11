@@ -1,5 +1,4 @@
 import React, { Fragment } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useParams, useLocation, Navigate } from "react-router-dom";
 import SEO from "../../components/seo";
 import LayoutOne from "../../layouts/LayoutOne";
@@ -8,19 +7,12 @@ import RelatedProductSlider from "../../wrappers/product/RelatedProductSlider";
 import ProductDescriptionTab from "../../wrappers/product/ProductDescriptionTab";
 import ProductImageDescription from "../../wrappers/product/ProductImageDescription";
 import { useGetSingleProductQuery } from "../../store/apiSlice/productSlice";
-import { apiSlice } from "../../store/api";
 
 const Product = () => {
   let { pathname } = useLocation();
   let { id } = useParams();
-  // const { products } = useSelector((state) => state.product);
 
-  // const dispatch = useDispatch()
-
-  // dispatch(apiSlice.util.resetApiState());
-  // const product = products.find(product => product.id === id);
-  const { data: product, isLoading, error, isError } = useGetSingleProductQuery(id);
-  console.log("products", product);
+  const { data: product, isLoading, isError } = useGetSingleProductQuery(id);
 
   if (isLoading) {
     return (

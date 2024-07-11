@@ -33,7 +33,7 @@ const HomeFashion = () => {
         {/* tab product */}
 
 
-        <TabProduct spaceBottomClass="pb-60" category="fashion" />
+        <TabProduct spaceBottomClass="pb-60" category="Fashion" />
         {/* blog featured */}
         {/* <BlogFeatured spaceBottomClass="pb-55" /> */}
       </LayoutOne>

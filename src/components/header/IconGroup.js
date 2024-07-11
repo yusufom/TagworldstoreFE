@@ -7,6 +7,7 @@ import { useGetAllCartItemsQuery } from "../../store/apiSlice/cartApiSlice";
 import { useGetAllWishListQuery } from "../../store/apiSlice/productSlice";
 import { unauthenticate } from "../../store/slices/auth-slice";
 import { useFormik } from 'formik';
+import React from "react";
 
 const IconGroup = ({ iconWhiteClass }) => {
   const dispatch = useDispatch();
@@ -31,22 +32,27 @@ const IconGroup = ({ iconWhiteClass }) => {
     );
     offcanvasMobileMenu.classList.add("active");
   };
-  // const { compareItems } = useSelector((state) => state.compare);
-  // const { wishlistItems } = useSelector((state) => state.wishlist);
-  const { data: wishlistItems } = useGetAllWishListQuery()
-
-  // const { cartItems } = useSelector((state) => state.cart);
-  // const { data: cartItems } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
   const { isAuthenticated } = useSelector(
     (state) => state.auth
   )
+  // const { compareItems } = useSelector((state) => state.compare);
+  // const { wishlistItems } = useSelector((state) => state.wishlist);
+  const { data: wishlistItems } = useGetAllWishListQuery(undefined, {
+    skip: !isAuthenticated,
+  })
+
+  // const { cartItems } = useSelector((state) => state.cart);
+  // const { data: cartItems } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+
 
   const { cartItems: cartItemsNotAuth } = useSelector((state) => state.cart);
-  const { data: cartItemsAuth, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+  const { data: cartItemsAuth } = useGetAllCartItemsQuery(undefined, {
+    skip: !isAuthenticated,
+  });
+
 
   const cartItems = isAuthenticated ? cartItemsAuth : cartItemsNotAuth;
 
-  const navigate = useNavigate()
 
 
 

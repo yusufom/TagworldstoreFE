@@ -1,4 +1,5 @@
-import { Fragment } from "react";
+/* eslint-disable no-unused-vars */
+import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getDiscountPrice } from "../../../helpers/product";
@@ -15,7 +16,10 @@ const MenuCart = () => {
 
   let cartTotalPrice = 0;
   const { cartItems: cartItemsNotAuth } = useSelector((state) => state.cart);
-  const { data: cartItemsAuth, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+
+  const { data: cartItemsAuth, refetch } = useGetAllCartItemsQuery(undefined,{
+    skip: !isAuthenticated,
+  });
 
   const cartItems = isAuthenticated ? cartItemsAuth : cartItemsNotAuth;
 

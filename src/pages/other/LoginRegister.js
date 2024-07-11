@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { Fragment } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Tab from "react-bootstrap/Tab";
@@ -12,11 +13,15 @@ import { errorToast, successToast } from "../../helpers/toast";
 import { authenticate } from "../../store/slices/auth-slice";
 import { useStartCreateMultipleCartMutation } from "../../store/apiSlice/cartApiSlice";
 import { deleteAllFromCart } from "../../store/slices/cart-slice";
+import FadeLoader from "react-spinners/FadeLoader";
 
+const override = {
+  width: "10px",
+  height: "10px",
+};
 const LoginRegister = () => {
   let { pathname } = useLocation();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const { isAuthenticated } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.cart);
@@ -31,15 +36,20 @@ const LoginRegister = () => {
     enableReinitialize: true,
     onSubmit: async (values) => {
       try {
-        const res = await login(values).unwrap();
-        dispatch(authenticate(res));
-        successToast("Login successful");
+        await login(values).unwrap().then(async (res) => {
+          dispatch(authenticate(res));
+          successToast("Login successful");
 
-        if (cartItems.length > 0) {
-          await startCreateMultipleCart({ token: res.access, data: cartItems });
-          dispatch(deleteAllFromCart());
-        }
-        window.location.href = "/";
+          if (cartItems.length > 0) {
+            await startCreateMultipleCart({ token: res.access, data: cartItems });
+            dispatch(deleteAllFromCart());
+          }
+          window.location.href = "/";
+        }).catch((error) => {
+          console.log(error)
+          errorToast(error?.data?.detail || "An error occurred during login.");
+        });
+
       } catch (error) {
         console.error('Error in userLogin:', error);
         errorToast(error?.data?.detail || "An error occurred during login.");
@@ -125,6 +135,7 @@ const LoginRegister = () => {
                                   </Link>
                                 </div>
                                 <button type="button" onClick={formik.handleSubmit}>
+
                                   <span>Login</span>
                                 </button>
                               </div>

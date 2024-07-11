@@ -37,7 +37,6 @@ const PasswordReset = () => {
                 navigate('/login-register'); // Redirect to the login page
             } catch (error) {
                 errorToast('Failed to reset password.');
-                console.log(error);
             }
         },
     });

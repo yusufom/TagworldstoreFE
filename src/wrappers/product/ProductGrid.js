@@ -1,9 +1,9 @@
-import { Fragment } from "react";
+import React, { Fragment } from "react";
 import PropTypes from "prop-types";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../../helpers/product";
 import ProductGridSingle from "../../components/product/ProductGridSingle";
-import { useGetAllProductsQuery } from "../../store/apiSlice/productSlice";
+import { productApiSlice, useGetAllProductsQuery, usePrefetch } from "../../store/apiSlice/productSlice";
 
 const ProductGrid = ({
   spaceBottomClass,
@@ -11,14 +11,15 @@ const ProductGrid = ({
   type,
   limit
 }) => {
+  const dispatch = useDispatch()
   // const { products } = useSelector((state) => state.product);
-  const { data: products, isLoading } = useGetAllProductsQuery();
-  console.log(products);
+  const { data: products, isLoading } = useGetAllProductsQuery(undefined,{ keepUnusedDataFor: 30 });
   const currency = useSelector((state) => state.currency);
   const { cartItems } = useSelector((state) => state.cart);
   const { wishlistItems } = useSelector((state) => state.wishlist);
   const { compareItems } = useSelector((state) => state.compare);
   const prods = getProducts(products, category, type, limit)
+
 
   if (isLoading) {
     return (

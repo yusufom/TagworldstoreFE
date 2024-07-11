@@ -1,4 +1,5 @@
-import { Fragment, useState } from "react";
+/* eslint-disable no-unused-vars */
+import React, { Fragment, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import SEO from "../../components/seo";
@@ -7,7 +8,7 @@ import LayoutOne from "../../layouts/LayoutOne";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import { addToCart, decreaseQuantity as decreaseQuantityNotAuth, deleteFromCart as notAuthDeleteFromCart, deleteAllFromCart as notAuthDeleteAllFromCart } from "../../store/slices/cart-slice";
 import { cartItemStock } from "../../helpers/product";
-import { useAddToCartMutation, useDeleteFromCartMutation, useGetAllCartItemsQuery, useDecreaseQuantityMutation, useLazyDeleteAllFromCartQuery } from "../../store/apiSlice/cartApiSlice";
+import { useAddToCartMutation, useDeleteFromCartMutation, useGetAllCartItemsQuery, useDecreaseQuantityMutation, useDeleteAllFromCartMutation } from "../../store/apiSlice/cartApiSlice";
 import { apiSlice } from "../../store/api";
 import { errorToast, successToast, warningToast } from "../../helpers/toast";
 
@@ -22,11 +23,13 @@ const Cart = () => {
   const currency = useSelector((state) => state.currency);
   const [addToCartM, { isLoading, error }] = useAddToCartMutation();
   const [deleteFromCart, { isLoading: deleteFromCartLoading, error: deleteFromCartError }] = useDeleteFromCartMutation();
-  const { deleteAllFromCart, isLoading: deleteAllFromCartLoading } = useLazyDeleteAllFromCartQuery();
+  const [deleteAllFromCart] = useDeleteAllFromCartMutation();
   const [decreaseQuantity, { isLoading: decreaseQuantityLoading, error: decreaseQuantityError }] = useDecreaseQuantityMutation();
 
   const { cartItems: cartItemsNotAuth } = useSelector((state) => state.cart);
-  const { data: cartItemsAuth, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+  const { data: cartItemsAuth, refetch } = useGetAllCartItemsQuery(undefined, {
+    skip: !isAuthenticated,
+  });
 
   const cartItems = isAuthenticated ? cartItemsAuth : cartItemsNotAuth;
 
@@ -76,9 +79,9 @@ const Cart = () => {
 
                             discountedPrice != null
                               ? (cartTotalPrice +=
-                                  finalDiscountedPrice * cartItem.quantity)
+                                finalDiscountedPrice * cartItem.quantity)
                               : (cartTotalPrice +=
-                                  finalProductPrice * cartItem.quantity);
+                                finalProductPrice * cartItem.quantity);
                             return (
                               <tr key={key}>
                                 <td className="product-thumbnail">
@@ -119,7 +122,7 @@ const Cart = () => {
                                     {cartItem.name}
                                   </Link>
                                   {cartItem.selected_product_color &&
-                                  cartItem.selected_product_size ? (
+                                    cartItem.selected_product_size ? (
                                     <div className="cart-item-variation">
                                       <span>
                                         Color: {cartItem.selected_product_color}
@@ -161,12 +164,12 @@ const Cart = () => {
                                         !isAuthenticated
                                           ? dispatch(decreaseQuantityNotAuth(cartItem))
                                           : decreaseQuantity(cartItem.id)
-                                              .unwrap()
-                                              .then(() => {
-                                                warningToast("Item Decremented From Cart");
-                                                refetch();
-                                              })
-                                              .catch(() => {})
+                                            .unwrap()
+                                            .then(() => {
+                                              warningToast("Item Decremented From Cart");
+                                              refetch();
+                                            })
+                                            .catch(() => { })
                                       }
                                     >
                                       -
@@ -182,31 +185,31 @@ const Cart = () => {
                                       onClick={() => {
                                         isAuthenticated
                                           ? addToCartM({
+                                            ...cartItem,
+                                            quantity: quantityCount
+                                          })
+                                            .unwrap()
+                                            .then(() => {
+                                              successToast("Added To Cart");
+                                              refetch();
+                                            })
+                                            .catch(() => { })
+                                          : dispatch(
+                                            addToCart({
                                               ...cartItem,
                                               quantity: quantityCount
                                             })
-                                              .unwrap()
-                                              .then(() => {
-                                                successToast("Added To Cart");
-                                                refetch();
-                                              })
-                                              .catch(() => {})
-                                          : dispatch(
-                                              addToCart({
-                                                ...cartItem,
-                                                quantity: quantityCount
-                                              })
-                                            );
+                                          );
                                       }}
                                       disabled={
                                         cartItem !== undefined &&
                                         cartItem.quantity &&
                                         cartItem.quantity >=
-                                          cartItemStock(
-                                            cartItem.product,
-                                            cartItem.selected_product_color,
-                                            cartItem.selected_product_size
-                                          )
+                                        cartItemStock(
+                                          cartItem.product,
+                                          cartItem.selected_product_color,
+                                          cartItem.selected_product_size
+                                        )
                                       }
                                     >
                                       +
@@ -216,13 +219,13 @@ const Cart = () => {
                                 <td className="product-subtotal">
                                   {discountedPrice !== null
                                     ? currency.currencySymbol +
-                                      (
-                                        finalDiscountedPrice * cartItem.quantity
-                                      ).toFixed(2)
+                                    (
+                                      finalDiscountedPrice * cartItem.quantity
+                                    ).toFixed(2)
                                     : currency.currencySymbol +
-                                      (
-                                        finalProductPrice * cartItem.quantity
-                                      ).toFixed(2)}
+                                    (
+                                      finalProductPrice * cartItem.quantity
+                                    ).toFixed(2)}
                                 </td>
 
                                 <td className="product-remove">
@@ -231,14 +234,14 @@ const Cart = () => {
                                       !isAuthenticated
                                         ? dispatch(notAuthDeleteFromCart(cartItem.id))
                                         : deleteFromCart(cartItem.id)
-                                            .unwrap()
-                                            .then(() => {
-                                              successToast("Item deleted successfully");
-                                              refetch();
-                                            })
-                                            .catch(() => {
-                                              errorToast("Something went wrong");
-                                            })
+                                          .unwrap()
+                                          .then(() => {
+                                            successToast("Item deleted successfully");
+                                            refetch();
+                                          })
+                                          .catch(() => {
+                                            errorToast("Something went wrong");
+                                          })
                                     }
                                   >
                                     <i className="fa fa-times"></i>
@@ -261,7 +264,7 @@ const Cart = () => {
                         </Link>
                       </div>
                       <div className="cart-clear">
-                        <button onClick={() => !isAuthenticated ? dispatch(notAuthDeleteAllFromCart()) : deleteAllFromCart()}>
+                        <button onClick={() => !isAuthenticated ? dispatch(notAuthDeleteAllFromCart()) : deleteAllFromCart().unwrap().then(()=> {refetch()}) }>
                           Clear Shopping Cart
                         </button>
                       </div>

@@ -19,7 +19,6 @@ const ForgotPasswordComponent = () => {
                 setIsLinkSent(true);
             } catch (error) {
                 errorToast('Failed to send reset link.');
-                console.log(error);
             }
         },
     });

@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { unauthenticate } from "../../../store/slices/auth-slice";
 
 const MobileNavMenu = () => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+
 
   const { isAuthenticated } = useSelector(
     (state) => state.auth
@@ -348,7 +351,7 @@ const MobileNavMenu = () => {
           </Link>
         </li> */}
         <li className="menu-item-has-children">
-          <Link to={process.env.PUBLIC_URL + "/"}>{t("Account")}</Link>
+          <Link to={"/"}>{t("Account")}</Link>
           <ul className="sub-menu">
             {/* <li>
               <Link to={process.env.PUBLIC_URL + "/cart"}>
@@ -386,6 +389,16 @@ const MobileNavMenu = () => {
                 </Link>
               </li>
             }
+            {isAuthenticated &&
+            <li className="cursor-pointer">
+                  <Link to={'/login-register'} onClick={() => {
+                    dispatch(unauthenticate())
+
+                  }} className="text-red-500 ">
+                    log out
+                  </Link>
+                </li>
+                }
             {!isAuthenticated &&
               <li>
                 <Link to={process.env.PUBLIC_URL + "/login-register"}>

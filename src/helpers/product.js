@@ -1,11 +1,10 @@
 // get products
 export const getProducts = (products, category, type, limit) => {
-  const finalProducts = category
+  const finalProducts = category !== ""
     ? products?.filter(
       product => product?.category?.filter(single => single === category)[0]
     )
     : products;
-
   if (type && type === "new") {
     const newProducts = finalProducts?.filter(single => single?.new);
     return newProducts?.slice(0, limit ? limit : newProducts.length);
@@ -13,8 +12,7 @@ export const getProducts = (products, category, type, limit) => {
   if (type && type === "bestSeller") {
     return finalProducts?.sort((a, b) => {
       return b.saleCount - a.saleCount;
-    })
-      ?.slice(0, limit ? limit : finalProducts.length);
+    })?.slice(0, limit ? limit : finalProducts.length);
   }
   if (type && type === "saleItems") {
     const saleItems = finalProducts?.filter(
@@ -146,7 +144,6 @@ export const getIndividualCategories = products => {
 // get individual tags
 export const getIndividualTags = products => {
   let productTags = [];
-  console.log(products, "products")
   products &&
     products?.map(product => {
       return (
@@ -157,7 +154,6 @@ export const getIndividualTags = products => {
       );
     });
   const individualProductTags = getIndividualItemArray(productTags);
-  console.log(individualProductTags, "tags")
   return individualProductTags;
 };
 

@@ -11,43 +11,48 @@ const ProductGridList = ({
 }) => {
   const currency = useSelector((state) => state.currency);
   const isAuthenticated = useSelector((state) => state.auth);
+
   // const { wishlistItems } = useSelector((state) => state.wishlist);
   // const { reduxCartItems } = useSelector((state) => state.compare);
-  const { data: wishlistItems, refetch: wishListItemsRefetch } = useGetAllWishListQuery()
-  const { cartItems:reduxCartItems } = useSelector((state) => state.cart);
-  const { data: apiCartItems, refetch } = useGetAllCartItemsQuery({ refetchOnMountOrArgChange: true });
+  const { data: wishlistItems, refetch: wishListItemsRefetch } = useGetAllWishListQuery(undefined, {
+    skip: !isAuthenticated,
+  })
+  const { cartItems: reduxCartItems } = useSelector((state) => state.cart);
+  const { data: apiCartItems, refetch } = useGetAllCartItemsQuery(undefined, {
+    skip: !isAuthenticated,
+  });
 
   const cartItems = isAuthenticated ? apiCartItems : reduxCartItems;
   return (
     <Fragment>
       {products?.length > 0 ?
-      products?.map(product => {
-        return (
-          <div className="col-xl-4 col-sm-6" key={product.id}>
-            <ProductGridListSingle
-              spaceBottomClass={spaceBottomClass}
-              product={product}
-              currency={currency}
-              cartItem={
-                cartItems?.find(cartItem => cartItem.id === product.id)
-              }
-              wishlistItem={
-                wishlistItems?.find(
-                  wishlistItem => wishlistItem.id === product.id
-                )
-              }
-              wishListItemsRefetch={wishListItemsRefetch}
-            // compareItem={
-            //   compareItems.find(
-            //     compareItem => compareItem.id === product.id
-            //   )
-            // }
-            />
-          </div>
-        );
-      }) :
-      <div className="text-center">Sorry, this catalogue is empty</div>
-    }
+        products?.map(product => {
+          return (
+            <div className="col-xl-4 col-sm-6" key={product.id}>
+              <ProductGridListSingle
+                spaceBottomClass={spaceBottomClass}
+                product={product}
+                currency={currency}
+                cartItem={
+                  cartItems?.find(cartItem => cartItem.id === product.id)
+                }
+                wishlistItem={
+                  wishlistItems?.find(
+                    wishlistItem => wishlistItem.id === product.id
+                  )
+                }
+                wishListItemsRefetch={wishListItemsRefetch}
+              // compareItem={
+              //   compareItems.find(
+              //     compareItem => compareItem.id === product.id
+              //   )
+              // }
+              />
+            </div>
+          );
+        }) :
+        <div className="text-center">Sorry, this catalogue is empty</div>
+      }
     </Fragment>
   );
 };

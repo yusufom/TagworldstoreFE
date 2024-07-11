@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+
 import cogoToast from 'cogo-toast';
 import { cartApiSlice } from '../apiSlice/cartApiSlice';
 import { errorToast } from '../../helpers/toast';
@@ -108,7 +108,6 @@ const cartSlice = createSlice({
                 state.isLoading = true;
             })
             .addMatcher(cartApiSlice.endpoints.addToCart.matchFulfilled, (state, action) => {
-                console.log("solo leveling", action.payload)
                 const product = action.payload.product;
                 const cartItemData = action.payload
                 if (!product.variation) {
