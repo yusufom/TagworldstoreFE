@@ -40,7 +40,7 @@ function OrderModal({ order, currency, show, onHide }) {
                   <p>Color: {item?.selected_product_color}</p>
                   <p>Size: {item?.selected_product_size}</p>
                   <p>Quantity: {item.quantity}</p>
-                  <p>Price: {item?.product.price}</p>
+                  <p>Price: £{item?.product.price}</p>
                 </div>
               </div>
             ))}

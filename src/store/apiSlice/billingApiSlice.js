@@ -19,14 +19,14 @@ export const billingApiSlice = apiSlice.injectEndpoints({
         }),
         updateBillingAddress: builder.mutation({
             query: ({ id, ...data }) => ({
-                url: `${base}/${id}/update_address/`,
+                url: `${base}/${id}/`,
                 method: 'PUT',
                 body: data,
             })
         }),
         deleteBillingAddress: builder.mutation({
             query: (id) => ({
-                url: `${base}/${id}/delete_address/`,
+                url: `${base}/${id}/`,
                 method: 'DELETE',
             })
         })

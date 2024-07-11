@@ -11,6 +11,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { unauthenticate } from "../../store/slices/auth-slice";
 import { useFormik } from "formik";
 import { errorToast, successToast } from "../../helpers/toast";
+import { Modal } from "react-bootstrap";
+
 
 const MyAccount = () => {
   let { pathname } = useLocation();
@@ -364,159 +366,131 @@ const MyAccount = () => {
           </div>
         </div>
 
-        {/* Edit Address Div */}
-        {showEditDiv && (
-          <div className="custom-modal"
-          style={{
-                overflow: 'hidden'
-              }}
-          >
-            <div className="custom-modal-content"
-              style={{
-                marginTop: '50px', maxHeight: '350px', overflowY: 'scroll'
-              }}
-            >
-              <div className="custom-modal-header">
-                <h5 className="custom-modal-title">Edit Billing Address</h5>
-                <button type="button" className="close" onClick={handleEditDivClose}>
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div className="custom-modal-body">
-                <form>
-                  <div className="billing-info">
-                    <label>First Name</label>
-                    <input type="text" onChange={editFormik.handleChange} value={editFormik.values.first_name} name="first_name" />
-                  </div>
-                  <div className="billing-info">
-                    <label>Last Name</label>
-                    <input type="text" onChange={editFormik.handleChange} value={editFormik.values.last_name} name="last_name" />
-                  </div>
-                  <div className="billing-info">
-                    <label>Street Address</label>
-                    <input type="text" onChange={editFormik.handleChange} value={editFormik.values.street_address} name="street_address" />
-                  </div>
-                  <div className="billing-info">
-                    <label>Apartment</label>
-                    <input type="text" onChange={editFormik.handleChange} value={editFormik.values.apartment} name="apartment" />
-                  </div>
-                  <div className="billing-info">
-                    <label>City</label>
-                    <input type="text" onChange={editFormik.handleChange} value={editFormik.values.city} name="city" />
-                  </div>
-                  <div className="billing-info">
-                    <label>State</label>
-                    <input type="text" onChange={editFormik.handleChange} value={editFormik.values.state} name="state" />
-                  </div>
-                  <div className="billing-info">
-                    <label>Country</label>
-                    <input type="text" onChange={editFormik.handleChange} value={editFormik.values.country} name="country" />
-                  </div>
-                  <div className="billing-info">
-                    <label>Postcode</label>
-                    <input type="text" onChange={editFormik.handleChange} value={editFormik.values.postcode} name="postcode" />
-                  </div>
-                  <div className="billing-info">
-                    <label>Phone</label>
-                    <input type="text" onChange={editFormik.handleChange} value={editFormik.values.phone} name="phone" />
-                  </div>
-                  <div className="billing-info">
-                    <label>Email</label>
-                    <input type="email" onChange={editFormik.handleChange} value={editFormik.values.email} name="email" />
-                  </div>
-                  <div className="billing-back-btn">
-                    <div className="billing-btn">
-                      <button type="button" 
+        {/* Edit Address Modal */}
+        <Modal show={showEditDiv} onHide={handleEditDivClose} className="order-details-modal-wrapper">
+          <Modal.Header closeButton>Edit Address</Modal.Header>
+          <div className="modal-body">
+            <div className="">
+              <form>
+                <div className="billing-info">
+                  <label>First Name</label>
+                  <input type="text" onChange={editFormik.handleChange} value={editFormik.values.first_name} name="first_name" />
+                </div>
+                <div className="billing-info">
+                  <label>Last Name</label>
+                  <input type="text" onChange={editFormik.handleChange} value={editFormik.values.last_name} name="last_name" />
+                </div>
+                <div className="billing-info">
+                  <label>Street Address</label>
+                  <input type="text" onChange={editFormik.handleChange} value={editFormik.values.street_address} name="street_address" />
+                </div>
+                <div className="billing-info">
+                  <label>Apartment</label>
+                  <input type="text" onChange={editFormik.handleChange} value={editFormik.values.apartment} name="apartment" />
+                </div>
+                <div className="billing-info">
+                  <label>City</label>
+                  <input type="text" onChange={editFormik.handleChange} value={editFormik.values.city} name="city" />
+                </div>
+                <div className="billing-info">
+                  <label>State</label>
+                  <input type="text" onChange={editFormik.handleChange} value={editFormik.values.state} name="state" />
+                </div>
+                <div className="billing-info">
+                  <label>Country</label>
+                  <input type="text" onChange={editFormik.handleChange} value={editFormik.values.country} name="country" />
+                </div>
+                <div className="billing-info">
+                  <label>Postcode</label>
+                  <input type="text" onChange={editFormik.handleChange} value={editFormik.values.postcode} name="postcode" />
+                </div>
+                <div className="billing-info">
+                  <label>Phone</label>
+                  <input type="text" onChange={editFormik.handleChange} value={editFormik.values.phone} name="phone" />
+                </div>
+                <div className="billing-info">
+                  <label>Email</label>
+                  <input type="email" onChange={editFormik.handleChange} value={editFormik.values.email} name="email" />
+                </div>
+                <div className="billing-back-btn">
+                  <div className="billing-btn">
+                    <button type="button"
                       style={{
-                        backgroundColor:'#F06B0E'
+                        backgroundColor: '#F06B0E'
                       }}
-                       onClick={editFormik.handleSubmit}>
-                        {updateLoading ? "Loading" : 'Submit'}
-                      </button>
-                    </div>
+                      onClick={editFormik.handleSubmit}>
+                      {updateLoading ? "Loading" : 'Submit'}
+                    </button>
                   </div>
-                </form>
-              </div>
+                </div>
+              </form>
             </div>
           </div>
-        )}
 
-        {/* Add Address Div */}
-        {showAddDiv && (
-          <div className="custom-modal"
-          style={{
-                overflow: 'hidden'
-              }}
-          >
-            <div className="custom-modal-content"
-              style={{
-                marginTop: '50px', maxHeight: '350px', overflowY: 'scroll'
-              }}
-            >
-              <div className="custom-modal-header">
-                <h5 className="custom-modal-title">Add Billing Address</h5>
-                <button type="button" className="close" onClick={handleAddDivClose}>
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div className="custom-modal-body">
-                <form>
-                  <div className="billing-info">
-                    <label>First Name</label>
-                    <input type="text" onChange={addFormik.handleChange} value={addFormik.values.first_name} name="first_name" />
-                  </div>
-                  <div className="billing-info">
-                    <label>Last Name</label>
-                    <input type="text" onChange={addFormik.handleChange} value={addFormik.values.last_name} name="last_name" />
-                  </div>
-                  <div className="billing-info">
-                    <label>Street Address</label>
-                    <input type="text" onChange={addFormik.handleChange} value={addFormik.values.street_address} name="street_address" />
-                  </div>
-                  <div className="billing-info">
-                    <label>Apartment</label>
-                    <input type="text" onChange={addFormik.handleChange} value={addFormik.values.apartment} name="apartment" />
-                  </div>
-                  <div className="billing-info">
-                    <label>City</label>
-                    <input type="text" onChange={addFormik.handleChange} value={addFormik.values.city} name="city" />
-                  </div>
-                  <div className="billing-info">
-                    <label>State</label>
-                    <input type="text" onChange={addFormik.handleChange} value={addFormik.values.state} name="state" />
-                  </div>
-                  <div className="billing-info">
-                    <label>Country</label>
-                    <input type="text" onChange={addFormik.handleChange} value={addFormik.values.country} name="country" />
-                  </div>
-                  <div className="billing-info">
-                    <label>Postcode</label>
-                    <input type="text" onChange={addFormik.handleChange} value={addFormik.values.postcode} name="postcode" />
-                  </div>
-                  <div className="billing-info">
-                    <label>Phone</label>
-                    <input type="text" onChange={addFormik.handleChange} value={addFormik.values.phone} name="phone" />
-                  </div>
-                  <div className="billing-info">
-                    <label>Email</label>
-                    <input type="email" onChange={addFormik.handleChange} value={addFormik.values.email} name="email" />
-                  </div>
-                  <div className="billing-back-btn">
-                    <div className="billing-btn">
-                      <button type="button" 
-                       style={{
-                        backgroundColor:'#F06B0E'
+        </Modal>
+
+        {/* Edit Address Modal */}
+        <Modal show={showAddDiv} onHide={handleAddDivClose} className="order-details-modal-wrapper">
+          <Modal.Header closeButton>Add Address</Modal.Header>
+          <div className="modal-body">
+            <div className="">
+              <form>
+                <div className="billing-info">
+                  <label>First Name</label>
+                  <input type="text" onChange={addFormik.handleChange} value={addFormik.values.first_name} name="first_name" />
+                </div>
+                <div className="billing-info">
+                  <label>Last Name</label>
+                  <input type="text" onChange={addFormik.handleChange} value={addFormik.values.last_name} name="last_name" />
+                </div>
+                <div className="billing-info">
+                  <label>Street Address</label>
+                  <input type="text" onChange={addFormik.handleChange} value={addFormik.values.street_address} name="street_address" />
+                </div>
+                <div className="billing-info">
+                  <label>Apartment</label>
+                  <input type="text" onChange={addFormik.handleChange} value={addFormik.values.apartment} name="apartment" />
+                </div>
+                <div className="billing-info">
+                  <label>City</label>
+                  <input type="text" onChange={addFormik.handleChange} value={addFormik.values.city} name="city" />
+                </div>
+                <div className="billing-info">
+                  <label>State</label>
+                  <input type="text" onChange={addFormik.handleChange} value={addFormik.values.state} name="state" />
+                </div>
+                <div className="billing-info">
+                  <label>Country</label>
+                  <input type="text" onChange={addFormik.handleChange} value={addFormik.values.country} name="country" />
+                </div>
+                <div className="billing-info">
+                  <label>Postcode</label>
+                  <input type="text" onChange={addFormik.handleChange} value={addFormik.values.postcode} name="postcode" />
+                </div>
+                <div className="billing-info">
+                  <label>Phone</label>
+                  <input type="text" onChange={addFormik.handleChange} value={addFormik.values.phone} name="phone" />
+                </div>
+                <div className="billing-info">
+                  <label>Email</label>
+                  <input type="email" onChange={addFormik.handleChange} value={addFormik.values.email} name="email" />
+                </div>
+                <div className="billing-back-btn">
+                  <div className="billing-btn">
+                    <button type="button"
+                      style={{
+                        backgroundColor: '#F06B0E'
                       }}
                       onClick={addFormik.handleSubmit}>
-                        {createLoading ? "Loading" : 'Submit'}
-                      </button>
-                    </div>
+                      {createLoading ? "Loading" : 'Submit'}
+                    </button>
                   </div>
-                </form>
-              </div>
+                </div>
+              </form>
             </div>
           </div>
-        )}
+
+        </Modal>
 
         {/* Delete Confirmation Div */}
         {showDeleteConfirm && (
