@@ -44,7 +44,6 @@ export const baseQueryWithReauth = async (args, api, extraOptions) => {
                 } else {
                     // warningToast("Please login to perform this action")
                     api.dispatch(unauthenticate())
-                    window.location.href = "/login-register"
                 }
             } finally {
                 release()
