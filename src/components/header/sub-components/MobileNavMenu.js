@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { unauthenticate } from "../../../store/slices/auth-slice";
@@ -6,6 +6,7 @@ import { unauthenticate } from "../../../store/slices/auth-slice";
 const MobileNavMenu = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
 
   const { isAuthenticated } = useSelector(
@@ -393,6 +394,7 @@ const MobileNavMenu = () => {
             <li className="cursor-pointer">
                   <Link to={'/login-register'} onClick={() => {
                     dispatch(unauthenticate())
+                    navigate('/login-register')
 
                   }} className="text-red-500 ">
                     log out

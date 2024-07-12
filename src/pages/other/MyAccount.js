@@ -18,6 +18,7 @@ const MyAccount = () => {
   let { pathname } = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate()
+  
   const { isAuthenticated } = useSelector((state) => state.auth);
   const { data: billingAddresses, refetch } = useGetAllBillingAddressesQuery();
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -64,7 +65,7 @@ const MyAccount = () => {
           .then((res) => {
             successToast("Password updated successfully, please login again");
             dispatch(unauthenticate());
-            logout({});
+            // logout({});
             navigate('/')
           })
           .catch((error) => {

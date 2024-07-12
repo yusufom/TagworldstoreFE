@@ -11,6 +11,8 @@ import React from "react";
 
 const IconGroup = ({ iconWhiteClass }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
+  
   const handleClick = e => {
     e.currentTarget.nextSibling.classList.toggle("active");
   };
@@ -107,6 +109,7 @@ const IconGroup = ({ iconWhiteClass }) => {
                 <li className="cursor-pointer">
                   <Link to={'/login-register'} onClick={() => {
                     dispatch(unauthenticate())
+                    navigate('/')
 
                   }} className="text-red-500 ">
                     log out
