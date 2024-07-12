@@ -45,6 +45,18 @@ function OrderModal({ order, currency, show, onHide }) {
               </div>
             ))}
           </div>
+          <div className="shipping-address">
+            <h3>Shipping Address</h3>
+            <p><strong>Name:</strong> {order.shipping_address.first_name} {order.shipping_address.last_name}</p>
+            <p><strong>Street Address:</strong> {order.shipping_address.street_address}</p>
+            <p><strong>Apartment:</strong> {order.shipping_address.apartment}</p>
+            <p><strong>City:</strong> {order.shipping_address.city}</p>
+            <p><strong>State:</strong> {order.shipping_address.state}</p>
+            <p><strong>Country:</strong> {order.shipping_address.country}</p>
+            <p><strong>PostCode:</strong> {order.shipping_address.postcode}</p>
+            <p><strong>Phone:</strong> {order.shipping_address.phone}</p>
+            <p><strong>Email:</strong> {order.shipping_address.email}</p>
+          </div>
         </div>
       </div>
     </Modal>
@@ -53,7 +65,7 @@ function OrderModal({ order, currency, show, onHide }) {
 
 OrderModal.propTypes = {
   order: PropTypes.shape({
-    id: PropTypes.number,
+    pkid: PropTypes.string,
     ordered_date: PropTypes.string,
     is_paid: PropTypes.bool,
     items: PropTypes.arrayOf(
@@ -65,10 +77,27 @@ OrderModal.propTypes = {
         selected_product_size: PropTypes.string,
         product: PropTypes.shape({
           id: PropTypes.number,
-          image: PropTypes.string,
+          image: PropTypes.arrayOf(
+            PropTypes.shape({
+              image: PropTypes.string
+            })
+          ),
+          price: PropTypes.string
         })
       })
-    )
+    ),
+    shipping_address: PropTypes.shape({
+      first_name: PropTypes.string,
+      last_name: PropTypes.string,
+      street_address: PropTypes.string,
+      apartment: PropTypes.string,
+      city: PropTypes.string,
+      state: PropTypes.string,
+      country: PropTypes.string,
+      postcode: PropTypes.string,
+      phone: PropTypes.string,
+      email: PropTypes.string
+    })
   }),
   currency: PropTypes.shape({}),
   show: PropTypes.bool,
