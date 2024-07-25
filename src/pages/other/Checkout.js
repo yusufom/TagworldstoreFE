@@ -204,7 +204,7 @@ const Checkout = () => {
                           </div>
                           <div className="col-lg-6 col-md-6">
                             <div className="billing-info mb-20">
-                              <label>Postcode</label>
+                              <label>Postal code</label>
                               <input type="text" name="postcode" onChange={handleAddressChange} />
                             </div>
                           </div>
